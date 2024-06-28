@@ -1,0 +1,67 @@
+/* Problem: Sort linked list in O(nlogn) time complexity, java code */
+
+
+/**
+ * Definition for singly-linked list.
+ * class ListNode {
+ *     public int val;
+ *     public ListNode next;
+ *     ListNode(int x) { val = x; next = null; }
+ * }
+ */
+public class Solution {
+    public ListNode sortList(ListNode A) {
+        // Base case - empty or single node Linked List
+        if (A == null || A.next == null) {
+            return A;
+        }
+        // Find middle node for splitting
+        ListNode mid = getMiddle(A);
+        // Split the list into two halves
+        ListNode a1 = A;
+        ListNode a2 = mid.next;
+        mid.next = null; // detach the two halves
+        // Sort first and second half recursively
+        ListNode left = sortList(a1);
+        ListNode right = sortList(a2);
+        // Merge the sorted halves
+        return mergeTwoLists(left, right);
+    }
+    // Function to get the middle of the linked list
+    private ListNode getMiddle(ListNode head) {
+        if (head == null) {
+            return head;
+        }
+        ListNode slow = head, fast = head.next;
+        while (fast != null && fast.next != null) {
+            slow = slow.next;
+            fast = fast.next.next;
+        }
+        return slow;
+    }
+    public ListNode mergeTwoLists(ListNode A, ListNode B) {
+        // Handle edge cases where one of the lists is null
+        if (A == null) return B;
+        if (B == null) return A;
+        // Create a temporary node for the merged list
+        ListNode temporary = new ListNode(0);
+        ListNode current = temporary;
+        // Two pointers will traverse ListNode A and ListNode B
+        ListNode pa = A;
+        ListNode pb = B;
+        while (pa != null && pb != null) {
+            // Compare values and append the smaller of two to the list for ascending order merging
+            if (pa.val < pb.val) {
+                current.next = pa;
+                pa = pa.next;
+            } else {
+                current.next = pb;
+                pb = pb.next;
+            }
+            current = current.next;
+        }
+        // Append remaining nodes from either list (if any)
+        current.next = (pa != null) ? pa : pb;
+        return temporary.next;
+    }
+}
