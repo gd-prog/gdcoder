@@ -1,0 +1,22 @@
+/* Problem : Given a linked list of integers find and return the middle element of the linked list*/
+
+/** JAVA code
+ * Definition for singly-linked list.
+ * class ListNode {
+ *     public int val;
+ *     public ListNode next;
+ *     ListNode(int x) { val = x; next = null; }
+ * }
+ */
+public class Solution {
+    public int solve(ListNode A) {
+        ListNode slow=A, fast=A; // A is head
+        while(fast !=null && fast.next !=null){
+            // Move one step at a time
+            slow=slow.next;
+            // Move fast two steps at a time. When Fast reaches last or last+1, slow is at middle
+            fast=fast.next.next;
+        }
+        return slow.val;
+    }
+}
