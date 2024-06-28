@@ -1,0 +1,39 @@
+
+/* Problem : Merge two sorted Linked Lists, Java code */
+/**
+ * Definition for singly-linked list.
+ * class ListNode {
+ *     public int val;
+ *     public ListNode next;
+ *     ListNode(int x) { val = x; next = null; }
+ * }
+ */
+
+
+public class Solution {
+    public ListNode mergeTwoLists(ListNode A, ListNode B) {
+        // Handle edge cases where one of the lists is null
+        if (A == null) return B;
+        if (B == null) return A;
+        // Create a temporary node for the merged list
+        ListNode temporary = new ListNode(0);
+        ListNode current = temporary;
+        // Two pointers will traverse ListNode A and ListNode B
+        ListNode pa = A;
+        ListNode pb = B;
+        while (pa != null && pb != null) {
+            // Compare values and append the smaller of two to the list for ascending order merging
+            if (pa.val < pb.val) {
+                current.next = pa;
+                pa = pa.next;
+            } else {
+                current.next = pb;
+                pb = pb.next;
+            }
+            current = current.next;
+        }
+        // Append remaining nodes from either list (if any)
+        current.next = (pa != null) ? pa : pb;
+        return temporary.next;
+    }
+}
