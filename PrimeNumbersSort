@@ -1,0 +1,48 @@
+/*
+Problem Description
+Given an integer A. Find the list of all prime numbers in the range [1, A].
+
+
+Problem Constraints
+1 <= A <= 106
+
+
+Input Format
+Only argument A is an integer.
+
+
+Output Format
+Return a sorted array of prime number in the range [1, A].
+*/
+
+public class Solution {
+    public int[] solve(int A) {
+        boolean[] sieve=sieveoferatos(A);
+        int []ans=new int[A];
+        int flag=0;
+        for(int i=2;i<=A;i++){
+            if(sieve[i]==true){
+            ans[flag]=i;
+            flag++;
+            }
+        }
+        int[] result = new int[flag];
+        for (int i = 0; i < flag; i++) {
+        result[i] = ans[i];
+        }
+        return result;
+     }
+    public boolean[] sieveoferatos(int n){
+        boolean []sieve=new boolean[n+1];
+        for(int i=2;i<=n;i++){
+            sieve[i]=true;
+        }
+        for(int i=2;i*i<=n;i++){
+            if(sieve[i]==true){
+                for(int j=i*i;j<=n;j=j+i)
+                    sieve[j]=false;
+            }
+        }
+        return sieve;        
+    }
+}
