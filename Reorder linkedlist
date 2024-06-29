@@ -1,0 +1,97 @@
+/*Given a singly linked list A
+
+ A: A0 → A1 → … → An-1 → An 
+reorder it to:
+
+ A0 → An → A1 → An-1 → A2 → An-2 → … 
+You must do this in-place without altering the nodes' values.
+
+Java code
+
+*/
+
+
+/**
+ * Definition for singly-linked list.
+ * class ListNode {
+ *     public int val;
+ *     public ListNode next;
+ *     ListNode(int x) { val = x; next = null; }
+ * }
+ */
+public class Solution {
+    public ListNode reorderList(ListNode A) {
+        // Base case - empty or single node Linked List
+        if (A == null || A.next == null) {
+            return A;
+        }
+        // Find middle node for splitting
+        ListNode mid = getMiddle(A);
+        // Split the list into two halves
+        ListNode a1 = A;
+        ListNode a2 = mid.next;
+        mid.next = null; // detach the two halves
+        // Reverse the second half
+        a2 = reverse(a2);
+        // Merge the halves by alternate pointing
+        return mergeTwoLists(a1, a2);
+    }
+    
+	// Function to get the middle of the linked list
+    private ListNode getMiddle(ListNode head) {
+        if (head == null) {
+            return head;
+        }
+        ListNode slow = head, fast = head.next;
+        while (fast != null && fast.next != null) {
+            slow = slow.next;
+            fast = fast.next.next;
+        }
+        return slow;
+    }
+    
+	// Function to reverse linked list
+    private ListNode reverse(ListNode head) {
+        ListNode previous = null;
+        ListNode current = head;
+        while (current != null) {
+            ListNode nextNode = current.next;
+            current.next = previous;
+            previous = current;
+            current = nextNode;
+        }
+        return previous;
+    }
+	
+    // Function to merge two lists alternately
+    private ListNode mergeTwoLists(ListNode A, ListNode B) {
+        // Create a temporary node for the merged list
+        ListNode temp = new ListNode(0);
+        ListNode current = temp;
+        // Two pointers to traverse ListNode A and ListNode B
+        ListNode pa = A;
+        ListNode pb = B;
+        // Flag to alternate between A and B
+        boolean alternate = true;
+        while (pa != null && pb != null) {
+            if (alternate) {
+                current.next = pa;
+                pa = pa.next;
+            } else {
+                current.next = pb;
+                pb = pb.next;
+            }
+            current = current.next;
+            alternate = !alternate;
+        }
+        // Append remaining nodes if any
+        if (pa != null) {
+            current.next = pa;
+        }
+        if (pb != null) {
+            current.next = pb;
+        }
+        return temp.next;
+    }
+}
+
