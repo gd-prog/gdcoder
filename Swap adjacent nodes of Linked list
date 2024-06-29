@@ -1,0 +1,30 @@
+/*  Given a linked list A, swap every two adjacent nodes and return its head. Use constant space , do not modify values in the list */
+/* Java code */
+
+/**
+ * Definition for singly-linked list.
+ * class ListNode {
+ *     public int val;
+ *     public ListNode next;
+ *     ListNode(int x) { val = x; next = null; }
+ * }
+ */
+public class Solution {
+    public ListNode swapPairs(ListNode A) {
+        ListNode start=new ListNode(0); // start node to traverse the array
+        start.next=A;
+        ListNode current=start; // To manage linked list in place only changing the pointing
+        while(current.next!=null && current.next.next!=null){ // cover even and odd count of items 
+        current.next=swap(current.next,current.next.next); //in the linked list respectively
+        current=current.next.next;
+        }
+        return start.next;
+    }
+    //Function to swap two adjacent nodes
+    private ListNode swap(ListNode a1,ListNode a2 ) {  // private because used only within the class
+        ListNode temp=a1;
+        a1.next=a2.next;
+        a2.next=temp;
+        return a2; //node a2 is now head of the swapped pair        
+    }
+}
