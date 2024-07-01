@@ -1,0 +1,148 @@
+/* Java code
+Given a linked list where every node represents a linked list and contains two pointers of its type:
+
+Pointer to next node in the main list (right pointer)
+Pointer to a linked list where this node is head (down pointer). All linked lists are sorted.
+You are asked to flatten the linked list into a single list. Use down pointer to link nodes of the flattened list. The flattened linked list should also be sorted. */
+
+/**
+ * This class defines a node for a multi-level linked list.
+ * Each node has an integer value (`val`) and pointers to the next node at the same level (`right`)
+ * and the first node in the linked list below it (`down`).
+ */
+class ListNode {
+  int val;
+  ListNode right, down;
+
+  ListNode(int x) {
+    val = x;
+    right = down = null;
+  }
+}
+
+/**
+ * This function merges two sorted linked lists (`a` and `b`) into a single sorted linked list.
+ * It works recursively:
+ *  - If either `a` or `b` is empty, return the other one (base case).
+ *  - Compare the values of `a` and `b`:
+ *      - If `a.val` is smaller, recursively merge `a.down` with `b` and attach the result to `a.down`. Then return `a`.
+ *      - Otherwise, recursively merge `a` with `b.down` and attach the result to `b.down`. Then return `b`.
+ * This ensures the merged list is sorted in ascending order.
+ */
+ListNode merge(ListNode a, ListNode b) {
+  if (a == null) return b;
+  if (b == null) return a;
+
+  if (a.val < b.val) {
+    a.down = merge(a.down, b);
+    return a;
+  } else {
+    b.down = merge(a, b.down);
+    return b;
+  }
+}
+
+/**
+ * This function flattens a multi-level linked list into a single-level sorted linked list.
+ * It works recursively:
+ *  - If `root` is empty or has no child (`root->right` is null), return `root` (base case).
+ *  - Recursively flatten the child list (`root.right`).
+ *  - Merge the flattened child list with the current level (`root`) using the `merge` function and update `root` to point to the head of the merged list.
+ *  - Return the flattened root node.
+ */
+ListNode flatten(ListNode root) {
+  if (root == null || root.right == null) {
+    return root;
+  }
+
+  root.right = flatten(root.right);
+
+  root = merge(root, root.right);
+
+  return root;
+}
+
+/* **Time Complexity:**
+
+- In the worst case, each node is visited and processed once during the merging process.
+- Let `n` be the total number of nodes in the multi-level linked list.
+- The recursion depth is roughly proportional to the number of levels in the linked list.
+- Assuming a constant depth (bounded by a constant number of levels), the time complexity is:
+  - `O(n * log n)` (similar to merge sort for linked lists)
+
+**Space Complexity:**
+
+- The recursion in both functions creates a call stack.
+- In the worst case, the call stack can grow as deep as the number of levels in the linked list.
+- Assuming a constant depth, the space complexity is:
+  - `O(log n)` (due to the call stack)
+*/
+
+/* Dry run 
+
+
+**Scenario:**
+
+Consider a multi-level linked list with the following structure:
+
+```
+     1
+    / \
+   2   3
+  / \   \
+ 4   5   6
+           \
+            7
+```
+
+**`flatten` Function Dry Run:**
+
+1. **Initial State:**
+
+   ```
+       1
+      / \
+     2   3
+    / \   \
+   4   5   6
+          \
+           7
+   ```
+
+2. **Flatten `root.right` (level 1):**
+
+   ```
+       1 (already flattened)
+      /       (unchanged)
+     2   3
+    / \   \ (recursively flattened)
+   4   5   6
+          \
+           7
+   ```
+
+   - The `flatten` function is called recursively on `root.right` (node with value 3), which becomes a single-level list: `3 -> 6 -> 7`
+
+3. **Merge `root` with Flattened `root.right`:**
+
+   ```
+       1 (already flattened)
+          \ (merged with flattened level 1)
+           2 -> 3 -> 4 -> 5 -> 6 -> 7
+   ```
+
+   - The `merge` function combines the flattened level 1 list with `root` (node with value 1), resulting in the final sorted single-level list: `1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7`
+
+4. **Final Flattened List:**
+
+   ```
+       1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7
+   ```
+
+This graphical representation demonstrates how the `flatten` function recursively flattens the child lists and merges them with the current level, ultimately resulting in the flattened single-level linked list.
+
+**Note:**
+
+The actual structure of the multi-level linked list could be different, and the dry run would vary accordingly. 
+
+*/
