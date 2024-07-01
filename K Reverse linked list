@@ -1,0 +1,34 @@
+/* Java code - Given a singly linked list A and an integer B, reverse the nodes of the list B at a time and return the modified linked list. */
+
+/**
+ * Definition for singly-linked list.
+ * class ListNode {
+ *     public int val;
+ *     public ListNode next;
+ *     ListNode(int x) { val = x; next = null; }
+ * }
+ */
+public class Solution {
+    public ListNode reverseList(ListNode A, int B) {
+        ListNode current=A;
+        ListNode aNext=null;
+        ListNode previous=null;
+
+        int count=0;
+        while(current!=null && count< B){
+            aNext=current.next;
+            current.next=previous;
+            previous=current;
+            current=aNext;
+            count++;
+        }
+
+        if(aNext!=null){
+            A.next=reverseList(aNext,B);
+        }
+
+        return previous;
+    }
+}
+
+
