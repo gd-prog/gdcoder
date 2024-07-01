@@ -67,21 +67,21 @@ public class Solution {
 /* Explanation:
 1. Pointers for Partition Tracking:
 
-The code defines four pointers to track the partitions:
-
+Similar to the previous version, the code defines four pointers to track the partitions:
 lessThanBHead: Pointer to the head node of the "less than B" partition (initially null).
 lessThanBTail: Pointer to the tail node of the "less than B" partition (initially null).
 gtOrEqLLHead: Pointer to the head node of the "greater than or equal to B" partition (initially null).
 gtOrEqLLTail: Pointer to the tail node of the "greater than or equal to B" partition (initially null).
-
-2. Iterating Through the List:
+2. Iteration with Temporary Next Node:
 
 current: A pointer that iterates through the original linked list starting from the head (A).
 The while loop continues as long as current is not null (i.e., there are more nodes to process).
+Inside the loop, before processing the current node, a temporary pointer nextNode is assigned the value of current.next. This temporarily stores the reference to the next node in the original list.
+We then set current.next to null to temporarily detach the current node from the rest of the list. This allows us to safely append it to a partition without modifying the original list structure.
 
 3. Sorting Nodes Based on Value:
 
-Inside the loop, the code checks if the current node's val is less than B:
+The code then checks if the current node's val is less than B:
 Less than B:
 If the "less than B" partition is empty (lessThanBHead == null):
 Both lessThanBHead and lessThanBTail are set to the current node, initializing the partition.
@@ -93,100 +93,86 @@ If the "greater than or equal to B" partition is empty (gtOrEqLLHead == null):
 Both gtOrEqLLHead and gtOrEqLLTail are set to the current node, initializing the partition.
 Otherwise, the current node is appended to the end of the "greater than or equal to B" partition using similar logic to the "less than B" case.
 
-4. Handling Empty Partitions:
+4. Reattaching Next Node and Moving Forward:
 
-After iterating through the entire list, the code checks if either partition is empty:
-If the "less than B" partition is empty (lessThanBHead == null), it returns the head of the "greater than or equal to B" partition (gtOrEqLLHead), as there are no nodes less than B.
-Conversely, if the "greater than or equal to B" partition is empty (gtOrEqLLHead == null), it returns the head of the "less than B" partition (lessThanBHead), as there are no nodes greater than or equal to B.
+After processing the current node based on its value, the code reattaches the previously saved next node (nextNode) back to the current.next pointer.
+This restores the original linked list structure for the next iteration.
+Finally, current is advanced to nextNode to move to the next node in the original list.
+5. Handling Empty Partitions:
 
-5. Connecting the Partitions:
+After iterating through the entire list, the code checks if either partition is empty and handles it the same way as the previous version.
+6. Connecting the Partitions:
 
-If neither partition is empty, the code connects the two partitions:
-The next pointer of the tail node (lessThanBTail) in the "less than B" partition is set to point to the head node (gtOrEqLLHead) of the "greater than or equal to B" partition. This effectively links the two sorted partitions.
+If neither partition is empty, the code connects the two partitions by setting the next pointer of the tail node (lessThanBTail) in the "less than B" partition to point to the head node (gtOrEqLLHead) of the "greater than or equal to B" partition.
+7. Returning the Partitioned List:
 
-6. Returning the Partitioned List:
-
-Finally, the function returns the head node (lessThanBHead) of the entire partitioned list. This will be the head of the "less than B" partition if it's not empty, or the head of the "greater than or equal to B" partition if the "less than B" partition is empty. This code effectively partitions the original linked list around the given value B while preserving the original relative order within each partition (nodes less than B come before nodes greater than or equal to B).
+Finally, the function returns the head node (lessThanBHead) of the entire partitioned list.
 
 
-Absolutely! Here's a graphical dry run of the code for partitioning a linked list around a value `B`, incorporating the provided code:
+Dry run:
 
-**Initial State:**
+Initial State:
 
-```
 Original List: 1 -> 4 -> 3 -> 2 -> 5 (A -> B -> C -> D -> E)
 B (partition value): 3
-```
+Iteration 1 (current = A):
 
-**Iteration 1 (current = A):**
+current.val (1) is less than B.
+Temporary next node: nextNode is assigned the value of current.next (which is node B).
+current.next is set to null (temporarily detaching node A).
+Since "less than B" partition is empty (lessThanBHead == null), both lessThanBHead and lessThanBTail are set to current (node 1).
+State after Iteration 1:
 
-1. `current.val` (1) is less than `B`.
-2. Since "less than B" partition is empty (`lessThanBHead == null`), both `lessThanBHead` and `lessThanBTail` are set to `current` (node 1).
-
-**State after Iteration 1:**
-
-```
 lessThanB: 1 (A)
 gtOrEqLL: null
-current: B -> C -> D -> E
-```
+current: null (temporarily detached)
+nextNode: B -> C -> D -> E 
+Iteration 2 (current = B, reattached from nextNode):
 
-**Iteration 2 (current = B):**
+current.next is set back to nextNode (reattaching node B to the list).
+nextNode is advanced to the next node in the original list (C).
+current.val (4) is greater than or equal to B.
+Since "greater than or equal to B" partition is empty (gtOrEqLLHead == null), both gtOrEqLLHead and gtOrEqLLTail are set to current (node 4).
+State after Iteration 2:
 
-1. `current.val` (4) is greater than or equal to `B`.
-2. Since "greater than or equal to B" partition is empty (`gtOrEqLLHead == null`), both `gtOrEqLLHead` and `gtOrEqLLTail` are set to `current` (node 4).
-
-**State after Iteration 2:**
-
-```
 lessThanB: 1 (A)
 gtOrEqLL: 4 (B)
 current: C -> D -> E
-```
+nextNode: C -> D -> E
 
-**Iteration 3 (current = C):**
+Iteration 3 (current = C, reattached from nextNode):
 
-1. `current.val` (3) is less than `B`.
-2. The "less than B" partition is not empty (`lessThanBHead != null`), so we append the current node (3) to it by:
-   - Setting `lessThanBTail.next` (currently pointing to node 1) to point to the current node (3).
-   - Updating `lessThanBTail` to point to the current node (3), making it the new tail.
+current.next is set back to nextNode (reattaching node C to the list).
+nextNode is advanced to the next node in the original list (D).
+current.val (3) is less than B.
+The "less than B" partition is not empty (lessThanBHead != null), so we append the current node (3) to it by:
+Setting lessThanBTail.next (currently pointing to node 1) to point to the current node (3).
+Updating lessThanBTail to point to the current node (3), making it the new tail.
 
-**State after Iteration 3:**
+State after Iteration 3:
 
-```
 lessThanB: 1 (A) -> 3 (C)
 gtOrEqLL: 4 (B)
 current: D -> E
-```
+nextNode: D -> E
+Iterations 4 & 5 (current = D & E, reattached from nextNode):
 
-**Iteration 4 & 5 (current = D & E):**
+Follow the same logic as Iteration 3: reattach the current node (D and E) and check their values for partitioning.
+Since their values (2 and 5) are greater than or equal to B, they are appended to the "greater than or equal to B" partition.
+State after Iteration 5:
 
-- `current.val` (2 and 5) are both greater than or equal to `B`.
-- The "greater than or equal to B" partition is not empty (`gtOrEqLLHead != null`), so we append these nodes to it using the same logic as in Iteration 3.
-
-**State after Iteration 5:**
-
-```
 lessThanB: 1 (A) -> 3 (C)
 gtOrEqLL: 4 (B) -> 2 (D) -> 5 (E)
 current: null (reached end)
-```
+nextNode: null
+Handling Empty Partitions and Connecting Partitions:
 
-**Handling Empty Partitions:**
+These steps are skipped as neither partition is empty.
+The next pointer of the tail node (lessThanBTail) in the "less than B" partition (node 3) is set to point to the head node (gtOrEqLLHead) of the "greater than or equal to B" partition (node 4).
+Final Partitioned List:
 
-- After iterating through the list, neither partition is empty (`lessThanBHead != null` and `gtOrEqLLHead != null`), so we skip this step.
-
-**Connecting Partitions:**
-
-- The `next` pointer of the tail node (`lessThanBTail`) in the "less than B" partition (node 3) is set to point to the head node (`gtOrEqLLHead`) of the "greater than or equal to B" partition (node 4).
-
-**Final Partitioned List:**
-
-```
 1 (A) -> 3 (C) -> 4 (B) -> 2 (D) -> 5 (E)
-```
-
-This graphical dry run illustrates how the code iterates through the list, sorts nodes based on their value compared to `B`, and finally connects the two partitions while preserving the original relative order within each partition. 
+This graphical dry run illustrates how the revised code iterates through the list, temporarily detaches nodes, sorts them based on their value compared to B, reattaches them, and finally connects the two partitions while preserving the original relative order within each partition.
 
 Time Complexity:
 
