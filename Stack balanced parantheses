@@ -1,0 +1,101 @@
+/* Java code
+Given an expression string A, examine whether the pairs and the orders of “{“,”}”, ”(“,”)”, ”[“,”]” are correct in A.
+
+Refer to the examples for more clarity.
+*/
+
+
+public class Solution {
+
+  /**
+   * Function to check if a string has valid parentheses matching
+   *
+   * @param A: The input string containing parentheses
+   * @return 1 if the parentheses are valid, 0 otherwise
+   */
+  public int solve(String A) {
+    int n = A.length(); // Get the string length
+
+    // Create an empty stack to store opening parentheses
+    Stack<Character> st = new Stack<>();
+
+    // Iterate through each character in the input string
+    for (int i = 0; i < n; i++) {
+      char ch = A.charAt(i);
+
+      // If the character is an opening parenthesis, push it onto the stack
+      if (ch == '(' || ch == '[' || ch == '{') {
+        st.push(ch);
+      } else { // If the character is a closing parenthesis
+        if (st.isEmpty()) { // Check if there's an opening parenthesis to match
+          return 0; // No opening parenthesis found, invalid string
+        }
+        char top = st.pop(); // Pop the top opening parenthesis
+        if (!isValid(ch, top)) { // Check if the closing parenthesis matches the popped opening parenthesis
+          return 0; // Invalid pairing, return 0
+        }
+      }
+    }
+
+    // After iterating through the string
+    if (st.isEmpty()) { // Check if all opening parentheses have a matching closing parenthesis
+      return 1; // All parentheses are valid
+    } else { // Unmatched opening parentheses remain in the stack
+      return 0; // Invalid string, extra opening parentheses
+    }
+  }
+
+  /**
+   * Helper function to check if two characters are valid opening-closing parenthesis pairs
+   *
+   * @param ch: The closing parenthesis character
+   * @param top: The popped opening parenthesis character
+   * @return true if the characters are a valid pair, false otherwise
+   */
+  private boolean isValid(char ch, char top) {
+    return (top == '(' && ch == ')') ||
+           (top == '{' && ch == '}') ||
+           (top == '[' && ch == ']');
+  }
+}
+
+/* Dry run
+Input String:   "()()()"
+Iteration | Character (ch) | Stack (st) | Return Value
+----------- | -------------- | ------------ | --------------
+1           | (              | (             | - (ignore)
+2           | (              | ((            | - (ignore)
+3           | )              | (             | 1 (valid pair)
+4           | )              |               | 1 (all parentheses valid)
+5           | )              |               | 1 (all parentheses valid)
+6           | )              |               | 1 (all parentheses valid)
+
+The code defines a class Solution with a function solve that takes a string A as input and returns 1 if the parentheses are valid, 0 otherwise.
+It gets the string length (n) for efficiency.
+It creates an empty stack st to store opening parentheses.
+It iterates through each character ch in the input string A.
+If ch is an opening parenthesis, it's pushed onto the stack.
+If ch is a closing parenthesis:
+It checks if the stack is empty (no opening parenthesis to match). If so, it returns 0 (invalid string).
+It pops the top opening parenthesis from the stack.
+It calls the helper function isValid to check if ch is a valid closing pair for the popped opening parenthesis. If not, it returns 0 (invalid matching).
+After iterating through the string:
+If the stack is empty (all opening parentheses have a match), it returns 1 (valid string).
+If the stack is not empty (unmatched opening parentheses), it returns 0 (invalid string).
+
+
+*/
+
+/*
+Time Complexity
+The code iterates through the input string once in a loop (for loop) - O(n).
+Inside the loop, it performs constant time operations like pushing, popping elements from the stack, and calling the isValid function - O(1).
+The total time complexity is dominated by the loop iteration, resulting in O(n).
+
+Space Complexity
+The code uses a stack st to store opening parentheses in the worst case scenario.
+The stack will only grow when encountering opening parentheses and shrink when encountering their corresponding closing parentheses.
+In the worst case, if the input string only contains opening parentheses and no closing parentheses, the stack will store all characters in the string.
+Therefore, the space complexity is proportional to the string length in the worst case, which is O(n).
+
+*/
