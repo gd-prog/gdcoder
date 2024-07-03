@@ -1,10 +1,10 @@
-/* Java code
+/* Java and Python code
 Given an expression string A, examine whether the pairs and the orders of “{“,”}”, ”(“,”)”, ”[“,”]” are correct in A.
 
 Refer to the examples for more clarity.
 */
 
-
+/* Java*/
 public class Solution {
 
   /**
@@ -99,3 +99,54 @@ In the worst case, if the input string only contains opening parentheses and no 
 Therefore, the space complexity is proportional to the string length in the worst case, which is O(n).
 
 */
+
+/* Python code*/
+
+class Solution:
+  """
+  This class defines a function to check if a string has valid parentheses matching.
+  """
+
+  def solve(self, A):
+    """
+    This function takes a string A containing parentheses and returns 1 if the parentheses are valid, 0 otherwise.
+
+    Args:
+      A: The input string containing parentheses.
+
+    Returns:
+      1 if the parentheses are valid, 0 otherwise.
+    """
+    stack = []  # Create an empty stack to store opening parentheses
+
+    for ch in A:
+      # Check if the character is an opening parenthesis
+      if ch in '([{':
+        stack.append(ch)  # Push opening parenthesis onto the stack
+      else:  # Check if the character is a closing parenthesis
+        if not stack:  # Check if the stack is empty (no opening parenthesis to match)
+          return 0  # Invalid string, no matching opening parenthesis
+        top = stack.pop()  # Pop the top opening parenthesis
+        # Check if the closing parenthesis matches the popped opening parenthesis
+        if not self.isValid(ch, top):
+          return 0  # Invalid pairing, return 0
+
+    # After iterating through the string
+    # Check if all opening parentheses have a matching closing parenthesis
+    return 1 if not stack else 0  # 1 if stack is empty (all valid), 0 otherwise
+
+  def isValid(self, ch, top):
+    """
+    Helper function to check if two characters are valid opening-closing parenthesis pairs.
+
+    Args:
+      ch: The closing parenthesis character
+      top: The popped opening parenthesis character
+
+    Returns:
+      True if the characters are a valid pair, False otherwise
+    """
+    return (ch == ')' and top == '(') or \
+           (ch == '}' and top == '{') or \
+           (ch == ']' and top == '[')
+
