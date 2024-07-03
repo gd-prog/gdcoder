@@ -1,0 +1,336 @@
+/* Java code
+Design and implement a data structure for Least Recently Used (LRU) cache. It should support the following operations: get and set.
+
+get(key) - Get the value (will always be positive) of the key if the key exists in the cache, otherwise return -1.
+set(key, value) - Set or insert the value if the key is not already present. When the cache reaches its capacity, it should invalidate the least recently used item before inserting the new item.
+The LRUCache will be initialized with an integer corresponding to its capacity. Capacity indicates the maximum number of unique keys it can hold at a time.
+
+Definition of "least recently used" : An access to an item is defined as a get or a set operation of the item. "Least recently used" item is the one with the oldest access time.
+
+*/
+
+
+public class LRUCache {
+
+  /**
+   * Capacity of the LRU cache (maximum number of elements)
+   */
+  private final int capacity;
+
+  /**
+   * Map to store key-value pairs and quickly access nodes based on key
+   */
+  private final Map<Integer, ListNode> map;
+
+  /**
+   * Doubly linked list to maintain the least recently used (LRU) order
+   */
+  private final DoublyLinkedList list;
+
+  /**
+   * Constructor to initialize the LRU cache with a given capacity
+   *
+   * @param capacity The maximum number of elements the cache can hold
+   */
+  public LRUCache(int capacity) {
+    this.capacity = capacity;
+    this.map = new HashMap<>();
+    this.list = new DoublyLinkedList();
+  }
+
+  /**
+   * Retrieves the value associated with a given key from the cache
+   *
+   * @param key The key to lookup
+   * @return The value associated with the key, or -1 if not found
+   */
+  public int get(int key) {
+    ListNode node = map.get(key);
+    if (node == null) {
+      return -1; // Key not found in the cache
+    }
+    // Move the accessed node to the front of the list (most recently used)
+    list.moveToFront(node);
+    return node.value;
+  }
+
+  /**
+   * Sets the value associated with a given key in the cache
+   *
+   * @param key   The key to set
+   * @param value The value to associate with the key
+   */
+  public void set(int key, int value) {
+    ListNode node = map.get(key);
+    if (node == null) {
+      // Key not found, create a new node and add it to the cache
+      node = new ListNode(key, value);
+      list.addFirst(node);
+      map.put(key, node);
+      if (map.size() > capacity) {
+        // Evict the least recently used element if cache capacity is reached
+        ListNode removed = list.removeLast();
+        map.remove(removed.key);
+      }
+    } else {
+      // Key found, update the value and move the node to the front
+      node.value = value;
+      list.moveToFront(node);
+    }
+  }
+
+  // Doubly linked list implementation for maintaining LRU order (nested class)
+
+  private static class DoublyLinkedList {
+
+    private ListNode head;
+    private ListNode tail;
+
+    public void addFirst(ListNode node) {
+      if (head == null) {
+        head = tail = node;
+      } else {
+        node.next = head;
+        head.prev = node;
+        head = node;
+      }
+    }
+
+    public void moveToFront(ListNode node) {
+      if (node == head) {
+        return;
+      }
+      if (node == tail) {
+        tail = tail.prev;
+        if (tail != null) {
+          tail.next = null;
+        }
+      } else {
+        node.prev.next = node.next;
+        node.next.prev = node.prev;
+      }
+      node.prev = null;
+      node.next = head;
+      head.prev = node;
+      head = node;
+    }
+
+    public ListNode removeLast() {
+      if (tail == null) {
+        return null;
+      }
+      ListNode removed = tail;
+      if (tail == head) {
+        head = tail = null;
+      } else {
+        tail = tail.prev;
+        tail.next = null;
+      }
+      return removed;
+    }
+  }
+
+  // ListNode class for storing key-value pairs and linked list references (nested class)
+
+  private static class ListNode {
+    int key;
+    int value;
+    ListNode prev;
+    ListNode next;
+
+    public ListNode(int key, int value) {
+      this.key = key;
+      this.value = value;
+    }
+  }
+}
+
+/* Dry run
+
+example scenario capacity 2
+
+Initial State:
+
+Cache: {} (Empty)
+Doubly Linked List: Empty
+Operation: set(1, 10)
+
+Cache: {1: (ListNode with key 1, value 10)}
+Doubly Linked List: 1 -> null (1 becomes the head and tail)
+Operation: get(1)
+
+Cache: {1: (ListNode with key 1, value 10)} (remains unchanged)
+Doubly Linked List: 1 -> null (1 remains at the front since it's accessed)
+Operation: set(2, 20)
+
+Cache: {1: (ListNode with key 1, value 10), 2: (ListNode with key 2, value 20)}
+Doubly Linked List: 2 -> 1 -> null (2 becomes the new head since it's added)
+Operation: get(2)
+
+Cache: {1: (ListNode with key 1, value 10), 2: (ListNode with key 2, value 20)} (remains unchanged)
+Doubly Linked List: 2 -> 1 -> null (2 remains at the front since it's accessed)
+Operation: set(3, 30) (Capacity is reached, 1 is evicted)
+
+Cache: {2: (ListNode with key 2, value 20), 3: (ListNode with key 3, value 30)}
+Doubly Linked List: 3 -> 2 -> null (3 becomes the new head, 1 is removed from the cache and the list)
+
+*/
+
+/*
+This code implements a Least Recently Used (LRU) cache. The cache stores key-value pairs, but it has a limited capacity. When the cache reaches its capacity and a new key-value pair needs to be added, the least recently used element (based on access) is evicted to make space.
+
+The code uses two main components:
+
+HashMap (map): Stores key-value pairs and allows efficient retrieval of nodes based on the key.
+Doubly Linked List (list): Maintains the LRU order of elements. Nodes accessed recently are moved to the front of the list, and the least recently used node resides at the tail.
+The get operation retrieves the value associated with a key. If the key exists in the cache, the corresponding node in the linked list is moved to the front to reflect its recent access.
+
+The set operation either updates the value of an existing key or adds a new key-value pair. If the key doesn't exist and the cache is full, the least recently used element (at the tail of the linked list) is evicted from both the cache (map) and the linked list.
+
+*/
+
+/*
+Time complexity
+get(key): O(1) - Average time to access a key is constant because the HashMap provides fast retrieval.
+set(key, value): O(1) - Average time to add or update a key-value pair is constant due to efficient operations in the HashMap and DoublyLinkedList. In the worst case (cache eviction), removing the tail from the linked list takes constant time.*/
+
+/* Space complexity
+
+The code uses a HashMap and a DoublyLinkedList. Both data structures have a space complexity of O(n), where n is the number of elements in the cache. In the worst case, the cache can hold up to its capacity elements.
+*/
+
+/*
+This implementation provides efficient LRU cache functionality with average constant time for both get and set operations. The space complexity is also linear with the cache capacity.*/
+
+/* Python version
+
+class Node:
+  """
+  Node class to store key-value pairs and references for the doubly linked list.
+  """
+  def __init__(self, key, value):
+    self.key = key
+    self.value = value
+    self.prev = None
+    self.next = None
+
+class LRUCache:
+  """
+  LRU cache class with functionality for get and set operations.
+  """
+  def __init__(self, capacity):
+    """
+    Initializes the LRU cache with a given capacity.
+
+    Args:
+      capacity: The maximum number of elements the cache can hold.
+    """
+    self.capacity = capacity
+    self.cache = {}  # Dictionary to store key-value pairs
+    self.head = None  # Head node of the doubly linked list
+    self.tail = None  # Tail node of the doubly linked list
+
+  def get(self, key):
+    """
+    Retrieves the value associated with a key from the cache.
+
+    Args:
+      key: The key to lookup.
+
+    Returns:
+      The value associated with the key, or -1 if not found.
+    """
+    node = self.cache.get(key)
+    if not node:
+      return -1  # Key not found
+
+    # Move the accessed node to the front of the list (most recently used)
+    self._moveToFront(node)
+    return node.value
+
+  def set(self, key, value):
+    """
+    Sets the value associated with a given key in the cache.
+
+    Args:
+      key: The key to set.
+      value: The value to associate with the key.
+    """
+    node = self.cache.get(key)
+    if not node:
+      # Key not found, create a new node and add it to the cache
+      newNode = Node(key, value)
+      self.cache[key] = newNode
+      self._addNode(newNode)
+      if len(self.cache) > self.capacity:
+        # Evict the least recently used element if cache capacity is reached
+        self._removeLeastRecentlyUsed()
+    else:
+      # Key found, update the value and move the node to the front
+      node.value = value
+      self._moveToFront(node)
+
+  def _addNode(self, node):
+    """
+    Adds a new node to the front of the doubly linked list.
+
+    Args:
+      node: The node to add.
+    """
+    if not self.head:
+      self.head = self.tail = node
+    else:
+      node.next = self.head
+      self.head.prev = node
+      self.head = node
+
+  def _removeLeastRecentlyUsed(self):
+    """
+    Removes the least recently used node (tail) from the cache and linked list.
+    """
+    if not self.tail:
+      return
+
+    removedNode = self.tail
+    self.cache.pop(removedNode.key)
+    if self.head == self.tail:
+      self.head = self.tail = None
+    else:
+      self.tail = self.tail.prev
+      self.tail.next = None
+
+  def _moveToFront(self, node):
+    """
+    Moves a node to the front of the doubly linked list.
+
+    Args:
+      node: The node to move.
+    """
+    if not node.prev and not node.next:
+      return  # Node is already the only element
+    
+    if node == self.tail:
+      self.tail = self.tail.prev
+      self.tail.next = None
+    else:
+      node.prev.next = node.next
+      node.next.prev = node.prev
+
+    node.prev = None
+    node.next = self.head
+    self.head.prev = node
+    self.head = node
+
+*/
+
+/*
+Node class: Defines the structure of a node in the doubly linked list, storing key, value, and references to previous and next nodes.
+LRUCache class:
+__init__(): Initializes the cache with capacity, an empty dictionary (self.cache), and None values for head and tail of the doubly linked list.
+get(key): Retrieves the value associated with a key. If found, moves the node to the front and returns the value. Otherwise, returns -1.
+set(key, value): Updates the value for an existing key or adds a new key-value pair. If capacity is reached, evicts the least recently used element.
+Private helper methods:
+_addNode(self, node): Adds a new node to the front of the doubly linked list.
+_removeLeastRecentlyUsed(self): Removes the least recently used node (tail) from the cache and linked list.
+_moveToFront(self, node): Moves a node to the front of the doubly linked list.
+This code effectively implements an LRU cache with functionalities for get and set operations. It maintains the LRU order using a doubly linked list and ensures efficient key-based access through the dictionary.*/
