@@ -19,9 +19,56 @@ Return the ID of the player who currently possesses the ball.
 
 */
 
+Java
+
+public class Solution {
+  /*
+  This class defines a method to find the player with the ball after a series of passes.
+  */
+
+  public int solve(int A, int B, ArrayList<Integer> C) {
+    /*
+    Finds the player who has the ball after A passes.
+
+    Args:
+        A: The number of passes (integer).
+        B: Start with player B .
+        C: An ArrayList of passes, where each pass can be an ID or 0 (back pass).
+
+    Returns:
+        The ID of the player who has the ball after A passes.
+
+    Throws:
+        IllegalArgumentException: If an invalid back pass occurs (attempting to back pass without a prior forward pass).
+    */
+    int currentPlayer = B; // Player B starts with the ball
+    Stack<Integer> passHistory = new Stack<>(); // Keep track of the passing history
+    passHistory.push(currentPlayer);
+
+    for (int i = 0; i < A; i++) {
+      int passType = C.get(i); // Get the next pass from the ArrayList
+
+      if (passType == 0) {
+        // Back pass, go back one step in the history
+        if (passHistory.size() > 1) {
+          passHistory.pop();
+        } else {
+          throw new IllegalArgumentException("Invalid pass sequence: Back pass without prior forward pass");
+        }
+        currentPlayer = passHistory.peek(); // Update current player based on history
+      } else {
+        // Forward pass, update history and current player
+        passHistory.push(passType);
+        currentPlayer = passType;
+      }
+    }
+
+    return currentPlayer;
+  }
+}
 
 
-
+Python
 
 class Solution:
     """
