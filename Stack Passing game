@@ -1,0 +1,80 @@
+/*
+There is a football event going on in your city. In this event, you are given A passes and players having ids between 1 and 106.
+
+Initially, some player with a given id had the ball in his possession. You have to make a program to display the id of the player who possessed the ball after exactly A passes.
+
+There are two kinds of passes:
+
+1) ID
+
+2) 0
+
+For the first kind of pass, the player in possession of the ball passes the ball "forward" to the player with id = ID.
+
+For the second kind of pass, the player in possession of the ball passes the ball back to the player who had forwarded the ball to him.
+
+In the second kind of pass "0" just means Back Pass.
+
+Return the ID of the player who currently possesses the ball.
+
+*/
+
+
+
+
+
+class Solution:
+    """
+    This class determines the final player holding the ball after a series of passes
+    based on a given number of rounds (A), initial player (B), and pass history (C).
+
+    Attributes:
+        None
+    """
+
+    def solve(self, A, B, C):
+        """
+        Calculates the final player holding the ball.
+
+        Args:
+            A (int): Number of rounds to play.
+            B (int): Initial player holding the ball (0-indexed).
+            C (List[int]): Pass history (0: keep, 1: pass).
+
+        Returns:
+            int: The index of the final player holding the ball (0-indexed).
+        """
+
+        current_player = B  # Initialize current player with initial player (B)
+        pass_history = [current_player]  # Track pass history (initially just B)
+
+        for i in range(A):
+            pass_type = C[i]  # Get the pass type for the current round
+
+            if pass_type == 0:  # Keep the ball (pass type 0)
+                if len(pass_history) > 1:  # If there's more than one player in history
+                    pass_history.pop()  # Remove the last player (passed to)
+                current_player = pass_history[-1]  # Update current player
+            else:  # Pass the ball (pass type 1)
+                pass_history.append(pass_type)  # Add pass type to history (for tracking)
+                current_player = i + 1  # Update current player to the next player (0-indexed)
+
+        return current_player  # Return the final player holding the ball
+
+/* Time and Space complexity
+
+Time Complexity: O(A), where A is the number of rounds. This is because the loop iterates through the pass history (C) a maximum of A times. In each iteration, constant time operations are performed (array access, conditional checks, assignments).
+Space Complexity: O(1). The space complexity is constant because the algorithm only uses a fixed amount of additional space regardless of the input size (A). This space is used for variables like current_player and pass_history, which have a fixed size.
+*/
+
+/* explanation
+The code simulates a game where players pass a ball based on a series of instructions (pass history). The solve function takes the number of rounds (A), the initial player holding the ball (B), and the pass history (C) as input. It maintains a current_player variable and a pass_history list to track the current player and the sequence of passes.
+
+The loop iterates through each round (i) and checks the corresponding pass type (C[i]). If it's 0 (keep), the function handles two cases:
+
+If there's more than one player in the history (passed to someone), it removes the last player (the one who received the pass) from the history, effectively rewinding the pass.
+The current player remains the same (keeps the ball).
+If the pass type is 1 (pass), it adds the pass type to the history for tracking and updates the current player to the next player in the sequence (0-indexed).
+
+Finally, the function returns the index of the player holding the ball after all rounds are played.
+*/
