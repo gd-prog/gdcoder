@@ -1,0 +1,275 @@
+Problem:
+Given an array of integers A.
+
+A represents a histogram i.e A[i] denotes the height of the ith histogram's bar. Width of each bar is 1.
+
+Find the area of the largest rectangle formed by the histogram.
+
+
+
+Java
+
+public class Solution {
+
+    /**
+     * Finds the largest rectangle area in a histogram represented by an array `A`.
+     *
+     * This function uses the concept of nearest smaller elements to efficiently
+     * calculate the largest rectangle area. It first finds the nearest smaller
+     * element on the left (`left`) and right (`right`) for each element in `A`.
+     * Then, for each element, the width of the potential rectangle is calculated
+     * as `right[i] - left[i] - 1`. The height of the rectangle is simply the
+     * current element's value `A[i]`. The largest area among all such rectangles
+     * is returned.
+     *
+     * @param A: An array of integers representing the heights of a histogram.
+     *
+     * @return: The largest rectangle area in the histogram represented by `A`.
+     */
+    public int largestRectangleArea(int[] A) {
+        int n = A.length;
+        int[] left = nearestSmallestLeft(A); // Find nearest smaller elements on the left
+        int[] right = nearestSmallestRight(A); // Find nearest smaller elements on the right
+        int maxArea = 0;
+
+        for (int i = 0; i < n; i++) {
+            int height = A[i];
+            int width = right[i] - left[i] - 1; // Calculate potential rectangle width
+            maxArea = Math.max(maxArea, height * width); // Update max area
+        }
+
+        return maxArea;
+    }
+
+    /**
+     * Finds the index of the nearest smaller element on the left for each element
+     * in an array `A`.
+     *
+     * This function uses a stack to efficiently find the nearest smaller element
+     * on the left for each element in `A`. The idea is to iterate through `A` from
+     * left to right and maintain a stack containing indices of elements in increasing
+     * order. As we process each element:
+     *
+     * 1. Pop elements from the stack while the element at the stack top (left element)
+     *    is greater than or equal to the current element. These elements cannot be
+     *    the nearest smaller element for the current element on the left.
+     * 2. If the stack is not empty after popping, the element at the top of the stack
+     *    is the nearest smaller element on the left for the current element.
+     * 3. Otherwise, the current element has no smaller element on the left, so
+     *    store -1 in the result array.
+     * 4. Finally, push the current element's index onto the stack for future comparisons.
+     *
+     * @param A: An array of integers.
+     *
+     * @return: An array `G` where `G[i]` represents the index of the nearest smaller
+     *          element on the left for `A[i]`. If no smaller element exists on the left,
+     *          -1 is stored in `G[i]`.
+     */
+    private int[] nearestSmallestLeft(int[] A) {
+        int n = A.length;
+        int[] G = new int[n];
+        Stack<Integer> st = new Stack<>();
+        for (int i = 0; i < n; i++) {
+            while (!st.isEmpty() && A[st.peek()] >= A[i]) {
+                st.pop();
+            }
+            if (!st.isEmpty()) {
+                G[i] = st.peek();
+            } else {
+                G[i] = -1; // No smaller element on the left
+            }
+            st.push(i);
+        }
+        return G;
+    }
+
+     /**
+     * Finds the index of the nearest smaller element on the right for each element
+     * in an array `A`.
+     *
+     * This function uses the same approach as `nearestSmallestLeft` but iterates
+     * through `A` from right to left and reverses the order of elements pushed onto
+     * the stack. This ensures that the top element of the stack always represents
+     * the nearest smaller element on the right for the current element being processed.
+     *
+     * @param A: An array of integers.
+     *
+     * @return: An array `G` where `G[i]` represents the index of the nearest smaller
+     *          element on the right for `A[i]
+
+
+Python
+class Solution:
+    """
+    Finds the largest rectangle area in a histogram represented by an array `A`.
+
+    This function uses a stack to efficiently calculate the largest rectangle area.
+    It iterates through the array `A` and maintains a stack containing indices of
+    elements in increasing order. As we process each element:
+
+    1. If the current element `A[i]` is greater than or equal to the element at the
+       stack top, push the index `i` onto the stack. This indicates a potential
+       increasing height for rectangles.
+    2. If the current element `A[i]` is smaller than the element at the stack top,
+       it means the rectangle heights start decreasing. We repeatedly pop elements
+       from the stack until we find an element smaller than or equal to `A[i]`.
+       For each popped element `tp` (index), we calculate the area of the rectangle
+       formed by `A[tp]` as the height and the difference between `i` (current
+       index) and the index at the top of the stack after popping (`stack[-1]`) as
+       the width (excluding the current element). This width represents the maximum
+       possible width for rectangles with heights up to `A[tp]`. We update the
+       `ret` (maximum area) if the calculated area is larger.
+
+    After processing all elements, we continue popping elements from the stack
+    (if any remaining) and calculate their rectangle areas as described in step 2.
+
+    @param A: A list of integers representing the heights of a histogram.
+
+    @return: The largest rectangle area in the histogram represented by `A`.
+    """
+
+    def largestRectangleArea(self, A):
+        stack = []
+        n = len(A)
+        ret = 0
+        tp = -1  # Index of the top element in the stack (initialized to -1)
+        area_with_top = -1  # Area of the rectangle formed with the top element
+
+        i = 0
+        while i < n:
+            if len(stack) == 0 or A[i] >= A[stack[-1]]:
+                # Current element is greater than or equal to top element, push index
+                stack.append(i)
+                i += 1
+            else:
+                # Current element is smaller than top element, calculate areas
+                tp = stack.pop()
+                area_with_top = A[tp] * (i if len(stack) == 0 else i - stack[-1] - 1)
+                if ret < area_with_top:
+                    ret = area_with_top
+
+        while len(stack) != 0:
+            # Process remaining elements in the stack after iterating through A
+            tp = stack.pop()
+            area_with_top = A[tp] * (i if len(stack) == 0 else i - stack[-1] - 1)
+            if ret < area_with_top:
+                ret = area_with_top
+
+        return ret
+
+     
+Dry run
+     Input Array (Histogram): A = [2, 1, 5, 6, 2, 3]
+
+1. Find Nearest Smaller Elements on the Left (Function: nearestSmallestLeft):
+
+Iteration 1 (i = 0):
+
+Element: A[0] = 2
+Stack: Empty (represented as a blank box)
+No smaller element on the left, so G[0] = -1.
+Push 0 onto the stack.
+      Nearest Smaller Left
+  Input Array: [2, 1, 5, 6, 2, 3]
+            ^ (i)
+
+           Stack:
+              0
+Iteration 2 (i = 1):
+
+Element: A[1] = 1
+Stack: [0]
+Stack top (0) is greater than 1. Pop 0.
+Smaller element found at A[0]. G[1] = 0.
+Push 1 onto the stack.
+      Nearest Smaller Left
+  Input Array: [2, 1, 5, 6, 2, 3]
+            ^ (i)
+
+           Stack:
+              1
+Iteration 3 (i = 2):
+
+Element: A[2] = 5
+Stack: [1]
+Stack top (1) is smaller than 5. No need to pop.
+Smaller element found at A[1]. G[2] = 1.
+Push 2 onto the stack.
+      Nearest Smaller Left
+  Input Array: [2, 1, 5, 6, 2, 3]
+            ^ (i)
+
+           Stack:
+              1
+              2
+Iteration 4 (i = 3):
+
+Element: A[3] = 6
+Stack: [1, 2]
+Both elements in the stack are smaller than 6. Pop all.
+Smaller element found at A[1]. G[3] = 1.
+Push 3 onto the stack.
+      Nearest Smaller Left
+  Input Array: [2, 1, 5, 6, 2, 3]
+            ^ (i)
+
+           Stack:
+              3
+Iteration 5 (i = 4):
+
+Element: A[4] = 2
+Stack: [3]
+Stack top (3) is greater than 2. Pop 3.
+Smaller element found at A[1]. G[4] = 1.
+Push 4 onto the stack.
+      Nearest Smaller Left
+  Input Array: [2, 1, 5, 6, 2, 3]
+            ^ (i)
+
+           Stack:
+              4
+Iteration 6 (i = 5):
+
+Element: A[5] = 3
+Stack: [4]
+Stack top (4) is greater than 3. Pop 4.
+Smaller element found at A[1]. G[5] = 1.
+Push 5 onto the stack (stack becomes empty again).
+      Nearest Smaller Left
+  Input Array: [2, 1, 5, 6, 2, 3]
+            ^ (i)
+
+           Stack:
+              5
+Result Array (Nearest Smaller Left): G = [-1, 0, 1, 1, 1, 1]
+
+2. Find Nearest Smaller Elements on the Right (Function: nearestSmallestRight):
+
+Similar process as nearestSmallestLeft but iterating from right to left and reversing the order elements are pushed onto the stack. We'll skip the detailed graphics for brevity.
+
+Result Array (Nearest Smaller Right): right = [5, 2, 5, 6, 5, None] (None represents no smaller element on the right)
+
+3. Calculate Largest Rectangle Area:
+
+Now we have both left and right arrays containing the indices of the nearest smaller elements on the left (left[i]) and right (right[i]) for each element A[i] in the histogram. We can iterate through the A array and calculate the width and height of the potential rectangle formed by each element:
+
+
+For each element A[i], we calculate the width of the potential rectangle using width = right[i] - left[i] - 1.
+The height of the rectangle is simply the value of the current element A[i].
+We then calculate the area of the rectangle (width * height) and compare it with the current maximum area.
+If the calculated area is greater than the current maximum, we update the maximum area.
+Largest Rectangle Area:
+
+In this example, the largest rectangle area is found for element A[3] = 6 with a width of 4 and a height of 6, resulting in an area of 24.
+
+Visualization:
+
+You can visualize the rectangles and their areas on the histogram bars based on the calculations in the table. The rectangle with the largest area (24) will be highlighted.
+
+Iteration	i	A[i]	left[i]	right[i]	Width	Height	Area
+1			    0	2			  -1		  5		    6		  2		    12
+2			    1	1			  0		    2		    1		  1		    1
+3			    2	5			  1		    5		    3		  5		    15 (Current Maximum)
+4			    3	6			  1		    6		    4		  6		    24 (New Maximum)
+5			    4	2			  1		    5		    3		  2		    6
+6			    5	3			  1		    None	  3		  3		    9
