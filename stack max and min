@@ -1,0 +1,300 @@
+Problem:
+
+Given an array of integers A.
+The value of an array is computed as the difference between the maximum element in the array and the minimum element in the array A.
+Calculate and return the sum of values of all possible subarrays of A modulo 109+7.
+
+
+Java
+public class Solution {
+    int[] a;
+    public void findNextGreaterElement(int[] Next_greater_element, int n){
+        // this function calculates next_greater element index
+        Stack < Integer > s = new Stack < Integer > ();
+        for (int i = 0; i < n; i++) Next_greater_element[i + 1] = n + 1;
+        for (int i = 1; i <= n; i++) { 
+            if (s.empty()) {
+                s.push(i);
+            } else {
+                while (!s.empty() && a[s.peek()] <= a[i]) {
+                    Next_greater_element[s.peek()] = i;
+                    s.pop();
+                }
+                s.push(i);
+            }
+        }
+    }
+    public void findPreviousGreaterElement(int[] Previous_greater_element, int n){
+        // this function calculates Previous_greater element index
+        Stack < Integer > s = new Stack < Integer > ();
+        for (int i = n; i > 0; i--) { 
+            if (s.empty()) {
+                s.push(i);
+            } else {
+                while (!s.empty() && a[i] > a[s.peek()]) {
+                    Previous_greater_element[s.peek()] = i;
+                    s.pop();
+                }
+                s.push(i);
+            }
+        }
+    }
+    public void findPreviousSmallerElement(int[] Previous_smaller_element, int n){
+        // this function calculates Previous smaller element index
+        Stack < Integer > s = new Stack < Integer > ();
+        for (int i = n; i > 0; i--) { 
+            if (s.empty()) {
+                s.push(i);
+            } else {
+                while (!s.empty() && a[i] <= a[s.peek()]) {
+                    Previous_smaller_element[s.peek()] = i;
+                    s.pop();
+                }
+                s.push(i);
+            }
+        }
+    }
+    public void findNextSmallerElement(int[] Next_smaller_element, int n){
+        // function function calculates Next smaller element index
+        Stack < Integer > s = new Stack < Integer > ();
+        for (int i = 0; i < n; i++) Next_smaller_element[i + 1] = n + 1;
+        for (int i = 1; i <= n; i++) { 
+            if (s.empty()) {
+                s.push(i);
+            } else {
+                while (!s.empty() && a[i] < a[s.peek()]) {
+                    Next_smaller_element[s.peek()] = i;
+                    s.pop();
+                }
+                s.push(i);
+            }
+        }
+    }
+    public int solve(int[] A) {
+        int n = A.length, mod = 1000 * 1000 * 1000 + 7;
+        a = new int[n + 1];
+        int Next_greater_element[] = new int[n + 1];
+        int Previous_greater_element[] = new int[n + 1];
+        int Previous_smaller_element[] = new int[n + 1];
+        int Next_smaller_element[] = new int[n + 1];
+        for (int i = 0; i < n; i++) {
+            a[i + 1] = A[i];
+        }
+        findNextGreaterElement(Next_greater_element, n);
+        findPreviousGreaterElement(Previous_greater_element, n);
+        findPreviousSmallerElement(Previous_smaller_element, n);
+        findNextSmallerElement(Next_smaller_element, n);
+        long ans = 0;
+        for (int i = 1; i <= n; i++) {
+            long right = Next_greater_element[i] - i;
+            long left = i - Previous_greater_element[i];
+            ans += (((left * right) % mod) * a[i]) % mod;
+            ans %= mod;
+            left = i - Previous_smaller_element[i];
+            right = Next_smaller_element[i] - i;
+            ans -= (((left * right) % mod) * a[i]) % mod;
+            ans += mod;
+            ans %= mod;
+        }
+        return (int) ans;
+    }
+}
+
+Python
+from collections import deque
+
+class Solution:
+    def solve(self, A):
+        """
+        This function calculates the sum of values of all possible subarrays of A modulo 10**9 + 7.
+
+        The idea is to leverage the concept of prefix sums and contributions of each element.
+        For each element A[i] in the array:
+
+        1. **Contribution due to being the maximum element in a subarray:**
+            - We find the indices of the next greater element on the right (`next_greater[i]`)
+              and the previous greater element on the left (`previous_greater[i]`) using a stack.
+            - The contribution of A[i] as the maximum element in a subarray is the product of
+              the distance to the next greater element on the right (`right_greater = next_greater[i] - i`)
+              and the distance to the previous greater element on the left (`left_greater = i - previous_greater[i]`).
+              This product is then multiplied by A[i] and taken modulo (mod) 10**9 + 7.
+
+        2. **Contribution due to being the minimum element in a subarray:**
+            - We find the indices of the next smaller element on the right (`next_smaller[i]`)
+              and the previous smaller element on the left (`previous_smaller[i]`) using a stack.
+            - The contribution of A[i] as the minimum element in a subarray is calculated similarly
+              to the maximum element case, but using the distances to the next smaller elements.
+
+        3. **Total contribution:**
+            - We subtract the minimum element contribution from the maximum element contribution
+              to avoid double counting subarrays with A[i] as both minimum and maximum.
+            - We add the mod (mod) 10**9 + 7 to handle potential negative contributions.
+
+        Finally, we sum the contributions of all elements in the array and return the result modulo (mod) 10**9 + 7.
+
+        Args:
+            A: The input array.
+
+        Returns:
+            The sum of the values for all subarrays (modulo 10**9 + 7).
+        """
+
+        mod = 10**9 + 7
+        n = len(A)
+        next_greater = [n] * n
+        previous_greater = [-1] * n
+        next_smaller = [n] * n
+        previous_smaller = [-1] * n
+
+        stack = deque()
+
+        # Find next greater elements
+        for i in range(n):
+            while stack and A[stack[-1]] < A[i]:
+                next_greater[stack.pop()] = i
+                # Stack top element is no longer the next greater for previous elements
+            stack.append(i)
+
+        stack.clear()
+
+        # Find previous greater elements (reverse order)
+        for i in range(n - 1, -1, -1):
+            while stack and A[stack[-1]] <= A[i]:
+                previous_greater[stack.pop()] = i
+                # Stack top element is no longer the previous greater for following elements
+            stack.append(i)
+
+        stack.clear()
+
+        # Find next smaller elements
+        for i in range(n):
+            while stack and A[stack[-1]] > A[i]:
+                next_smaller[stack.pop()] = i
+                # Stack top element is no longer the next smaller for previous elements
+            stack.append(i)
+
+        stack.clear()
+
+        # Find previous smaller elements (reverse order)
+        for i in range(n - 1, -1, -1):
+            while stack and A[stack[-1]] >= A[i]:
+                previous_smaller[stack.pop()] = i
+                # Stack top element is no longer the previous smaller for following elements
+            stack.append(i)
+
+        ans = 0
+
+        # Calculate contribution for each element
+        for i in range(n):
+            left_greater = i - previous_greater[i]
+            right_greater = next_greater[i] - i
+            left_smaller = i - previous_smaller[i]
+            right_smaller = next_smaller[i] - i
+
+            max_contribution = (left_greater * right_greater) % mod * A[i] % mod
+            min_contribution = (left_smaller * right_smaller) % mod * A[i] % mod
+
+            ans = (ans + max_contribution - min_contribution + mod) % mod
+
+        return ans
+
+
+  
+Dry run
+For  A = [3, 1, 4, 4, 5]:
+
+Initialization:
+
+n (length of A): 5
+mod: 1000 * 1000 * 1000 + 7
+a: [0, 3, 1, 4, 4, 5] (padded with 0 at the beginning)
+Next_greater_element, Previous_greater_element, Previous_smaller_element, Next_smaller_element: all initialized with appropriate out-of-bounds values (depends on the function)
+Pre-calculate element indices:
+
+Call findNextGreaterElement(Next_greater_element, n)
+Iterate through A:
+i = 0: Next_greater_element[0 + 1] = 6 (out-of-bounds, initialized)
+i = 1: a[s.peek()] (empty stack) <= a[i] (3), push 1 to stack.
+i = 2: a[s.peek()] (1) <= a[i] (1), push 2 to stack.
+i = 3: a[s.peek()] (2) <= a[i] (4), pop 2, Next_greater_element[2] = 4. Push 3 to stack.
+i = 4: a[s.peek()] (3) <= a[i] (4), stack remains unchanged.
+Final Next_greater_element: [0, 6, 4, 5, 6]
+Call similar functions for Previous_greater_element, Previous_smaller_element, Next_smaller_element.
+Final results (example):
+Previous_greater_element: [0, 0, 1, 3, 3]
+Previous_smaller_element: [0, 0, 1, 1, 3]
+Next_smaller_element: [0, 1, 2, 2, 0] (note: 5 has no smaller element on the right)
+Calculate contribution of each element:
+
+Initialize ans = 0.
+Iterate through i = 1 to i <= n (i = 1 to 5):
+i = 1:
+right = Next_greater_element[1] - i (6 - 1) = 5
+left = i - Previous_greater_element[1] (1 - 0) = 1
+Contribution1 = ((left * right) % mod) * a[i] = ((1 * 5) % mod) * 3 = 15 (mod 10^9 + 7) = 8
+i = 2:
+right = Next_greater_element[2] - i (4 - 2) = 2
+left = i - Previous_greater_element[2] (2 - 1) = 1
+Contribution2 = ((left * right) % mod) * a[i] = ((1 * 2) % mod) * 1 = 2 (mod 10^9 + 7) = 2
+Similar calculations for i = 3, 4, 5.
+After iterating through all elements, ans will hold the final sum of contributions (considering modulo operation).
+
+Alternative dry run
+Step 1: Pre-calculate element relationships
+
+Imagine the input array A  as a series of bars, with the height of each bar representing the value in the array. We want to find for each element:
+
+The next element on the right that's strictly greater (Next Greater Element).
+The previous element on the left that's strictly greater (Previous Greater Element).
+The previous element on the left that's strictly smaller (Previous Smaller Element).
+The next element on the right that's strictly smaller (Next Smaller Element).
+Here's an example for A = [3, 1, 4, 4, 5]:
+
+      Next Greater Element (->)
+      Previous Greater Element (<-)
+      Previous Smaller Element (<-)
+      Next Smaller Element (->)
+[3] ->  4        -        -        1
+[1] ->  4   <--  3        -        2
+[4] ->  5   <--  3        1        ->  5
+[4] ->  5   <--  3        1        ->  0  (no smaller element on the right)
+[5] ->     -   <--  4        3        -
+
+Step 2: Calculate contribution of each element
+
+For each element A[i], we consider two scenarios:
+
+A[i] as the maximum element in a subarray:
+
+Look at the distance to the next greater element on the right (right) and the distance to the previous greater element on the left (left).
+The contribution for this scenario is (left * right) * A[i].
+A[i] as the minimum element in a subarray:
+
+Look at the distance to the next smaller element on the right (right) and the distance to the previous smaller element on the left (left).
+The contribution for this scenario is (left * right) * A[i].
+
+Since A[i] can't be both the maximum and minimum element simultaneously in the same subarray, we essentially subtract the contribution from scenario 2 from the contribution of scenario 1 (with modulo operation to handle large numbers).
+
+conceptual...
+Imagine each element A[i] extending its influence to the left and right until it encounters a "greater" element (for scenario 1) or a "smaller" element (for scenario 2). The area covered by this influence contributes to the overall answer.
+
+
+Step 3: Final Sum
+
+After calculating the contribution for each element considering both scenarios, we add them up (with modulo operation) to get the final answer.
+
+The provided code uses a stack data structure to efficiently calculate the next/previous greater/smaller element indices for each element in the array. This leads to the following time and space complexity:
+
+Time Complexity: O(n)
+
+Here's the breakdown:
+
+Pre-calculating element relationships with the stack: O(n)
+We iterate through the array once, pushing and popping elements from the stack in constant time.
+Calculating contribution of each element: O(n)
+We iterate through the array once, performing constant time calculations for each element.
+Space Complexity: O(n)
+
+The stack used for pre-calculation can hold up to n elements in the worst case (when the array is sorted in descending order).
+We also allocate additional arrays (Next_greater_element, etc.) to store the pre-calculated indices, which takes up n units of space.
+Therefore, the overall time complexity is dominated by the linear passes through the array, resulting in O(n). The space complexity is also O(n) due to the stack and additional arrays used.
