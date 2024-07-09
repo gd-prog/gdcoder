@@ -1,0 +1,214 @@
+Problem:
+
+Given an array A, find the nearest smaller element G[i] for every element A[i] in the array such that the element has an index smaller than i.
+More formally,
+G[i] for an element A[i] = an element A[j] such that j is maximum possible AND j < i AND A[j] < A[i]
+Elements for which no smaller element exist, consider the next smaller element as -1.
+
+
+Java
+
+public class Solution {
+    /**
+     * Finds the previous smaller element for each element in an array.
+     *
+     * This function uses a stack to efficiently find the previous smaller element
+     * for each element in the input array `A`. The idea is to iterate through `A`
+     * from left to right and maintain a stack containing elements in increasing order.
+     * As we process each element:
+     *
+     * 1. Pop elements from the stack that are greater than or equal to the current
+     *    element. These elements cannot be the previous smaller element for the
+     *    current element.
+     * 2. If the stack becomes empty after popping, it means no previous smaller
+     *    element exists for the current element, so we store -1 in the result array.
+     * 3. Otherwise, the element at the top of the stack is the previous smaller
+     *    element for the current element, so we store it in the result array.
+     * 4. Finally, we push the current element onto the stack for future comparisons.
+     *
+     * @param A: An array of integers.
+     *
+     * @return: An array of integers, where the i-th element represents the previous
+     *          smaller element for the i-th element in the input array `A`. If no
+     *          previous smaller element exists, -1 is placed in the output array.
+     */
+    public int[] prevSmaller(int[] A) {
+        int n = A.length;
+        int[] G = new int[n];
+        Stack<Integer> st = new Stack<>();
+        for (int i = 0; i < n; i++) {
+            // Pop elements from stack while they are greater than or equal to current element
+            while (!st.isEmpty() && st.peek() >= A[i]) {
+                st.pop();
+            }
+            // If stack is empty, no previous smaller element exists
+            if (!st.isEmpty()) {
+                G[i] = st.peek();
+            } else {
+                G[i] = -1; // If no smaller element exists, assign -1
+            }
+            // Push the current element onto the stack for future comparisons
+            st.push(A[i]);
+        }
+        return G;
+    }
+}
+
+Class Docstring: While not explicitly shown here, consider adding a docstring to the Solution class explaining its purpose, similar to the Java version in the previous response.
+Function Docstring: A detailed docstring is added to the prevSmaller function, including:
+A description of what the function does (finding previous smaller elements)
+An explanation of the algorithm used (stack and its operations)
+Arguments explanation (A)
+Return value explanation
+Inline Comments:
+A comment clarifies the purpose of popping elements from the stack (# Pop elements from stack while they are greater than or equal to current element)
+A comment clarifies the condition for a non-existent previous smaller element (# If stack is empty, no previous smaller element exists)
+
+
+Python
+
+
+class Solution:
+    """
+    Finds the previous smaller element for each element in a list.
+
+    This function uses a stack to efficiently find the previous smaller element for
+    each element in the input list `A`. The idea is to iterate through `A` from left
+    to right and maintain a stack containing elements in increasing order. As we
+    process each element, we:
+
+    1. Pop elements from the stack that are greater than the current element.
+    2. If the stack becomes empty, it means no previous smaller element exists,
+       so we append -1 to the answer list.
+    3. Otherwise, the element at the top of the stack is the previous smaller
+       element for the current element, so we append it to the answer list.
+    4. Finally, we push the current element onto the stack for future comparisons.
+
+    Args:
+        A: A list of integers.
+
+    Returns:
+        A list of integers, where the i-th element represents the previous smaller
+        element for the i-th element in the input list `A`. If no previous smaller
+        element exists, -1 is placed in the output list.
+    """
+
+    def prevSmaller(self, A):
+        ans = []
+        stack = []
+        for i in range(len(A)):
+            # Pop elements from the stack that are greater than the current element
+            while stack and stack[-1] >= A[i]:
+                stack.pop()
+
+            # If the stack is empty, no previous smaller element exists
+            if not stack:
+                ans.append(-1)
+            # Otherwise, the element at the top of the stack is the previous smaller element
+            else:
+                ans.append(stack[-1])
+
+            # Push the current element onto the stack for future comparisons
+            stack.append(A[i])
+
+        return ans
+
+Class Docstring: A docstring is added to the Solution class explaining its purpose and the functionality of the prevSmaller method.
+Function Docstring: A detailed docstring is added to the prevSmaller function, including:
+A description of what the function does (finding previous smaller elements)
+An explanation of the algorithm used (stack and its operations)
+Arguments explanation (A)
+Return value explanation
+Inline Comments:
+A comment clarifies the purpose of popping elements from the stack (# Pop elements from the stack that are greater than the current element)
+A comment clarifies the condition for a non-existent previous smaller element (# If the stack is empty, no previous smaller element exists)
+
+Dry run:
+Input Array: A = [4, 3, 1, 2, 5]
+
+Iteration 1 (i = 0):
+
+Element: A[0] = 4
+Stack: Empty (represented as a blank box)
+Since the stack is empty, no previous smaller element exists.
+Action: Push 4 onto the stack.
+      Iteration 1
+  Input Array: [4, 3, 1, 2, 5]
+            ^ (i)
+
+           Stack:
+              4
+Iteration 2 (i = 1):
+
+Element: A[1] = 3
+Stack: [4]
+Stack top (4) is greater than 3. No need to pop.
+Action: Push 3 onto the stack.
+      Iteration 2
+  Input Array: [4, 3, 1, 2, 5]
+            ^ (i)
+
+           Stack:
+              4
+              3
+Iteration 3 (i = 2):
+
+Element: A[2] = 1
+Stack: [4, 3]
+Both stack elements (4 and 3) are greater than 1. Pop them.
+Action: Pop 3 and 4 from the stack. Push 1 onto the stack.
+      Iteration 3
+  Input Array: [4, 3, 1, 2, 5]
+            ^ (i)
+
+           Stack:
+              1
+Iteration 4 (i = 3):
+
+Element: A[3] = 2
+Stack: [1]
+Stack top (1) is less than 2. No need to pop.
+Action: Push 2 onto the stack.
+      Iteration 4
+  Input Array: [4, 3, 1, 2, 5]
+            ^ (i)
+
+           Stack:
+              1
+              2
+Iteration 5 (i = 4):
+
+Element: A[4] = 5
+Stack: [1, 2]
+Both stack elements (1 and 2) are less than 5. No need to pop.
+Action: Push 5 onto the stack.
+      Iteration 5
+  Input Array: [4, 3, 1, 2, 5]
+                  ^ (i)
+
+           Stack:
+              1
+              2
+              5
+
+
+After processing all elements, the G array will contain the previous smaller element for each element in A:
+
+G = [-1, -1, -1, 1, 2]
+
+Time Complexity:
+
+The time complexity of this algorithm is O(n), where n is the length of the input array A.
+The main loop iterates through the array A once, which takes O(n) time.
+Inside the loop, the while loop keeps popping elements from the stack until it encounters an element smaller than or equal to the current element.
+In the worst case, the stack might need to be emptied completely for each element, resulting in O(n) pops.
+However, each element is pushed onto the stack at most once, so the total number of pushes is also O(n).
+Therefore, the overall time complexity is dominated by the loop iterations and the stack operations, which are both linear in the input size.
+
+Space Complexity:
+
+The space complexity of this algorithm is also O(n).
+
+The algorithm uses a stack to store elements during processing.
+In the worst case, the stack might contain all elements from the input array if none of them have a previous smaller element.
+Since the stack size is directly proportional to the number of elements processed, the space complexity is O(n).
