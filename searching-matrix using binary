@@ -1,0 +1,89 @@
+/*
+Matrix search
+
+
+Problem Description
+Given a matrix of integers A of size N x M and an integer B. Write an efficient algorithm that searches for integer B in matrix A.
+This matrix A has the following properties:
+3. Integers in each row are sorted from left to right.
+4. The first integer of each row is greater than or equal to the last integer of the previous row.
+Return 1 if B is present in A, else return 0.
+NOTE: Rows are numbered from top to bottom, and columns are from left to right.
+
+
+Problem Constraints
+1 <= N, M <= 1000
+1 <= A[i][j], B <= 106
+
+
+Input Format
+The first argument given is the integer matrix A.
+The second argument given is the integer B.
+
+
+Output Format
+Return 1 if B is present in A else, return 0.
+
+*/
+
+Python
+
+class Solution:
+    # @param A : list of list of integers
+    # @param B : integer
+    # @return an integer
+    def searchMatrix(self, A, B):
+        """Searches for integer B in a sorted matrix A.
+        Args:
+          A: A sorted matrix of integers.
+          B: The integer to search for.
+        Returns:
+          1 if B is found in A, 0 otherwise.
+        """
+        n = len(A)
+        m = len(A[0])
+        # Start from the top-right corner
+        i = 0
+        j = m - 1
+        while i < n and j >= 0:
+            if A[i][j] == B:
+                return 1
+            elif A[i][j] > B:
+                j -= 1
+            else:
+                i += 1
+        return 0
+
+
+
+Java
+
+public class Solution {
+    public int searchMatrix(int[][] A, int B) {
+        int n = A.length; // Number of rows in the matrix
+        int m = A[0].length; // Number of columns in the matrix
+
+        // Start from the top-right corner
+        int i = 0; // Row index
+        int j = m - 1; // Column index
+
+        while (i < n && j >= 0) {
+            if (A[i][j] == B) {
+                return 1; // B found
+            } else if (A[i][j] > B) {
+                j--; // Move to the previous column (since all elements in the current column are greater than B)
+            } else {
+                i++; // Move to the next row (since all elements in the current row are less than B)
+            }
+        }
+
+        return 0; // B not found
+    }
+}
+
+
+
+
+The time complexity of the given algorithm is O(n + m), where n is the number of rows and m is the number of columns in the matrix. This is because in the worst case, the algorithm will have to traverse the entire matrix diagonally.   
+
+The space complexity of the algorithm is O(1) as it only uses constant extra space for the variables i, j, n, and m.
