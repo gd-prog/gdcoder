@@ -1,0 +1,116 @@
+/*
+
+SQRT of INT
+
+Given an integer A. Compute and return the square root of A.
+If A is not a perfect square, return floor(sqrt(A)).
+
+NOTE: 
+   The value of A*A can cross the range of Integer.
+   Do not use the sqrt function from the standard library. 
+   Users are expected to solve this in O(log(A)) time.
+
+
+Problem Constraints
+0 <= A <= 109
+
+
+Input Format
+The first and only argument given is the integer A.
+
+
+Output Format
+Return floor(sqrt(A))
+
+
+
+
+
+
+*/
+
+
+
+
+Java
+public class Solution {
+    public int sqrt(int A) {
+            if (A < 0) {
+      throw new IllegalArgumentException("Input cannot be negative.");
+    }
+    // Handle base cases (0 and 1)
+    if (A == 0 || A == 1) {
+      return A;
+    }
+    int start = 0; // Lower search bound (inclusive)
+    int end = A;   // Upper search bound (inclusive)
+    int ans = 0;   // Stores the current candidate for square root
+    /**
+     * Binary search loop to find the largest integer whose square is less than or equal to A.
+     */
+    while (start <= end) {
+      int mid = start + (end - start) / 2; // Midpoint of the search space
+      /**
+       * Check if mid^2 is less than or equal to A.
+       * - If yes, it's a potential square root (update ans and search in the right half).
+       * - If no, the square root must be smaller (search in the left half).
+       */
+      if (mid <= A / mid) {
+        ans = mid;
+        start = mid + 1;
+      } else {
+        end = mid - 1;
+      }
+    }
+    return ans;
+
+    }
+}
+
+
+
+Python
+
+class Solution:
+    # @param A : integer
+    # @return an integer
+    def sqrt(self, A):
+        """
+        Calculates the floor of the square root of a non-negative integer using binary search.
+
+        Args:
+            A: The non-negative integer whose square root is to be calculated.
+
+        Returns:
+            The floor of the square root of A.
+
+        Raises:
+            IllegalArgumentException: If A is negative.
+        """
+
+        if A < 0:
+            raise IllegalArgumentException("Input cannot be negative.")
+
+        if A == 0 or A == 1:
+            return A
+
+        start = 0
+        end = A
+        ans = 0
+
+        while start <= end:
+            mid = start + (end - start) // 2
+            if mid <= A / mid:
+                ans = mid
+                start = mid + 1
+            else:
+                end = mid - 1
+
+        return ans
+
+  ===============
+  Time and space complexity
+
+  The time complexity of the above code is O(log n), where n is the input integer A. This is because the code uses binary search, which repeatedly divides the search space in half. In each iteration, the search space is reduced by half, leading to a logarithmic number of iterations.
+
+The space complexity of the code is O(1), as the algorithm only uses a constant amount of additional space to store the variables start, end, mid, and ans. The space used does not depend on the size of the input.
