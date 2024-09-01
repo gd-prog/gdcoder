@@ -1,0 +1,107 @@
+Seats
+
+Problem Description
+There is a row of seats represented by string A. Assume that it contains N seats adjacent to each other.
+There is a group of people who are already seated in that row randomly. i.e. some are sitting together & some are scattered.
+An occupied seat is marked with a character 'x' and an unoccupied seat is marked with a dot ('.')
+Now your target is to make the whole group sit together i.e. next to each other, without having any vacant seat between them in such a way that the total number of hops or jumps to move them should be minimum.
+In one jump a person can move to the adjacent seat (if available).
+NOTE: 1. Return your answer modulo 107 + 3.
+
+
+Problem Constraints
+1 <= N <= 1000000
+A[i] = 'x' or '.'
+
+
+Input Format
+The first and only argument is a string A of size N.
+
+
+Output Format
+Return an integer denoting the minimum number of jumps required.
+
+
+
+
+Java
+
+
+public class Solution {
+    public int seats(String A) {
+        int mod = 10000003;
+        // List to store indices of all 'x' characters
+        List<Integer> indices = new ArrayList<>();
+        // Collect indices of all 'x' characters
+        for (int i = 0; i < A.length(); i++) {
+            if (A.charAt(i) == 'x') {
+                indices.add(i);
+            }
+        }
+        // If there are no people seated, no moves are needed
+        if (indices.size() == 0) {
+            return 0;
+        }
+        // Find the median index
+        int medianIndex = indices.size() / 2;
+        // Find the median position
+        int median = indices.get(medianIndex);
+        // Calculate the minimum number of jumps
+        int jumps = 0;
+        for (int i = 0; i < indices.size(); i++) {
+            // Calculate the target position for the ith person
+            int target = median - (medianIndex - i);
+            // Add the absolute difference to the jumps, taking modulo to prevent overflow
+            jumps = (jumps + Math.abs(indices.get(i) - target)) % mod;
+        }
+        return jumps;
+    }
+}
+
+
+
+
+
+Python
+
+
+class Solution:
+    # @param A : string
+    # @return an integer
+    def seats(self, A):
+        MOD = 10**7 + 3  # Define the modulo value to prevent overflow
+        
+        # Helper function to get positions of 'x' in the string
+        def get_positions(s):
+            return [i for i, ch in enumerate(s) if ch == 'x']
+        
+        positions = get_positions(A)  # Get all indices where 'x' is present
+        if not positions:
+            return 0  # If no 'x' in the string, no moves are needed
+        
+        n = len(positions)  # Number of occupied seats
+        median_index = n // 2  # Find the index of the median position
+        median = positions[median_index]  # The median position of 'x'
+        # Calculate the total number of moves to align all 'x' around the median
+        moves = 0
+        for i, pos in enumerate(positions):
+            # Determine the target position for each 'x' to form a contiguous block
+            target_pos = median - median_index + i
+            # Compute the absolute difference (number of moves) and add to total moves
+            moves += abs(pos - target_pos)
+            moves %= MOD  # Apply modulo to keep the result within the required limits
+        return moves  # Return the result
+
+
+The time complexity of the provided code is O(N), where N is the number of 'x' characters in the string A.
+Here's a breakdown of the time complexity analysis:
+	• Collecting indices: The loop to collect the indices of 'x' characters iterates through the entire string A, taking O(N) time.
+	• Finding median: The operations to find the median index and median value are performed on a list of size N, which can be done in O(1) time using the size() and get() methods.
+	• Calculating jumps: The loop to calculate the total jumps iterates through the list of indices, which is also of size N. The operations within this loop, such as calculating the target position and absolute difference, take constant time.
+Therefore, the overall time complexity is dominated by the loop that collects indices, resulting in O(N).
+The space complexity of the code is O(N) due to the indices list, which stores the indices of 'x' characters. The size of this list is directly proportional to the number of 'x' characters in the string A.
+
+
+
+
+
