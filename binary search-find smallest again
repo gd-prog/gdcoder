@@ -1,0 +1,175 @@
+/*
+
+Find smallest again
+
+Problem Description
+Given an integer array A of size N.
+
+If we store the sum of each triplet of the array A in a new list, then find the Bth smallest element among the list.
+
+NOTE: A triplet consists of three elements from the array. Let's say if A[i], A[j], A[k] are the elements of the triplet then i < j < k.
+
+
+
+Problem Constraints
+3 <= N <= 500
+1 <= A[i] <= 108
+1 <= B <= (N*(N-1)*(N-2))/6
+
+
+
+Input Format
+The first argument is an integer array A.
+The second argument is an integer B.
+
+
+
+Output Format
+Return an integer denoting the Bth element of the list.
+
+
+*/
+
+
+
+
+
+
+
+----
+Java
+
+import java.util.Arrays;
+
+public class Solution {
+    public static int cntoftripletlessthank(int[] A, int k) {
+        int cnt = 0;
+        int n = A.length;
+        for (int i = 0; i < n; i++) {
+            int s = i + 1, e = A.length - 1;
+            while (s < e) {
+                if (A[i] + A[s] + A[e] < k) {
+                    // If the sum is less than k, there are e - s triplets
+                    // that can be formed with A[i] as the first element.
+                    cnt += e - s;
+                    s++;
+                } else {
+                    e--;
+                }
+            }
+        }
+        return cnt;
+    }
+
+    public static int solve(int[] A, int B) {
+        Arrays.sort(A);
+        int ans = 0;
+        int lo = 3, hi = 300000000;
+        while (lo <= hi) {
+            int mid = (lo + hi) / 2;
+            if (cntoftripletlessthank(A, mid) >= B) {
+                // If there are at least B triplets with sum less than mid,
+                // search for a smaller K in the left half.
+                hi = mid - 1;
+            } else {
+                // If there are less than B triplets with sum less than mid,
+                // update the answer and search for a larger K in the right half.
+                ans = mid;
+                lo = mid + 1;
+            }
+        }
+        return ans;
+    }
+}
+
+Python
+def cntoftripletlessthank(A, k):
+    """
+    Counts the number of triplets (A[i], A[j], A[k]) in the array A such that
+    A[i] + A[j] + A[k] < k.
+
+    Args:
+        A: A list of integers.
+        k: The target sum.
+
+    Returns:
+        The number of triplets satisfying the condition.
+    """
+
+    cnt = 0
+    n = len(A)
+    for i in range(n):
+        s, e = i + 1, len(A) - 1
+        while (s < e):
+            if (A[i] + A[s] + A[e] < k):
+                # If the sum is less than k, there are e - s triplets
+                # that can be formed with A[i] as the first element.
+                cnt += e - s
+                s += 1
+            else:
+                e -= 1
+    return cnt
+
+class Solution:
+    # @param A : list of integers
+    # @param B : integer
+    # @return an integer
+    def solve(self, A, B):
+        """
+        Finds the smallest integer such that there are at least B triplets
+        (A[i], A[j], A[k]) in the array A satisfying A[i] + A[j] + A[k] < K.
+
+        Args:
+            A: A list of integers.
+            B: The target number of triplets.
+
+        Returns:
+            The smallest integer K satisfying the condition.
+        """
+
+        A.sort()  # Sort the array A in ascending order
+        ans = 0
+        lo, hi = 3, 300000000  # Set initial search bounds
+        while lo <= hi:
+            mid = (lo + hi) // 2
+            if cntoftripletlessthank(A, mid) >= B:
+                # If there are at least B triplets with sum less than mid,
+                # search for a smaller K in the left half.
+                hi = mid - 1
+            else:
+                # If there are less than B triplets with sum less than mid,
+                # update the answer and search for a larger K in the right half.
+                ans = mid
+                lo = mid + 1
+        return ans
+
+
+---
+
+Time Complexity:
+
+cntoftripletlessthank function:
+
+Outer loop iterates n times.
+Inner loop iterates at most n - 1 times for each outer loop iteration.
+Inside the inner loop, comparisons and arithmetic operations are performed in constant time.
+Therefore, the time complexity of cntoftripletlessthank is O(n^2).
+solve function:
+
+Binary search loop iterates log(hi - lo) times.
+Inside the loop, a call to cntoftripletlessthank is made, which has a time complexity of O(n^2).
+Therefore, the overall time complexity of solve is O(log(hi - lo) * n^2).
+Since hi is a constant value (300000000), the final time complexity can be simplified to O(n^2 * log(n)).
+Space Complexity:
+
+cntoftripletlessthank function:
+
+The function uses constant space for its variables.
+solve function:
+
+The solve function also uses constant space for its variables.
+Overall:
+
+The space complexity is dominated by the cntoftripletlessthank function.
+Therefore, the overall space complexity is O(1).
+In summary, the time complexity of the code is O(n^2 * log(n)) and the space complexity is O(1).
