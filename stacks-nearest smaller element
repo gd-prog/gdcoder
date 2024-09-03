@@ -1,0 +1,119 @@
+/* Nearest smaller element
+
+Problem Description
+Given an array A, find the nearest smaller element G[i] for every element A[i] in the array such that the element has an index smaller than i.
+More formally,
+G[i] for an element A[i] = an element A[j] such that
+j is maximum possible AND
+j < i AND
+A[j] < A[i]
+Elements for which no smaller element exist, consider the next smaller element as -1.
+
+
+Problem Constraints
+1 <= |A| <= 100000
+-109 <= A[i] <= 109
+
+
+Input Format
+The only argument given is integer array A.
+
+
+Output Format
+Return the integar array G such that G[i] contains the nearest smaller number than A[i]. If no such element occurs G[i] should be -1.
+
+*/
+
+
+Java
+
+public class Solution {
+    public int[] prevSmaller(int[] A) {
+        int n=A.length;
+        int [] G=new int[n];
+        Stack <Integer> st= new Stack<>();
+        for (int i = 0; i < n; i++) {
+            // Pop elements from stack while the stack is not empty and the top element is greater than or equal to the current element
+            while (!st.isEmpty() && st.peek() >= A[i]) {
+                st.pop();
+            }
+            // If the stack is not empty, the top element is the nearest smaller element
+            if (!st.isEmpty()) {
+                G[i] = st.peek();
+            } else {
+                G[i] = -1; // If no smaller element exists, assign -1
+            }
+            // Push the current element onto the stack
+            st.push(A[i]);
+        }
+        return G;
+    } 
+}
+
+
+Python
+
+
+class Solution:
+    # @param A : list of integers
+    # @return a list of integers
+    def prevSmaller(self, A):
+        """
+        Finds the nearest smaller element for each element in the given list.
+        Args:
+            A: The input list of integers.
+        Returns:
+            A list of integers where each element represents the nearest smaller element
+            to the corresponding element in the input list, or -1 if no such element exists.
+        """
+        n = len(A)
+        G = [-1] * n  # Initialize the result list with -1s
+        stack = []  # Create an empty stack to store previous elements
+        for i in range(n):
+            # Remove elements from the stack that are greater than or equal to the current element
+            while stack and stack[-1] >= A[i]:
+                stack.pop()
+            # If the stack is not empty, the top element is the nearest smaller element
+            if stack:
+                G[i] = stack[-1]
+            # Push the current element onto the stack
+            stack.append(A[i])
+        return G
+
+
+
+
+
+
+
+Time Complexity:
+
+Python:
+
+Best case: O(n) (when the input list is already sorted in descending order)
+Average case: O(n)
+Worst case: O(n)
+Java:
+
+Best case: O(n) (when the input list is already sorted in descending order)
+Average case: O(n)
+Worst case: O(n)
+Explanation:
+
+In both cases, the algorithm iterates over each element in the input list once. The stack operations (push, pop, and peek) take constant time. Therefore, the overall time complexity is O(n), regardless of the input data.
+
+Space Complexity:
+
+Python:
+
+O(n)
+Java:
+
+O(n)
+Explanation:
+
+The space complexity is primarily determined by the stack. In the worst case, the stack can contain all elements from the input list, resulting in a space complexity of O(n).
+
+Overall Analysis:
+
+Both the Python and Java code have the same time and space complexity
