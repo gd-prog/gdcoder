@@ -1,0 +1,158 @@
+/* Largest rectangle in histogram
+
+Problem Description
+Given an array of integers A.
+
+A represents a histogram i.e A[i] denotes the height of the ith histogram's bar. Width of each bar is 1.
+
+Find the area of the largest rectangle formed by the histogram.
+
+
+
+Problem Constraints
+1 <= |A| <= 100000
+
+1 <= A[i] <= 10000
+
+
+
+Input Format
+The only argument given is the integer array A.
+
+
+
+Output Format
+Return the area of the largest rectangle in the histogram.
+
+
+*/
+
+
+
+
+
+Java
+public class Solution {
+    public int largestRectangleArea(int[] A) {
+                int n=A.length;
+        int left[]=nearestSmallestLeft(A);
+        int right[]=nearestSmallestRight(A);
+        int maxArea=0;
+        for(int i=0;i<n;i++){
+            int height=A[i];
+            int width=right[i]-left[i]-1;
+            maxArea=Math.max(maxArea,height*width);
+        }
+        return maxArea;
+    }
+    private int[] nearestSmallestLeft(int[] A) {
+        int n=A.length;
+        int [] G=new int[n];
+        Stack <Integer> st= new Stack<>();
+        for (int i = 0; i < n; i++) {
+            // Pop elements from stack while the stack is not empty and the top element is greater than or equal to the current element
+            while (!st.isEmpty() && A[st.peek()] >= A[i]) {
+                // A[i] < A[st.top()];
+                st.pop();
+            }
+            // If the stack is not empty, the top element is the nearest smaller element
+            if (!st.isEmpty()) {
+                G[i] = st.peek();
+            } else {
+                G[i] = -1; // If no smaller element exists, assign -1
+            }
+            // Push the current element onto the stack
+            st.push(i);
+        }
+        return G;
+    } 
+private int[] nearestSmallestRight(int[] A) {
+        int n=A.length;
+        int [] G=new int[n];
+        Stack <Integer> st= new Stack<>();
+        for (int i = n-1; i>=0; i--) {
+            // Pop elements from stack while the stack is not empty and the top element is greater than or equal to the current element
+            while (!st.isEmpty() && A[st.peek()] >= A[i]) {
+                // A[i]>A[st.top()];
+                st.pop();
+            }
+            // If the stack is not empty, the top element is the nearest smaller element
+            if (!st.isEmpty()) {
+                G[i] = st.peek();
+            } else {
+                G[i] = n; // If no smaller element exists, assign -1
+            }
+            // Push the current element onto the stack
+            st.push(i);
+        }
+        return G;
+
+    }
+}
+
+
+
+
+
+Python
+class Solution:
+    # @param A : list of integers
+    # @return an integer
+    def largestRectangleArea(self, A):
+        n = len(A)
+        left = [-1] * n
+        right = [n] * n
+
+        stack = []
+
+        # Find nearest smaller element on the left
+        for i in range(n):
+            while stack and A[stack[-1]] >= A[i]:
+                stack.pop()
+            if stack:
+                left[i] = stack[-1]
+            stack.append(i)
+
+        stack.clear()
+
+        # Find nearest smaller element on the right
+        for i in range(n - 1, -1, -1):
+            while stack and A[stack[-1]] >= A[i]:
+                stack.pop()
+            if stack:
+                right[i] = stack[-1]
+            stack.append(i)
+
+        # Calculate maximum area
+        max_area = 0
+        for i in range(n):
+            width = right[i] - left[i] - 1
+            area = width * A[i]
+            max_area = max(max_area, area)
+
+        return max_area
+
+
+
+Time Complexity:
+
+Nearest Smaller Element on the Left and Right:
+
+The for loops iterate over each element in the input array A once.
+The while loops within the for loops might remove elements from the stack multiple times in the worst case, but the total number of removals is bounded by the number of elements in the array.
+Therefore, the time complexity of finding nearest smaller elements on both sides is O(n).
+Calculate Maximum Area:
+
+The final for loop iterates over the input array once, calculating the area for each element.
+The calculations within the loop are constant time operations.
+Therefore, the time complexity of calculating the maximum area is O(n).
+Overall Time Complexity: The combined time complexity of the code is O(n) + O(n) = O(n), making it linear in the size of the input array.
+
+Space Complexity:
+
+Auxiliary Space:
+The left and right arrays are created to store the indices of nearest smaller elements. These arrays have a size of n, each consuming O(n) space.
+The stack is used to store indices during the processing. In the worst case, it might contain all elements of the array, consuming O(n) space.
+Overall Space Complexity: The combined space complexity is O(n) + O(n) + O(n) = O(n), making it linear in the size of the input array.
+
+In summary, the provided code has a time complexity of O(n) and a space complexity of O(n), making it efficient for calculating the maximum area of a histogram.
