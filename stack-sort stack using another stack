@@ -1,0 +1,110 @@
+/*
+Problem Description
+Given a stack of integers A, sort it using another stack.
+
+Return the array of integers after sorting the stack using another stack.
+
+
+
+Problem Constraints
+1 <= |A| <= 5000
+
+0 <= A[i] <= 109
+
+
+
+Input Format
+The only argument is a stack given as an integer array A.
+
+
+
+Output Format
+Return the array of integers after sorting the stack using another stack.
+
+*/
+
+----
+Java
+import java.util.Stack;
+
+public class Solution {
+    public int[] solve(int[] A) {
+        Stack<Integer> stack = new Stack<>();
+        for (int num : A) {
+            stack.push(num);
+        }
+        return sortStack(stack);
+    }
+
+    private static int[] sortStack(Stack<Integer> A) {
+        Stack<Integer> temp = new Stack<>();
+        while (!A.isEmpty()) {
+            int tempVal = A.pop();
+            while (!temp.isEmpty() && tempVal < temp.peek()) {
+                A.push(temp.pop());  // Push back smaller elements to A
+            }
+            temp.push(tempVal);  // Push the current element to temp
+        }
+
+        int[] sortedArray = new int[temp.size()];
+        int i = sortedArray.length - 1;
+        while (!temp.isEmpty()) {
+            sortedArray[i--] = temp.pop();  // Pop elements from temp and store them in sortedArray
+        }
+        return sortedArray;
+    }
+}
+
+
+
+----
+Python
+
+from collections import deque
+
+class Solution:
+    def solve(self, A):
+        """
+        Sorts the given array using a stack-based approach.
+
+        Args:
+            A: The input array to be sorted.
+
+        Returns:
+            The sorted array.
+        """
+
+        stack = deque()
+        for num in A:
+            stack.append(num)
+
+        return self.sort_stack(stack)
+
+    def sort_stack(self, A):
+        """
+        Recursively sorts the elements in the given stack.
+
+        Args:
+            A: The input stack to be sorted.
+
+        Returns:
+            The sorted stack.
+        """
+
+        temp = deque()
+        while A:
+            tempVal = A.pop()
+            while temp and tempVal < temp[-1]:
+                A.append(temp.pop())
+            temp.append(tempVal)
+
+        sorted_array = []
+        while temp:
+            sorted_array.append(temp.pop())
+
+        return sorted_array[::-1]  # Reverse the sorted array to get ascending order
+
+---
+The time complexity of the solve and sort_stack functions is O(n^2) in the worst case, where n is the number of elements in the input array. This is because the inner loop in sort_stack can potentially iterate over all elements in the stack for each element being sorted.
+
+The space complexity is O(n), as the stack and temp stacks can store up to n elements in the worst case.
