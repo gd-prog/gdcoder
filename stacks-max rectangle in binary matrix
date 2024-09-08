@@ -89,10 +89,10 @@ class Solution:
 
         rows = len(A)
         if not rows:
-            return 0  # Empty matrix
+            return 0
         cols = len(A[0])
         if not cols:
-            return 0  # Empty matrix
+            return 0
 
         # Create a DP matrix to store heights of consecutive 1's
         dp = [[0] * cols for _ in range(rows)]
@@ -104,6 +104,8 @@ class Solution:
         max_area = 0
         # Calculate maximum area for the first row
         max_area = self.calculate_max_area_in_histogram(dp[0])
+        
+        # print(max_area)
 
         for i in range(1, rows):
             for j in range(cols):
@@ -136,14 +138,16 @@ class Solution:
         for i in range(len(heights)):
             while stack and heights[i] < heights[stack[-1]]:
                 current_height = heights[stack.pop()]
-                width = i - (stack[-1] if stack else 0) - 1
+                # CHANGES ----
+                width = i if not stack else i - stack[-1] - 1
                 max_area = max(max_area, current_height * width)
             stack.append(i)
 
         # Handle remaining elements in the stack (no smaller element on the right)
         while stack:
             current_height = heights[stack.pop()]
-            width = len(heights) - (stack[-1] if stack else 0) - 1
+            # CHANGES subtrack len-stack[-1]-1 if no empty
+            width = len(heights) if not stack else len(heights) - stack[-1] - 1
             max_area = max(max_area, current_height * width)
 
         return max_area
