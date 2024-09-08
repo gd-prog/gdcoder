@@ -1,0 +1,95 @@
+/*
+Equal tree partition
+Problem Description
+Given a binary tree A. Check whether it is possible to partition the tree to two trees which have equal sum of values after removing exactly one edge on the original tree.
+
+
+Problem Constraints
+1 <= size of tree <= 100000
+0 <= value of node <= 109
+
+
+Input Format
+First and only argument is head of tree A.
+
+
+Output Format
+Return 1 if the tree can be partitioned into two trees of equal sum else return 0.
+
+
+*/
+Java
+/**
+ * Definition for binary tree
+ * class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode(int x) {
+ *         val = x;
+ *         left=null;
+ *         right=null;
+ *     }
+ * }
+ */
+public class Solution {
+    Set<Long> subtreeSums;
+
+    public int solve(TreeNode A) {
+        subtreeSums = new HashSet<>();
+        long totalSum = calculateSum(A);
+        if (totalSum % 2 != 0) {
+            return 0; // Not possible if total sum is odd
+        }
+        // calculateSubtreeSums(A, subtreeSums); // Optional, already covered in calculateSum
+        return subtreeSums.contains(totalSum / 2) ? 1 : 0;
+    }
+
+    private long calculateSum(TreeNode root) {
+        if (root == null) {
+            return 0L;
+        }
+        long sum = root.val*1L + calculateSum(root.left) + calculateSum(root.right);
+        subtreeSums.add(sum); // Add the subtree sum to the set
+        return sum;
+    }
+}
+
+
+Python
+# Definition for a binary tree node.
+class TreeNode:
+    def __init__(self, val=0, left=None, right=None):
+        self.val = val
+        self.left = left
+        self.right = None
+
+class Solution:
+    # @param A : root node of tree
+    # @return an integer
+    def canPartition(self, A):
+        self.subtree_sums = set()
+        total_sum = self.calculate_sum(A)
+        if total_sum % 2 != 0:
+            return 0
+        return 1 if total_sum // 2 in self.subtree_sums else 0
+
+    def calculate_sum(self, root):
+        if not root:
+            return 0
+        sum = root.val + self.calculate_sum(root.left) + self.calculate_sum(root.right)
+        self.subtree_sums.add(sum)
+        return sum
+----
+A time complexity of O(n) and a space complexity of O(n), where n is the number of nodes in the binary tree.
+
+Time Complexity:
+
+The calculate_sum function recursively traverses the tree, visiting each node once. This results in a time complexity of O(n).
+The canPartition function iterates through the subtree_sums set, which can have a maximum size of n. This also contributes to a time complexity of O(n).
+
+Space Complexity:
+
+The calculate_sum function uses a recursive stack, which can have a maximum depth of n in the worst case. This contributes to a space complexity of O(n).
+The subtree_sums set can also have a maximum size of n, contributing to an additional space complexity of O(n).
+In summary, the code's performance scales linearly with the size of the binary tree
