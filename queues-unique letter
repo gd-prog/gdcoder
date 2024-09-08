@@ -1,0 +1,143 @@
+/*
+
+Unique Letter
+
+Problem Description
+Imagine you're a teacher. You ask students to call out a letter one by one. After each letter, you jot down the very first letter that's only been called out once. If all letters have been repeated, you write "#".
+
+Here's a scenario:
+
+A student says "a". It's the first letter. You write "a".
+Next, a student says "b", "a" is still unique, so you add "a". Now it's "aa".
+A student says "a" again. Now, "b" is the unique one. You add "b", making it "aab".
+A student says "b". All letters so far are repeated. You add "#". It becomes "aab#".
+A student says "c". "c" is unique. You add "c". The final is "aab#c".
+Your task? Given the sequence the students call out A, determine the string on the board.
+
+
+Problem Constraints
+1 <= |A| <= 100000
+
+
+Input Format
+The only argument given is string A.
+
+
+Output Format
+Return a string after processing the stream of lowercase alphabets A.
+
+*/
+
+Example Input
+Input 1:
+ A = "abadbc"
+Input 2:
+ A = "abcabc"
+
+
+Example Output
+Output 1:
+"aabbdd"
+Output 2:
+"aaabc#"
+
+
+Example Explanation
+Explanation 1:
+"a"      -   first non repeating character 'a'
+"ab"     -   first non repeating character 'a'
+"aba"    -   first non repeating character 'b'
+"abad"   -   first non repeating character 'b'
+"abadb"  -   first non repeating character 'd'
+"abadbc" -   first non repeating character 'd'
+Explanation 2:
+"a"      -   first non repeating character 'a'
+"ab"     -   first non repeating character 'a'
+"abc"    -   first non repeating character 'a'
+"abca"   -   first non repeating character 'b'
+"abcab"  -   first non repeating character 'c'
+"abcabc" -   no non repeating character so '#'
+
+
+
+Java
+
+public class Solution {
+    public String solve(String A) {
+        Queue<Character> q = new LinkedList<>(); // Initialize a queue to store unique characters.
+        HashMap<Character, Integer> mp = new HashMap<>(); // Initialize a map to store character frequencies.
+        StringBuilder sb = new StringBuilder(); // Initialize a string builder to construct the result.
+        for (int i = 0; i < A.length(); i++) {
+            Character c = A.charAt(i);
+            if (mp.get(c) != null) { // If the character is already in the map, it's a duplicate.
+                mp.put(c, 2); // Mark it as a duplicate.
+            } else { // If the character is new, add it to the queue and map.
+                q.add(c);
+                mp.put(c, 1);
+            }
+            // Remove from the queue if the character repeats.
+            while (q.size() > 0 && mp.get(q.peek()) > 1) {
+                q.remove();
+            }
+            if (q.size() > 0) { // If there's a unique character at the front of the queue, append it to the result.
+                sb.append(q.peek());
+            } else { // If the queue is empty, append a '#' to indicate no unique character.
+                sb.append('#');
+            }
+        }
+        return sb.toString(); // Return the final result.
+    }
+}
+
+
+Python
+
+from collections import deque
+class Solution:
+    # @param A : string
+    # @return a strings
+    def solve(self, A):
+        q = deque()  # Initialize a queue to store unique characters.
+        mp = {}  # Initialize a map to store character frequencies.
+        sb = ""  # Initialize a string builder to construct the result.
+        for i in range(len(A)):
+            c = A[i]
+            if c in mp:  # If the character is already in the map, it's a duplicate.
+                mp[c] = 2  # Mark it as a duplicate.
+            else:  # If the character is new, add it to the queue and map.
+                q.append(c)
+                mp[c] = 1
+            # Remove from the queue if the character repeats.
+            while q and mp[q[0]] > 1:
+                q.popleft()
+            if q:  # If there's a unique character at the front of the queue, append it to the result.
+                sb += q[0]
+            else:  # If the queue is empty, append a '#' to indicate no unique character.
+                sb += '#'
+        return sb  # Return the final result.
+
+
+
+
+---
+The time complexity of the provided  code for the solve function is O(N), where N is the length of the input string A. This is because:
+
+The outer loop iterates over each character in the input string, which takes O(N) time.
+Inside the loop, the operations of checking if a character is in the map, adding it to the map and queue, and removing elements from the queue are all constant-time operations (O(1)).
+The while loop within the outer loop might remove multiple elements from the queue, but the total number of removals is bounded by the length of the input string, so the overall time complexity of this loop is also O(N).
+The final steps of appending characters to the string builder and returning the result are also constant-time operations.
+Therefore, the overall time complexity of the solve function is O(N).
+
+The space complexity of the code is also O(N), primarily due to the mp dictionary and the q deque. The size of these data structures can grow up to the length of the input string in the worst case scenario, where all characters are unique. The string builder sb also requires O(N) space in the worst case, but its space usage is typically smaller than the other data structures.
+
+Other variables and temporary data structures used within the function have constant space complexity.
+
+Therefore, the overall space complexity of the solve function is O(N).
+
+
+
+
+
+
+
+
