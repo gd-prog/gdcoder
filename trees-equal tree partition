@@ -57,6 +57,9 @@ public class Solution {
 
 
 Python
+import sys
+
+sys.setrecursionlimit(10**6)
 # Definition for a binary tree node.
 class TreeNode:
     def __init__(self, val=0, left=None, right=None):
@@ -67,7 +70,7 @@ class TreeNode:
 class Solution:
     # @param A : root node of tree
     # @return an integer
-    def canPartition(self, A):
+    def solve(self, A):
         self.subtree_sums = set()
         total_sum = self.calculate_sum(A)
         if total_sum % 2 != 0:
@@ -80,6 +83,7 @@ class Solution:
         sum = root.val + self.calculate_sum(root.left) + self.calculate_sum(root.right)
         self.subtree_sums.add(sum)
         return sum
+
 ----
 A time complexity of O(n) and a space complexity of O(n), where n is the number of nodes in the binary tree.
 
