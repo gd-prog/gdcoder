@@ -1,0 +1,155 @@
+/*
+Problem Description
+Given a 2-D binary matrix A of size N x M filled with 0's and 1's, find the largest rectangle containing only ones and return its area.
+
+
+
+Problem Constraints
+1 <= N, M <= 100
+
+
+
+Input Format
+The first argument is a 2-D binary array A.
+
+
+
+Output Format
+Return an integer denoting the area of the largest rectangle containing only ones.
+
+*/
+---
+Java
+public class Solution {
+    public int maximalRectangle(int[][] A) {
+        int rows = A.length;
+        if (rows == 0) return 0;
+        int cols = A[0].length;
+        if (cols == 0) return 0;
+        // Create a DP matrix to store heights of consecutive 1's
+        int[][] dp = new int[rows][cols];
+        // Initialize the first row of dp
+        for (int j = 0; j < cols; j++) {
+            dp[0][j] = A[0][j];
+        }
+        int maxArea = 0;
+        // Calculate the maximum area for the first row
+        maxArea = calculateMaxAreaInHistogram(dp[0]);
+        for (int i = 1; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
+                if (A[i][j] == 0) {
+                    dp[i][j] = 0;
+                } else {
+                    dp[i][j] = dp[i - 1][j] + 1;
+                }
+            }
+            // Find the maximum area in the current row using dp
+            maxArea = Math.max(maxArea, calculateMaxAreaInHistogram(dp[i]));
+        }
+        return maxArea;
+    }
+    // Function to find the largest rectangle area in a histogram
+    private static int calculateMaxAreaInHistogram(int[] heights) {
+        int maxArea = 0;
+        Stack<Integer> stack = new Stack<>();
+        for (int i = 0; i < heights.length; i++) {
+            while (!stack.isEmpty() && heights[i] < heights[stack.peek()]) {
+                int currentHeight = heights[stack.pop()];
+                int width = i - (stack.isEmpty() ? 0 : stack.peek() + 1);
+                maxArea = Math.max(maxArea, currentHeight * width);
+            }
+            stack.push(i);
+        }
+        // Handle remaining elements in the stack (no smaller element on the right)
+        while (!stack.isEmpty()) {
+            int currentHeight = heights[stack.pop()];
+            int width = heights.length - (stack.isEmpty() ? 0 : stack.peek() + 1);
+            maxArea = Math.max(maxArea, currentHeight * width);
+        }
+        return maxArea;
+    }
+}
+
+
+
+Python
+from collections import deque
+
+class Solution:
+    def maximalRectangle(self, A):
+        """
+        This function finds the maximal rectangle area in a binary matrix.
+
+        Args:
+            A: The input binary matrix (2D list of 0s and 1s).
+
+        Returns:
+            The maximum area of a rectangle containing only 1s in the matrix.
+        """
+
+        rows = len(A)
+        if not rows:
+            return 0  # Empty matrix
+        cols = len(A[0])
+        if not cols:
+            return 0  # Empty matrix
+
+        # Create a DP matrix to store heights of consecutive 1's
+        dp = [[0] * cols for _ in range(rows)]
+
+        # Initialize the first row of dp
+        for j in range(cols):
+            dp[0][j] = A[0][j]
+
+        max_area = 0
+        # Calculate maximum area for the first row
+        max_area = self.calculate_max_area_in_histogram(dp[0])
+
+        for i in range(1, rows):
+            for j in range(cols):
+                # If current element is 0, reset height in dp
+                if A[i][j] == 0:
+                    dp[i][j] = 0
+                # Otherwise, add 1 to the previous height
+                else:
+                    dp[i][j] = dp[i - 1][j] + 1
+
+            # Find the maximum area in the current row using dp
+            max_area = max(max_area, self.calculate_max_area_in_histogram(dp[i]))
+
+        return max_area
+
+    def calculate_max_area_in_histogram(self, heights):
+        """
+        This function finds the largest rectangle area in a histogram.
+
+        Args:
+            heights: The input list representing the heights of the histogram.
+
+        Returns:
+            The maximum area of a rectangle within the histogram.
+        """
+
+        max_area = 0
+        stack = deque()
+
+        for i in range(len(heights)):
+            while stack and heights[i] < heights[stack[-1]]:
+                current_height = heights[stack.pop()]
+                width = i - (stack[-1] if stack else 0) - 1
+                max_area = max(max_area, current_height * width)
+            stack.append(i)
+
+        # Handle remaining elements in the stack (no smaller element on the right)
+        while stack:
+            current_height = heights[stack.pop()]
+            width = len(heights) - (stack[-1] if stack else 0) - 1
+            max_area = max(max_area, current_height * width)
+
+        return max_area
+
+---
+
+The time complexity of the maximalRectangle function is O(rows * cols * log cols), where rows and cols are the dimensions of the input matrix. The outer loop iterates over each row (O(rows)), the inner loop iterates over each column (O(cols)), and the calculate_max_area_in_histogram function uses a stack-based approach with a time complexity of O(log cols) in the average case.
+
+The space complexity is O(cols), as the dp matrix and the stack in calculate_max_area_in_histogram require space proportional to the number of columns.
