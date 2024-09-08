@@ -1,0 +1,90 @@
+/*
+Problem Description
+Given a binary tree and a sum, determine if the tree has a root-to-leaf path such that adding up all the values along the path equals the given sum.
+
+
+Problem Constraints
+1 <= number of nodes <= 105
+-100000 <= B, value of nodes <= 100000
+
+
+Input Format
+First argument is a root node of the binary tree, A.
+Second argument is an integer B denoting the sum.
+
+
+Output Format
+Return 1, if there exist root-to-leaf path such that adding up all the values along the path equals the given sum. Else, return 0.
+
+*/
+
+
+Java
+
+/**
+ * Definition for binary tree
+ * class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode(int x) {
+ *         val = x;
+ *         left=null;
+ *         right=null;
+ *     }
+ * }
+ */
+public class Solution {
+    public int hasPathSum(TreeNode A, int B) {
+        if (A == null) {
+            // If the root is null, there cannot be a path
+            return 0;
+        }
+
+        if (A.left == null && A.right == null && A.val == B) {
+            // If the current node is a leaf and its value equals the target sum, a path exists
+            return 1;
+        }
+
+        // Recursively check both left and right subtrees, subtracting the current node's value from the target sum
+        return hasPathSum(A.left, B - A.val) | hasPathSum(A.right, B - A.val);
+    }
+}
+
+
+Python
+
+# Definition for a binary tree node.
+class TreeNode:
+    def __init__(self, val=0, left=None, right=None):
+        self.val = val
+        self.left = left
+        self.right = None
+class Solution:
+    # @param A : root node of tree
+    # @param B : integer
+    # @return an integer
+    def hasPathSum(self, A, B):
+        """
+        Checks if there exists a root-to-leaf path in the given binary tree whose sum equals the target sum.
+        Args:
+            A: The root node of the binary tree.
+            B: The target sum.
+        Returns:
+            True if a path exists, False otherwise.
+        """
+        if not A:
+            # If the root is None, there cannot be a path
+            return 0
+        if not A.left and not A.right and A.val == B:
+            # If the current node is a leaf and its value equals the target sum, a path exists
+            return 1
+        # Recursively check both left and right subtrees, subtracting the current node's value from the target sum
+        return self.hasPathSum(A.left, B - A.val) or self.hasPathSum(A.right, B - A.val)
+
+
+---
+
+The time complexity of the hasPathSum function is O(n), where n is the number of nodes in the binary tree. This is because each node is visited at most once during the recursive traversal.
+The space complexity is O(h), where h is the maximum depth of the tree. This is due to the recursive calls, which can create a stack of up to h function calls in the worst case, for a skewed tree. For a balanced tree, the space complexity is O(log n).
+
