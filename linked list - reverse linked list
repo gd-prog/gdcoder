@@ -1,0 +1,89 @@
+Reverse Linked List
+Problem Description
+You are given a singly linked list having head node A. You have to reverse the linked list and return the head node of that reversed list.
+NOTE: You have to do it in-place and in one-pass.
+
+
+Problem Constraints
+1 <= Length of linked list <= 105
+Value of each node is within the range of a 32-bit integer.
+
+
+Input Format
+First and only argument is a linked-list node A.
+
+
+Output Format
+Return a linked-list node denoting the head of the reversed linked list.
+
+
+Example Input
+Input 1:
+ A = 1 -> 2 -> 3 -> 4 -> 5 -> NULL 
+Input 2:
+ A = 3 -> NULL 
+
+
+Example Output
+Output 1:
+ 5 -> 4 -> 3 -> 2 -> 1 -> NULL 
+Output 2:
+ 3 -> NULL 
+
+---
+
+
+
+/**
+ * Definition for singly-linked list.
+ * class ListNode {
+ *     public int val;
+ *     public ListNode next;
+ *     ListNode(int x) { val = x; next = null; }
+ * }
+ */
+public class Solution {
+    public ListNode reverseList(ListNode A) {
+        ListNode curr=A,prev = null,nextNode=null;
+        while (curr != null) {
+        nextNode=curr.next; // store next node
+        curr.next = prev;   // reverse current node's pointer
+        prev = curr;        // move pointer one position ahead
+        curr = nextNode;  
+        }
+    return prev;            // prev will be new head of the reversed list
+    }
+}
+
+
+
+# Definition for singly-linked list.
+class ListNode:
+    def __init__(self, val=0, next=None):
+        self.val = val
+        self.next = next
+class Solution:
+    # @param A : head node of linked list
+    # @return the head node in the linked list
+    def reverseList(self, A):
+        """
+        Reverses a singly-linked list in-place.
+        Args:
+            A (ListNode): The head of the linked list to be reversed.
+        Returns:
+            ListNode: The head of the reversed linked list.
+        """
+        prev, curr = None, A
+        while curr:
+            next_node = curr.next  # Store the next node
+            curr.next = prev  # Reverse the current node's pointer
+            prev = curr  # Move the previous pointer one position ahead
+            curr = next_node  # Move the current pointer to the next node
+        return prev  # The new head is the last 'prev'
+
+
+Time and space complexity
+
+The time complexity of the reverseList function is O(n), where n is the number of nodes in the linked list. This is because the function iterates through the list once, performing constant-time operations at each node.   
+
+The space complexity is O(1), as the function only uses a constant amount of additional space to store the prev and curr pointers. No extra data structures are created that scale with the size of the input.
