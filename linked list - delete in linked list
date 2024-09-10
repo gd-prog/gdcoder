@@ -1,0 +1,139 @@
+Delete in linked list
+
+Problem Description
+You are given the head of a linked list A and an integer B. Delete the B-th node from the linked list.
+
+Note : Follow 0-based indexing for the node numbering.
+
+
+
+Problem Constraints
+1 <= size of linked list <= 105
+1 <= value of nodes <= 109
+0 <= B < size of linked list
+
+
+
+Input Format
+The first argument A is the head of a linked list.
+
+The second arguement B is an integer.
+
+
+
+Output Format
+Return the head of the linked list after deletion
+
+
+
+Python
+# Definition for singly-linked list.
+class ListNode:
+    def __init__(self, x):
+        self.val = x
+        self.next = None
+class Solution:
+    def solve(self, A, B):
+        """
+        Deletes the B-th node from the linked list.
+        Args:
+            A: The head of the linked list.
+            B: The position of the node to delete.
+        Returns:
+            The head of the modified linked list.
+        """
+        length = 0
+        current = A
+        while current:
+            length += 1
+            current = current.next
+        # Check if the position B is within the valid range
+        if not (0 <= B < length):
+            raise ValueError("Invalid position B")
+        # If B is 0, delete the head node
+        if B == 0:
+            return A.next
+        # Iterate through the linked list to find the node to delete
+        count = 0
+        current = A
+        prev = None
+        while current and count < B:
+            prev = current
+            current = current.next
+            count += 1
+        # Delete the node
+        if current:
+            prev.next = current.next
+        return A
+
+Java
+
+/**
+ * Definition for singly-linked list.
+ * public class ListNode {
+ *     int val;
+ *     ListNode next;
+ *     ListNode(int x) { val = x; next = null; }
+ * }
+ */
+class Solution {
+    public ListNode solve(ListNode A, int B) {
+        """
+        Deletes the B-th node from the linked list.
+
+        Args:
+            A: The head of the linked list.
+            B: The position of the node to delete (0-based indexing).
+
+        Returns:
+            The head of the modified linked list.
+        """
+
+        // Check if the position B is within the valid range
+        if (!(0 <= B)) { // Handle negative B values
+            throw new IllegalArgumentException("Invalid position B: Cannot be negative.");
+        }
+
+        // Handle deletion at the beginning (B == 0)
+        if (B == 0) {
+            return A.next;
+        }
+
+        // Iterate through the linked list to find the node to delete
+        int count = 0;
+        ListNode current = A;
+        ListNode prev = null;
+        while (current != null && count < B) {
+            prev = current;
+            current = current.next;
+            count++;
+        }
+
+        // Check if B is within the list length (avoid potential null pointer exception)
+        if (current == null) {
+            throw new IllegalArgumentException("Invalid position B: Exceeds list length.");
+        }
+
+        // Delete the node
+        prev.next = current.next;
+
+        return A;
+    }
+}
+
+
+Code for deleting the B-th node from a linked list has the following time and space complexities:
+
+Time Complexity:
+
+Best Case: O(1) - This occurs when the deletion happens at the beginning of the list (B = 0). It only requires updating the head pointer to the next node.
+Average Case: O(N) - In the average case, the function needs to traverse the list until it reaches the B-th node. This can take up to N steps in the worst case, where N is the number of elements in the list.
+Worst Case: O(N) - Similar to the average case, the worst-case time complexity is O(N). This occurs when the deletion happens at the end of the list (B is close to N) or when the list is empty.
+Space Complexity:
+
+Overall: O(1) - The space complexity of the function is constant. It only uses a constant amount of additional space to store the prev, current, and count variables. The deletion operation itself does not require any additional data structures that scale with the size of the input list.
+Key Points:
+
+The time complexity is dominated by the traversal of the linked list to find the B-th node.
+The space complexity remains constant, regardless of the list size or the position of the node to be deleted.
+The revised code incorporates input validation and error handling to improve robustness.
