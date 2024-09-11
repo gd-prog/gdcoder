@@ -1,0 +1,117 @@
+Binary Tree From Inorder And Postorder
+
+
+
+
+Problem Description
+Given the inorder and postorder traversal of a tree, construct the binary tree.
+NOTE: You may assume that duplicates do not exist in the tree.
+
+
+Problem Constraints
+1 <= number of nodes <= 105
+
+
+Input Format
+First argument is an integer array A denoting the inorder traversal of the tree.
+Second argument is an integer array B denoting the postorder traversal of the tree.
+
+
+Output Format
+Return the root node of the binary tree.
+
+
+
+
+/**
+ * Definition for binary tree
+ * class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode(int x) {
+ *         val = x;
+ *         left = null;
+ *         right = null;
+ *     }
+ * }
+ */
+public class Solution {
+    public TreeNode buildTree(int[] inorder, int[] postorder) {
+        return buildTreeHelper(inorder, 0, inorder.length - 1, postorder, 0, postorder.length - 1);
+    }
+    private TreeNode buildTreeHelper(int[] inorder, int inStart, int inEnd, int[] postorder, int postStart, int postEnd) {
+        // Base case: If the inorder range is empty, return null
+        if (inStart > inEnd) {
+            return null;
+        }
+        // Find the root node value from the postorder array
+        int rootVal = postorder[postEnd];
+        TreeNode root = new TreeNode(rootVal);
+        // Find the index of the root node in the inorder array
+        int inIndex = findIndex(inorder, rootVal, inStart, inEnd);
+        // Recursively build the left and right subtrees
+        root.left = buildTreeHelper(inorder, inStart, inIndex - 1, postorder, postStart, postStart + inIndex - inStart - 1);
+        root.right = buildTreeHelper(inorder, inIndex + 1, inEnd, postorder, postStart + inIndex - inStart, postEnd - 1);
+        return root;
+    }
+    private int findIndex(int[] nums, int target, int left, int right) {
+        // Find the index of the target value in the given range
+        for (int i = left; i <= right; i++) {
+            if (nums[i] == target) {
+                return i;
+            }
+        }
+        return -1;
+    }
+}
+
+
+Python
+
+# Import the List class from the typing module
+from typing import List
+# Definition for a binary tree node.
+class TreeNode:
+    def __init__(self, val=0, left=None, right=None):
+        self.val = val  # Initialize the node's value
+        self.left = left  # Initialize the left child
+        self.right = None  # Initialize the right child
+class Solution:
+    # @param A : list of integers (inorder traversal)
+    # @param B : list of integers (postorder traversal)
+    # @return the root node in the tree
+    def buildTree(self, inorder: List[int], postorder: List[int]) -> TreeNode:
+        return self.buildTreeHelper(inorder, 0, len(inorder) - 1, postorder, 0, len(postorder) - 1)
+    def buildTreeHelper(self, inorder: List[int], inStart: int, inEnd: int, postorder: List[int], postStart: int, postEnd: int) -> TreeNode:
+        # Base case: If the inorder range is empty, return null
+        if inStart > inEnd:
+            return None
+        # Get the root node value from the postorder array (last element)
+        rootVal = postorder[postEnd]
+        root = TreeNode(rootVal)  # Create a new node for the root
+        # Find the index of the root node in the inorder array
+        inIndex = self.findIndex(inorder, rootVal, inStart, inEnd)
+        # Recursively build the left and right subtrees
+        root.left = self.buildTreeHelper(inorder, inStart, inIndex - 1, postorder, postStart, postStart + inIndex - inStart - 1)
+        root.right = self.buildTreeHelper(inorder, inIndex + 1, inEnd, postorder, postStart + inIndex - inStart, postEnd - 1)
+        return root
+    def findIndex(self, nums: List[int], target: int, left: int, right: int) -> int:
+        # Find the index of the target value in the given range
+        for i in range(left, right + 1):
+            if nums[i] == target:
+                return i
+        return -1
+
+
+
+Time Complexity:
+	• Recursive Calls: The buildTreeHelper function is called recursively, dividing the problem into smaller subproblems. The depth of the recursion tree is equal to the height of the binary tree. In the worst case (a skewed tree), the height can be N, where N is the number of nodes.
+	• Processing Nodes: Within each recursive call, we process nodes by finding their index in the inorder array and creating new TreeNode objects. This takes constant time O(1) per node.
+Overall, the time complexity is O(N * log N) in the average case (balanced tree) and O(N^2) in the worst case (skewed tree).
+Space Complexity:
+	• Recursion Stack: The recursive calls create a stack of function calls. In the worst case (skewed tree), the depth of the recursion stack can be N, leading to a space complexity of O(N).
+	• TreeNode Objects: We create new TreeNode objects for each node in the tree. The number of nodes is N, so the space complexity due to these objects is also O(N).
+Overall, the space complexity is O(N) in both the average and worst cases.
+In summary, the provided code has a time complexity of O(N * log N) in the average case and O(N^2) in the worst case, and a space complexity of O(N) in both cases.
+
