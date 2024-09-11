@@ -1,0 +1,151 @@
+Level Order
+
+Problem Description
+Given a binary tree, return the level order traversal of its nodes' values. (i.e., from left to right, level by level).
+
+
+
+Problem Constraints
+1 <= number of nodes <= 105
+
+
+
+Input Format
+First and only argument is root node of the binary tree, A.
+
+
+
+Output Format
+Return a 2D integer array denoting the level order traversal of the given binary tree.
+
+
+Java
+
+/**
+ * Definition for binary tree
+ * class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode(int x) {
+ *         val = x;
+ *         left = null;
+ *         right = null;
+ *     }
+ * }
+ */
+public class Solution {
+    public int[][] solve(TreeNode A) {
+        List<List<Integer>> ans = new ArrayList<>(); // List to store level-wise values
+
+        // Handle empty tree case
+        if (A == null) {
+            return new int[0][]; // Return empty 2D array
+        }
+
+        Queue<TreeNode> q = new LinkedList<>();
+        q.add(A);
+
+        while (!q.isEmpty()) {
+            int size = q.size(); // Store current level size for efficiency
+            List<Integer> currentLevel = new ArrayList<>(); // List to store current level values
+
+            // Process nodes on the current level
+            for (int i = 0; i < size; i++) {
+                TreeNode curr = q.poll();
+                currentLevel.add(curr.val);
+
+                // Add children to the queue for the next level
+                if (curr.left != null) {
+                    q.add(curr.left);
+                }
+                if (curr.right != null) {
+                    q.add(curr.right);
+                }
+            }
+
+            // Add the current level's values to the answer list
+            ans.add(currentLevel);
+        }
+
+        // Convert List<List<Integer>> to int[][]
+        int[][] result = new int[ans.size()][];
+        for (int i = 0; i < ans.size(); i++) {
+            List<Integer> level = ans.get(i);
+            result[i] = new int[level.size()];
+            for (int j = 0; j < level.size(); j++) {
+                result[i][j] = level.get(j);
+            }
+        }
+
+        return result;
+    }
+}
+
+Python
+
+# Definition for a binary tree node
+class TreeNode:
+    def __init__(self, x):
+        self.val = x
+        self.left = None
+        self.right = None
+
+class Solution:
+    # @param A : root node of tree
+    # @return a list of list of integers
+    def solve(self, A):
+        ans = []  # List to store level-wise values
+
+        # Handle empty tree case
+        if A is None:
+            return []
+
+        from collections import deque
+        q = deque([A])  # Use deque for efficient queue operations
+
+        while q:
+            size = len(q)  # Store current level size for efficiency
+            current_level = []  # List to store current level values
+
+            # Process nodes on the current level
+            for _ in range(size):
+                curr = q.popleft()
+                current_level.append(curr.val)
+
+                # Add children to the queue for the next level
+                if curr.left is not None:
+                    q.append(curr.left)
+                if curr.right is not None:
+                    q.append(curr.right)
+
+            # Add the current level's values to the answer list
+            ans.append(current_level)
+
+        return ans
+
+---
+
+Time Complexity:
+
+Level Order Traversal: Each node in the binary tree is processed exactly once.
+Processing Nodes: In each iteration of the while loop, we dequeue nodes and process them, which takes constant time O(1) per operation.
+Overall Time Complexity: Given that the tree has NNN nodes, and each node is processed once, the time complexity is O(N).
+Space Complexity:
+
+Queue Storage: The deque holds nodes at each level of the tree. In the worst case, the queue will hold all nodes at the maximum width of the tree. For a complete binary tree, the maximum width can be up to N/2 where N is the total number of nodes. Therefore, the space complexity due to the queue is O(N).
+Output Storage: The result ans is a list of lists where each sublist contains node values of one level. The total number of elements stored in ans is exactly NNN (each node's value is stored once), so this also contributes O(N) to the space complexity.
+Auxiliary Space: Besides the space for the queue and the result list, additional space is used for variables and function call stack which is O(1).
+Summary:
+
+Time Complexity: O(N), where N is the number of nodes in the binary tree.
+Space Complexity: O(N), due to space used by the queue and the result list.
+Both complexities are linear with respect to the number of nodes in the tree, making the algorithm efficient for this kind of level order traversal problem.
+
+
+
+
+
+
+
+
