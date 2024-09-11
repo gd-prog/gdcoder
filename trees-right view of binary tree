@@ -1,0 +1,106 @@
+Right view of binary tree
+
+Given a binary tree of integers denoted by root A. Return an array of integers representing the right view of the Binary tree.
+Right view of a Binary Tree is a set of nodes visible when the tree is visited from Right side.
+
+
+1 <= Number of nodes in binary tree <= 100000
+0 <= node values <= 10^9
+
+First and only argument is head of the binary tree A.
+
+Return an array, representing the right view of the binary tree.
+
+
+
+/**
+ * Definition for binary tree
+ * class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode(int x) {
+ *         val = x;
+ *         left = null;
+ *         right = null;
+ *     }
+ * }
+ */
+public class Solution {
+    public int[] solve(TreeNode A) {
+        ArrayList<Integer> result = new ArrayList<>(); // List to store the right view of the tree
+        if (A == null) {
+            return new int[0]; // Return an empty array for an empty tree
+        }
+        Queue<TreeNode> queue = new LinkedList<>();
+        queue.add(A); // Add the root node to the queue
+        while (!queue.isEmpty()) {
+            int size = queue.size(); // Store the size of the current level
+            int lastIndex = size - 1; // Index of the last node in the current level
+            for (int i = 0; i < size; i++) {
+                TreeNode node = queue.poll(); // Dequeue the current node
+                if (i == lastIndex) {
+                    // If this is the last node in the current level, add its value to the result
+                    result.add(node.val);
+                }
+                // Enqueue the left and right children for the next level
+                if (node.left != null) {
+                    queue.add(node.left);
+                }
+                if (node.right != null) {
+                    queue.add(node.right);
+                }
+            }
+        }
+        // Convert the ArrayList to an int[] array
+        int[] resultArray = new int[result.size()];
+        for (int i = 0; i < result.size(); i++) {
+            resultArray[i] = result.get(i);
+        }
+        return resultArray;
+    }
+}
+
+----
+Python
+
+from collections import deque
+# Definition for a binary tree node.
+class TreeNode:
+    def __init__(self, val=0, left=None, right=None):
+        self.val = val  # Initialize the node's value
+        self.left = left  # Initialize the left child
+        self.right = None  # Initialize the right child
+class Solution:
+    # @param A : root node of tree
+    # @return a list of integers
+    def solve(self, root: TreeNode) -> list:  # Change List to list
+        if not root:  # Check for an empty tree
+            return []
+        result = []  # List to store the right view of the tree
+        queue = deque([root])  # Initialize a deque with the root node
+        while queue:  # Iterate while the queue is not empty
+            level_size = len(queue)  # Get the size of the current level
+            for i in range(level_size):
+                node = queue.popleft()  # Dequeue the current node
+                if i == level_size - 1:  # If this is the last node in the current level
+                    result.append(node.val)  # Add its value to the result
+                if node.left:  # Enqueue the left child if it exists
+                    queue.append(node.left)
+                if node.right:  # Enqueue the right child if it exists
+                    queue.append(node.right)
+        return result
+
+
+---
+Time Complexity:
+	• Level-Order Traversal: The code uses level-order traversal to iterate through the binary tree. In each level, every node is visited once.
+	• Processing Nodes: Within each level, the processing of a node (adding its value to the result if it's the last node on the level) takes constant time O(1).
+Overall, the time complexity is O(N), where N is the number of nodes in the binary tree. This is because each node is visited exactly once during the level-order traversal.   
+
+Space Complexity:
+	• Queue: The queue stores nodes at each level of the tree. In the worst case (a complete binary tree), the maximum width of the tree can be up to N/2, where N is the total number of nodes. Therefore, the space complexity due to the queue is O(N).
+	• Result List: The result list stores the values of the rightmost nodes at each level. In the worst case, this list can also contain up to N/2 elements. So, the space complexity due to the result list is also O(N).
+Overall, the space complexity is O(N), due to the space used by the queue and the result list.
+In summary, the provided code has a time complexity of O(N) and a space complexity of O(N), both of which are linear with respect to the number of nodes in the binary tree. This is an efficient solution for finding the right view of a binary tree.
+
