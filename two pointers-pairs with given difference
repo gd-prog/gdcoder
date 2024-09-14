@@ -1,0 +1,141 @@
+Pairs with given difference
+
+Problem Description
+Given an one-dimensional integer array A of size N and an integer B.
+Count all distinct pairs with difference equal to B.
+Here a pair is defined as an integer pair (x, y), where x and y are both numbers in the array and their absolute difference is B.
+
+
+Problem Constraints
+1 <= N <= 104
+0 <= A[i], B <= 105
+
+
+Input Format
+First argument is an one-dimensional integer array A of size N.
+Second argument is an integer B.
+
+
+Output Format
+Return an integer denoting the count of all distinct pairs with difference equal to B.
+
+
+Example Input
+Input 1:
+ A = [1, 5, 3, 4, 2]
+ B = 3
+Input 2:
+ A = [8, 12, 16, 4, 0, 20]
+ B = 4
+Input 3:
+ A = [1, 1, 1, 2, 2]
+ B = 0
+
+
+Example Output
+Output 1:
+ 2
+Output 2:
+ 5
+Output 3:
+ 2
+
+
+
+
+
+
+import java.util.HashSet;
+import java.util.Set;
+public class Solution {
+    
+    // Define a Pair class to store pairs of integers
+    static class Pair {
+        int first;
+        int second;
+        
+        Pair(int first, int second) {
+            this.first = first;
+            this.second = second;
+        }
+        
+        @Override
+        public boolean equals(Object obj) {
+            if (this == obj) return true;
+            if (obj == null || getClass() != obj.getClass()) return false;
+            Pair pair = (Pair) obj;
+            return (first == pair.first && second == pair.second) ||
+                   (first == pair.second && second == pair.first);
+        }
+        
+        @Override
+        public int hashCode() {
+            return Integer.hashCode(first) * 31 + Integer.hashCode(second);
+        }
+    }
+    
+    /**
+     * Finds the number of distinct pairs with a difference of B.
+     * 
+     * @param A Array of integers
+     * @param B The difference value
+     * @return The number of distinct pairs with difference B
+     */
+    public int solve(int[] A, int B) {
+        Set<Integer> seen = new HashSet<>(); // Set to store the elements we have seen so far
+        Set<Pair> pairs = new HashSet<>();   // Set to store unique pairs (min, max)
+        
+        for (int num : A) {
+            // Check for the existence of num - B in the set
+            if (seen.contains(num - B)) {
+                pairs.add(new Pair(num - B, num));
+            }
+            // Check for the existence of num + B in the set
+            if (seen.contains(num + B)) {
+                pairs.add(new Pair(num, num + B));
+            }
+            
+            // Add the current number to the set of seen elements
+            seen.add(num);
+        }
+        
+        // The number of unique pairs with difference B
+        return pairs.size();
+    }
+}
+
+
+
+class Solution:
+    # @param A : list of integers
+    # @param B : integer
+    # @return an integer
+    def solve(self, A, B):
+        seen = set()  # Set to store the elements we have seen so far
+        pairs = set() # Set to store unique pairs (min, max)
+        
+        for num in A:
+            # Check for the existence of num - B in the set
+            if num - B in seen:
+                pairs.add((num - B, num))
+            # Check for the existence of num + B in the set
+            if num + B in seen:
+                pairs.add((num, num + B))
+            
+            # Add the current number to the set of seen elements
+            seen.add(num)
+        
+        # The number of unique pairs with difference B
+        return len(pairs)
+
+
+It uses a combination of a set to store seen elements and a set of pairs to ensure uniqueness.
+Time Complexity:
+	• The code iterates through the array A once, taking O(n) time.
+	• The operations within the loop, such as checking the existence of elements in the sets and adding elements to the sets, have constant time complexity due to the use of hash sets.
+	• Therefore, the overall time complexity is O(n).
+Space Complexity:
+	• The code uses two sets: seen and pairs. The size of seen can be at most n, while the size of pairs can be at most n^2 in the worst case (if all pairs have a difference of B).
+	• However, in practice, the size of pairs is typically much smaller than n^2 as not all pairs will have a difference of B.
+	• Therefore, the space complexity can be considered to be O(n) in most cases.
+In summary, the code has a time complexity of O(n) and a space complexity of O(n). This is an efficient solution for the given problem, as it avoids unnecessary computations and utilizes hash sets for efficient lookups.
