@@ -1,0 +1,165 @@
+Aggressive cows
+
+Problem Description
+Farmer John has built a new long barn with N stalls. Given an array of integers A of size N where each element of the array represents the location of the stall and an integer B which represents the number of cows.
+His cows don't like this barn layout and become aggressive towards each other once put into a stall. To prevent the cows from hurting each other, John wants to assign the cows to the stalls, such that the minimum distance between any two of them is as large as possible. What is the largest minimum distance?
+
+
+Problem Constraints
+2 <= N <= 100000
+0 <= A[i] <= 109
+2 <= B <= N
+
+
+Input Format
+The first argument given is the integer array A.
+The second argument given is the integer B.
+
+
+Output Format
+Return the largest minimum distance possible among the cows.
+
+
+Example Input
+Input 1:
+A = [1, 2, 3, 4, 5]
+B = 3
+Input 2:
+A = [1, 2]
+B = 2
+
+
+Example Output
+Output 1:
+ 2
+Output 2:
+ 1
+
+
+
+
+
+import java.util.Arrays;
+public class Solution {
+    // @param A : array of integers representing stall positions
+    // @param B : integer representing the number of cows
+    // @return an integer representing the largest minimum distance between any two cows
+    public int solve(int[] A, int B) {
+        // Sort the stall positions to facilitate greedy placement
+        Arrays.sort(A);
+        
+        // Set initial search range for the minimum distance
+        int low = 1;  // Minimum distance between cows
+        int high = A[A.length - 1] - A[0];  // Maximum possible distance between the first and last stall
+        
+        // Perform binary search to find the largest minimum distance
+        while (low <= high) {
+            int mid = (low + high) / 2;  // Calculate the midpoint of the current range
+            
+            // Check if it's possible to place cows with at least `mid` distance apart
+            if (canPlaceCows(A, B, mid)) {
+                low = mid + 1;  // If feasible, try for a larger distance
+            } else {
+                high = mid - 1;  // If not feasible, try for a smaller distance
+            }
+        }
+        
+        // `high` will be the largest minimum distance that allows placing all cows
+        return high;
+    }
+    
+    // Helper method to determine if it's possible to place all cows
+    // such that the minimum distance between any two cows is at least `minDist`
+    private boolean canPlaceCows(int[] stalls, int cows, int minDist) {
+        int count = 1;  // Place the first cow in the first stall
+        int lastPosition = stalls[0];  // The position of the last placed cow
+        
+        // Iterate through the stalls to place the remaining cows
+        for (int i = 1; i < stalls.length; i++) {
+            // If the current stall is far enough from the last placed cow
+            if (stalls[i] - lastPosition >= minDist) {
+                count++;  // Place another cow
+                lastPosition = stalls[i];  // Update the position of the last placed cow
+                // If all cows have been placed successfully, return true
+                if (count == cows) {
+                    return true;
+                }
+            }
+        }
+        
+        // If we couldn't place all cows, return false
+        return false;
+    }
+}
+
+
+-----
+
+class Solution:
+    # @param A : list of integers representing stall positions
+    # @param B : integer representing the number of cows
+    # @return an integer representing the largest minimum distance between any two cows
+    def solve(self, A, B):
+        # Helper function to determine if it's possible to place all cows
+        # such that the minimum distance between any two cows is at least `min_dist`
+        def canPlaceCows(stalls, cows, min_dist):
+            count = 1  # Place the first cow in the first stall
+            last_position = stalls[0]  # The position of the last placed cow
+            
+            # Iterate through the stalls to place the remaining cows
+            for i in range(1, len(stalls)):
+                # If the current stall is far enough from the last placed cow
+                if stalls[i] - last_position >= min_dist:
+                    count += 1  # Place another cow
+                    last_position = stalls[i]  # Update the position of the last placed cow
+                    # If all cows have been placed successfully, return True
+                    if count == cows:
+                        return True
+            
+            # If we couldn't place all cows, return False
+            return False
+        
+        # Sort the stall positions to facilitate greedy placement
+        A.sort()
+        
+        # Set initial search range for the minimum distance
+        low = 1  # Minimum distance between cows
+        high = A[-1] - A[0]  # Maximum possible distance between the first and last stall
+        
+        # Perform binary search to find the largest minimum distance
+        while low <= high:
+            mid = (low + high) // 2  # Calculate the midpoint of the current range
+            
+            # Check if it's possible to place cows with at least `mid` distance apart
+            if canPlaceCows(A, B, mid):
+                low = mid + 1  # If feasible, try for a larger distance
+            else:
+                high = mid - 1  # If not feasible, try for a smaller distance
+        
+        # `high` will be the largest minimum distance that allows placing all cows
+        return high
+
+
+-----
+Time Complexity:
+	• Worst-case: O(N * log(N))
+	• Best-case: O(N * log(N))
+	• Average-case: O(N * log(N))
+Explanation:
+The dominant factor in the time complexity is the sorting of the A array using Arrays.sort(). This is typically implemented using a variation of the quicksort or mergesort algorithm, which has a worst-case time complexity of O(N * log(N)).
+The binary search loop in the solve function iterates at most log(N) times, as it halves the search space in each iteration. The canPlaceCows function iterates through the array once (O(N)), but since it's called within the binary search loop, its overall contribution to the time complexity is O(N * log(N)).
+Therefore, the overall time complexity is dominated by the sorting operation, making it O(N * log(N)) in all cases.
+Space Complexity:
+	• Worst-case: O(N)
+	• Best-case: O(N)
+	• Average-case: O(N)
+Explanation:
+The space complexity is primarily determined by the A array and the temporary variables used within the functions. The A array itself occupies O(N) space, as its size is proportional to the number of elements. The temporary variables used in the solve and canPlaceCows functions are constant in size and do not significantly impact the overall space complexity.
+Therefore, the space complexity is O(N), primarily due to the storage of the A array.
+In summary:
+	• The time complexity is O(N * log(N)) due to the sorting operation.
+	• The space complexity is O(N) primarily due to the A array.
+
+
+
+
