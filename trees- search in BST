@@ -1,0 +1,125 @@
+Search in BST
+
+Given a Binary Search Tree A. Check whether there exists a node with value B in the BST.
+
+
+Problem Constraints
+1 <= Number of nodes in binary tree <= 105
+0 <= B <= 106
+
+
+Input Format
+First argument is a root node of the binary tree, A.
+Second argument is an integer B.
+
+
+Output Format
+Return 1 if such a node exist and 0 otherwise
+
+
+Example Input
+Input 1:
+            15
+          /    \
+        12      20
+        / \    /  \
+       10  14  16  27
+      /
+     8
+B = 16
+Input 2:
+            8
+           / \
+          6  21
+         / \
+        1   7
+B = 9
+
+
+Example Output
+Output 1:
+ 1
+Output 2:
+ 0
+
+
+
+/**
+ * Definition for binary tree
+ * class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode(int x) {
+ *      val = x;
+ *      left=null;
+ *      right=null;
+ *     }
+ * }
+ */
+public class Solution {
+    public int solve(TreeNode A, int B) {
+        // Call search function to check for node with value B
+        return searchBST(A,B)?1:0;
+    }
+    private boolean searchBST(TreeNode A, int B){
+        // Base case: empty tree or reach a leaf node
+        if(A==null){
+            return false;
+        }
+        // Check if current node's value matches the target value
+        if(A.val==B){
+            return true;
+        }
+        // Search left subtree if target value is less
+        if(B<A.val){
+            return searchBST(A.left,B);
+        }
+        // Search right subtree if target value is greater
+        return searchBST(A.right,B);
+    }
+}
+
+---
+
+# Definition for a binary tree node
+class TreeNode:
+    def __init__(self, val=0, left=None, right=None):
+        self.val = val
+        self.left = left
+        self.right = right
+class Solution:
+    # @param A : root node of tree
+    # @param B : integer
+    # @return an integer
+    def solve(self, A, B):
+        """
+        Searches for a node with the given value in the BST.
+        Args:
+            A (TreeNode): The root node of the BST.
+            B (int): The value of the node to be searched for.
+        Returns:
+            int: 1 if the node exists, 0 otherwise.
+        """
+        if A is None:
+            return 0
+        if B < A.val:
+            return self.solve(A.left, B)
+        elif B > A.val:
+            return self.solve(A.right, B)
+        else:
+            return 1
+
+---
+The time and space complexity of the provided code to search for a node with the given value in a Binary Search Tree (BST) are:
+Time Complexity:
+	• Best case: O(1), when the root node is the target node.
+	• Average case: O(log n), when the tree is balanced.
+	• Worst case: O(n), when the tree is skewed and the target node is at the deepest level.
+The time complexity depends on the height of the tree. In the best case, the target node is found immediately at the root. In the average case, the height is logarithmic in the number of nodes, leading to a logarithmic time complexity. In the worst case, the height is equal to the number of nodes, resulting in a linear time complexity.
+Space Complexity:
+	• Best case: O(1), when the target node is found immediately at the root.
+	• Average case: O(log n), when the tree is balanced and the recursive call stack is shallow.
+	• Worst case: O(n), when the tree is skewed and the recursive call stack is deep.
+The space complexity depends on the depth of the recursion. In the best case, the target node is found immediately, and no recursive calls are made. In the average case, the depth is logarithmic in the number of nodes, leading to a logarithmic space complexity. In the worst case, the depth is equal to the height of the tree, resulting in a linear space complexity.
+In summary, the time and space complexity of the code are both O(log n) in the best and average cases, and O(n) in the worst case. The actual performance depends on the structure of the BST and the location of the target node.
