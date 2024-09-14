@@ -1,0 +1,90 @@
+Remove Duplicates from Sorted List
+
+Given a sorted linked list, delete all duplicates such that each element appears only once.
+
+Problem Constraints
+0 <= length of linked list <= 106
+
+
+Input Format
+First argument is the head pointer of the linked list.
+
+
+Output Format
+Return the head pointer of the linked list after removing all duplicates.
+
+
+Example Input
+Input 1:
+ 1->1->2
+Input 2:
+ 1->1->2->3->3
+
+
+Example Output
+Output 1:
+ 1->2
+Output 2:
+ 1->2->3
+
+
+
+public class Solution {
+    public ListNode deleteDuplicates(ListNode A) {
+    ListNode previous =A;
+    ListNode current=A.next;
+    while(current!=null){
+        if(current.val==previous.val){
+            // Skip current node as duplicate is found
+            previous.next=current.next;
+        }
+        else {
+            // Advance both pointers as not a duplicate
+            previous=current;
+        }
+        current=current.next;
+    }
+    return A;
+    }
+}
+
+----
+
+# Definition for singly-linked list.
+class ListNode:
+    def __init__(self, val=0, next=None):
+        self.val = val
+        self.next = next
+class Solution:
+    def deleteDuplicates(self, A: ListNode) -> ListNode:
+        """
+        Removes duplicate nodes from a sorted linked list.
+        Args:
+            A: The head of the sorted linked list.
+        Returns:
+            The head of the list without duplicates.
+        """
+        if not A:  # Handle empty list
+            return None
+        previous = A
+        current = A.next
+        while current:
+            if current.val == previous.val:  # Duplicate found
+                previous.next = current.next  # Skip current node
+            else:  # Not a duplicate
+                previous = current
+            current = current.next  # Move to next node
+        return A
+
+----
+Time Complexity:
+	• The code iterates through the linked list once, checking each node for duplicates.
+	• This operation takes linear time proportional to the number of nodes in the list.
+Therefore, the time complexity is O(N), where N is the number of nodes in the linked list.
+Space Complexity:
+	• The code uses only two pointers, previous and current, to traverse the list. These pointers occupy constant space.
+Therefore, the space complexity is O(1).
+In summary:
+	• Time Complexity: O(N)
+	• Space Complexity: O(1)
+This means the algorithm's running time is directly proportional to the size of the linked list, and it uses a constant amount of additional memory regardless of the input size.
