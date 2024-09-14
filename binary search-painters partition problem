@@ -1,0 +1,155 @@
+
+Painters partition problem
+
+Problem Description
+Given 2 integers A and B and an array of integers C of size N. Element C[i] represents the length of ith board.
+You have to paint all N boards [C0, C1, C2, C3 … CN-1]. There are A painters available and each of them takes B units of time to paint 1 unit of the board.
+Calculate and return the minimum time required to paint all boards under the constraints that any painter will only paint contiguous sections of the board.
+NOTE:
+1. 2 painters cannot share a board to paint. That is to say, a board cannot be painted partially by one painter, and partially by another.
+2. A painter will only paint contiguous boards. This means a configuration where painter 1 paints boards 1 and 3 but not 2 is invalid.
+
+Return the ans % 10000003.
+
+
+Problem Constraints
+1 <= A <= 1000
+1 <= B <= 106
+1 <= N <= 105
+1 <= C[i] <= 106
+
+
+Input Format
+The first argument given is the integer A.
+The second argument given is the integer B.
+The third argument given is the integer array C.
+
+
+Output Format
+Return minimum time required to paint all boards under the constraints that any painter will only paint contiguous sections of board % 10000003.
+
+
+
+
+import java.util.Arrays;
+public class Solution {
+    private static final int MOD = 10000003;
+    // @param A : integer number of painters
+    // @param B : integer time taken to paint 1 unit length
+    // @param C : array of integers representing the length of each board
+    // @return an integer representing the minimum time required to paint all boards
+    public int paint(int A, int B, int[] C) {
+        int N = C.length;
+        // Binary search for the minimum maximum time
+        int low = getMax(C);  // Lower bound of time
+        int high = getSum(C);  // Upper bound of time
+        while (low < high) {
+            int mid = (low + high) / 2;
+            if (canPaintInTime(A, C, mid)) {
+                high = mid;  // Try for a smaller time
+            } else {
+                low = mid + 1;  // Increase the time
+            }
+        }
+        // Return the minimum time multiplied by B, modulo 10000003
+        return (low * B) % MOD;
+    }
+    // Helper method to check if it's possible to paint all boards within `maxTime`
+    private boolean canPaintInTime(int painters, int[] boards, int maxTime) {
+        int painterCount = 1;  // Start with the first painter
+        int currentSum = 0;    // Current sum of board lengths painted by the current painter
+        for (int length : boards) {
+            if (length > maxTime) {
+                return false;  // A single board is longer than the allowed max time
+            }
+            if (currentSum + length > maxTime) {
+                painterCount++;  // Need a new painter
+                currentSum = length;  // Start painting this board with the new painter
+                if (painterCount > painters) {
+                    return false;  // Too many painters needed
+                }
+            } else {
+                currentSum += length;  // Continue painting with the current painter
+            }
+        }
+        return true;  // All boards can be painted within the allowed time
+    }
+    // Helper method to get the maximum board length
+    private int getMax(int[] C) {
+        int max = 0;
+        for (int length : C) {
+            if (length > max) {
+                max = length;
+            }
+        }
+        return max;
+    }
+    // Helper method to get the sum of all board lengths
+    private int getSum(int[] C) {
+        int sum = 0;
+        for (int length : C) {
+            sum += length;
+        }
+        return sum;
+    }
+}
+
+
+
+class Solution:
+    MOD = 10000003
+    
+    def paint(self, A, B, C):
+        def can_paint_in_time(max_time):
+            """Helper function to determine if it's possible to paint all boards
+            within `max_time` using at most `A` painters."""
+            painter_count = 1  # Start with the first painter
+            current_sum = 0    # Current sum of board lengths painted by the current painter
+            
+            for length in C:
+                if length > max_time:
+                    return False  # A single board is longer than the allowed max time
+                
+                if current_sum + length > max_time:
+                    painter_count += 1  # Need a new painter
+                    current_sum = length  # Start painting this board with the new painter
+                    
+                    if painter_count > A:
+                        return False  # Too many painters needed
+                else:
+                    current_sum += length  # Continue painting with the current painter
+            
+            return True  # All boards can be painted within the allowed time
+        def get_max(arr):
+            """Helper function to get the maximum board length."""
+            return max(arr)
+        
+        def get_sum(arr):
+            """Helper function to get the sum of all board lengths."""
+            return sum(arr)
+        
+        # Binary search for the minimum maximum time
+        low = get_max(C)  # Lower bound of time
+        high = get_sum(C)  # Upper bound of time
+        while low < high:
+            mid = (low + high) // 2
+            if can_paint_in_time(mid):
+                high = mid  # Try for a smaller time
+            else:
+                low = mid + 1  # Increase the time
+        
+        # Return the minimum time multiplied by B, modulo 10000003
+        return (low * B) % Solution.MOD
+
+
+----
+The provided code has a time complexity of O(N log N) and a space complexity of O(1) (excluding the input array).
+Time complexity:
+	• The binary search loop iterates O(log N) times, as it halves the search space in each iteration.
+	• The can_paint_in_time function iterates through the array once (O(N)) within the binary search loop.
+	• Therefore, the overall time complexity is O(N log N).
+Space complexity:
+	• The code uses constant space for variables like low, high, mid, painter_count, current_sum, and the loop index i.
+	• The input array C is not considered part of the algorithm's space complexity, as it's given as input.
+	• Therefore, the space complexity is O(1).
+In summary, the code efficiently finds the minimum time required to paint all boards using binary search and has a time complexity of O(N log N) and a space complexity of O(1).
