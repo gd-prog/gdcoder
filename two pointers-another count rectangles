@@ -1,0 +1,107 @@
+Another count rectangles
+
+Problem Description
+Given a sorted array of distinct integers A and an integer B, find and return how many rectangles with distinct configurations can be created using elements of this array as length and breadth whose area is lesser than B.
+(Note that a rectangle of 2 x 3 is different from 3 x 2 if we take configuration into view)
+
+
+Problem Constraints
+1 <= |A| <= 100000
+1 <= A[i] <= 109
+1 <= B <= 109
+
+
+Input Format
+The first argument given is the integer array A.
+The second argument given is integer B.
+
+
+Output Format
+Return the number of rectangles with distinct configurations with area less than B modulo (109 + 7).
+
+Example Input
+Input 1:
+ A = [1, 2]
+ B = 5
+Input 2:
+ A = [1, 2]
+ B = 1
+
+
+Example Output
+Output 1:
+ 4
+Output 2:
+ 0
+
+
+
+
+
+
+import java.util.ArrayList;
+public class Solution {
+    public int solve(ArrayList<Integer> A, int B) {
+        long ans = 0;
+        long mod = 1000000007;
+        int l = 0;
+        int r = A.size() - 1;
+        while (l < A.size() && r >= 0) {
+            // Check if the product of A[l] and A[r] is less than B
+            if ((long) A.get(l) * A.get(r) < B) {
+                // A[l] can form rectangles with any of A[0..r]
+                ans = (ans + r + 1) % mod;
+                l++;
+            } else {
+                r--;
+            }
+        }
+        return (int) ans;
+    }
+}
+
+
+class Solution:
+    def solve(self, A, B):
+        mod = 1000000007
+        ans = 0
+        l = 0
+        r = len(A) - 1
+        while l < len(A) and r >= 0:
+            # Check if the product of A[l] and A[r] is less than B
+            if A[l] * A[r] < B:
+                # A[l] can form rectangles with any of A[0..r]
+                ans = (ans + r + 1) % mod
+                l += 1
+            else:
+                r -= 1
+        return ans
+
+
+
+Time Complexity:
+The function utilizes a two-pointer technique, which is an efficient method for solving problems involving sorted arrays.
+Initialization: The initialization of variables l, r, and mod is done in constant time O(1).
+
+While Loop:
+The while loop runs as long as l < len(A) and r >= 0.
+Inside the loop:
+The condition A[l] * A[r] < B is checked, which is an O(1) operation.
+If the condition is true, updating ans and incrementing l are constant time operations O(1).
+
+If the condition is false, decrementing r is also an O(1) operation.
+Each iteration of the loop either increments l or decrements r. In the worst case, each pointer will traverse the entire list exactly once. Hence, the loop will have at most O(n) iterations, where nnn is the length of the list A.
+Therefore, the overall time complexity of the function is O(n).
+
+Space Complexity:
+Variables:
+The function uses a few variables: mod, ans, l, and r. The space required for these variables is constant, O(1).
+
+Input List:
+The input list A is not counted towards the space complexity of the function itself, as the function does not create additional copies or modify it.
+Thus, the space complexity is O(1), indicating that the function uses a fixed amount of extra space regardless of the input size.
+
+Summary:
+Time Complexity: O(n), where nnn is the number of elements in the list A.
+Space Complexity: O(1), due to the fixed amount of additional space used for variables.
+
