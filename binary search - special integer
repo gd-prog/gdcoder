@@ -1,0 +1,109 @@
+Special Integer 
+
+Problem Description
+Given an array of integers A and an integer B, find and return the maximum value K such that there is no subarray in A of size K with the sum of elements greater than B.
+
+
+Problem Constraints
+1 <= |A| <= 100000
+1 <= A[i] <= 10^9
+1 <= B <= 10^9
+
+
+Input Format
+The first argument given is the integer array A.
+The second argument given is integer B.
+
+
+Output Format
+Return the maximum value of K (sub array length).
+
+
+
+
+
+
+
+
+public class Solution {
+    public int solve(int[] A, int B) {
+        // Define search space boundaries
+        int low = 1;
+        int high = A.length;
+        int answer = 0; // Store the maximum K        while (low <= high) {
+            int mid = low + (high - low) / 2;
+            // Check if a subarray of size 'mid' exists with a sum exceeding 'B'
+            if (canFormSubarray(A, B, mid)) {
+                // Subarray exceeding B exists with current mid, reduce window size
+                high = mid - 1;
+            } else {
+                // No subarray exceeding B found, explore larger window sizes
+                answer = mid; // Update answer to current mid
+                low = mid + 1;
+            }
+        }        return answer;
+    }    private static boolean canFormSubarray(int[] A, int B, int size) {
+        long windowSum = 0;        // Calculate sum of the first window of size 'size'
+        for (int i = 0; i < size; i++) {
+            windowSum += A[i];
+        }        // Check the first window
+        if (windowSum > B) {
+            return true; // Subarray exceeding B exists
+        }        // Slide the window across the array
+        for (int i = size; i < A.length; i++) {
+            windowSum += A[i] - A[i - size];
+            if (windowSum > B) {
+                return true; // Subarray exceeding B exists
+            }
+        }        return false; // No subarray exceeding B found in windows of size 'size'
+    }
+}
+----
+
+
+class Solution:
+    def solve(self, A, B):
+        # Define search space boundaries
+        low = 1
+        high = len(A)
+        answer = 0  # Store the maximum K
+        while low <= high:
+            mid = low + (high - low) // 2
+            # Check if a subarray of size 'mid' exists with a sum exceeding 'B'
+            if self.canFormSubarray(A, B, mid):
+                # Subarray exceeding B exists with current mid, reduce window size
+                high = mid - 1
+            else:
+                # No subarray exceeding B found, explore larger window sizes
+                answer = mid  # Update answer to current mid
+                low = mid + 1
+        return answer
+    @staticmethod
+    def canFormSubarray(A, B, size):
+        windowSum = 0
+        # Calculate sum of the first window of size 'size'
+        for i in range(size):
+            windowSum += A[i]
+        # Check the first window
+        if windowSum > B:
+            return True  # Subarray exceeding B exists
+        # Slide the window across the array
+        for i in range(size, len(A)):
+            windowSum += A[i] - A[i - size]
+            if windowSum > B:
+                return True  # Subarray exceeding B exists
+        return False  # No subarray exceeding B found in windows of size 'size'
+
+
+------
+
+The provided code has a time complexity of O(N log N) and a space complexity of O(1) (excluding the input array).
+Time complexity:
+	• The binary search loop iterates O(log N) times, as it halves the search space in each iteration.
+	• The canFormSubarray function iterates through the array once (O(N)) within the binary search loop.
+	• Therefore, the overall time complexity is O(N log N).
+Space complexity:
+	• The code uses constant space for variables like low, high, mid, answer, windowSum, and the loop index i.
+	• The input array A is not considered part of the algorithm's space complexity, as it's given as input.
+	• Therefore, the space complexity is O(1).
+In summary, the code efficiently finds the maximum value of K using binary search and has a time complexity of O(N log N) and a space complexity of O(1).
