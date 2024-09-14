@@ -1,0 +1,132 @@
+Passing Game
+
+
+Problem Description
+There is a football event going on in your city. In this event, you are given A passes and players having ids between 1 and 106.
+Initially, some player with a given id had the ball in his possession. You have to make a program to display the id of the player who possessed the ball after exactly A passes.
+There are two kinds of passes:
+1) ID
+2) 0
+For the first kind of pass, the player in possession of the ball passes the ball "forward" to the player with id = ID.
+For the second kind of pass, the player in possession of the ball passes the ball back to the player who had forwarded the ball to him.
+In the second kind of pass "0" just means Back Pass.
+Return the ID of the player who currently possesses the ball.
+
+
+Problem Constraints
+1 <= A <= 100000
+1 <= B <= 100000
+|C| = A
+
+
+Input Format
+The first argument of the input contains the number A.
+The second argument of the input contains the number B ( id of the player possessing the ball in the very beginning).
+The third argument is an array C of size A having (ID/0).
+
+
+Output Format
+Return the "ID" of the player who possesses the ball after A passes.
+
+
+Example Input
+Input 1:
+ A = 10
+ B = 23
+ C = [86, 63, 60, 0, 47, 0, 99, 9, 0, 0]
+Input 2:
+ A = 1
+ B = 1
+ C = [2]
+
+
+Example Output
+Output 1:
+ 63
+Output 2:
+ 2
+
+
+
+public class Solution {
+  /*
+  This class defines a method to find the player with the ball after a series of passes.
+  */
+  public int solve(int A, int B, ArrayList<Integer> C) {
+    /*
+    Finds the player who has the ball after A passes.
+    Args:
+        A: The number of passes (integer).
+        B: Start with player B .
+        C: An ArrayList of passes, where each pass can be an ID or 0 (back pass).
+    Returns:
+        The ID of the player who has the ball after A passes.
+    Throws:
+        IllegalArgumentException: If an invalid back pass occurs (attempting to back pass without a prior forward pass).
+    */
+    int currentPlayer = B; // Player B starts with the ball
+    Stack<Integer> passHistory = new Stack<>(); // Keep track of the passing history
+    passHistory.push(currentPlayer);
+    for (int i = 0; i < A; i++) {
+      int passType = C.get(i); // Get the next pass from the ArrayList
+      if (passType == 0) {
+        // Back pass, go back one step in the history
+        if (passHistory.size() > 1) {
+          passHistory.pop();
+        } else {
+          throw new IllegalArgumentException("Invalid pass sequence: Back pass without prior forward pass");
+        }
+        currentPlayer = passHistory.peek(); // Update current player based on history
+      } else {
+        // Forward pass, update history and current player
+        passHistory.push(passType);
+        currentPlayer = passType;
+      }
+    }
+    return currentPlayer;
+  }
+}
+---
+
+
+class Solution:
+    def solve(self, A, B, C):
+        """
+        Finds the player who has the ball after A passes.
+        Args:
+            A: The number of passes.
+            B: The initial player with the ball.
+            C: A list of pass types (1 for forward pass, 0 for back pass).
+        Returns:
+            The ID of the player who currently possesses the ball.
+        """
+        current_player = B
+        pass_history = [current_player]
+        for i in range(A):
+            pass_type = C[i]
+            if pass_type == 0:
+                # Back pass
+                if len(pass_history) > 1:
+                    pass_history.pop()
+                    current_player = pass_history[-1]
+                else:
+                    raise ValueError("Invalid pass sequence: Back pass without prior forward pass")
+            else:
+                # Forward pass
+                pass_history.append(pass_type)
+                current_player = pass_type
+        return current_player
+
+
+---
+The code has a time complexity of O(A) and a space complexity of O(A).
+Time complexity:
+	• The for loop iterates A times, processing each pass.
+	• The operations within the loop, such as checking the pass type, updating the pass history, and finding the current player, take constant time.
+	• Therefore, the overall time complexity is O(A).
+Space complexity:
+	• The pass_history list stores at most A elements, as it keeps track of all forward passes.
+	• The other variables (current_player, pass_type, and the loop index i) use constant space.
+	• Therefore, the space complexity is O(A).
+In summary, the code efficiently finds the player who currently possesses the ball after A passes, with a linear time complexity and a linear space complexity.
+
