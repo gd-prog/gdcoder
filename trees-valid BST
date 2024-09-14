@@ -1,0 +1,108 @@
+Problem Description
+You are given a binary tree represented by root A. You need to check if it is a Binary Search Tree or not.
+Assume a BST is defined as follows:
+1) The left subtree of a node contains only nodes with keys less than the node's key.
+2) The right subtree of a node contains only nodes with keys greater than the node's key.
+3) Both the left and right subtrees must also be binary search trees.
+
+
+Problem Constraints
+1 <= Number of nodes in binary tree <= 105
+0 <= node values <= 232-1
+
+
+Input Format
+First and only argument is head of the binary tree A.
+
+
+Output Format
+Return 0 if false and 1 if true.
+
+
+Example Input
+Input 1:
+ 
+   1
+  /  \
+ 2    3
+Input 2:
+ 
+  2
+ / \
+1   3
+
+
+Example Output
+Output 1:
+ 0
+Output 2:
+ 1
+
+
+Example Explanation
+Explanation 1:
+ 2 is not less than 1 but is in left subtree of 1.
+Explanation 2:
+Satisfies all conditions.
+
+/**
+ * Definition for binary tree
+ * class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode(int x) {
+ *         val = x;
+ *         left=null;
+ *         right=null;
+ *     }
+ * }
+ */
+public class Solution {
+    public int isValidBST(TreeNode A) {
+        return validateBST(A, Long.MIN_VALUE, Long.MAX_VALUE) ? 1 : 0;
+    }
+
+    private boolean validateBST(TreeNode node, long minVal, long maxVal) {
+        // Base case: empty tree is valid
+        if (node == null) {
+            return true;
+        }
+
+        // Check current node's value against min and max constraints
+        if (node.val <= minVal || node.val >= maxVal) {
+            return false;
+        }
+
+        // Recursively check left and right subtrees with updated constraints
+        return validateBST(node.left, minVal, node.val) && validateBST(node.right, node.val, maxVal);
+    }
+}
+
+----
+
+# Definition for a binary tree node
+class TreeNode:
+    def __init__(self, x):
+        self.val = x
+        self.left = None
+        self.right = None
+
+class Solution:
+    # @param A : root node of tree
+    # @return an integer
+    def isValidBST(self, A):
+        return self.validateBST(A, float('-inf'), float('inf'))
+
+    def validateBST(self, node, min_val, max_val):
+        if not node:
+            return True  # Base case: empty subtree is valid
+        if node.val <= min_val or node.val >= max_val:
+            return False  # Node value violates BST property
+        return self.validateBST(node.left, min_val, node.val) and \
+               self.validateBST(node.right, node.val, max_val)
+
+---
+
+The given code to determine if a binary tree is a valid Binary Search Tree (BST) has a time complexity of O(n), where n is the number of nodes in the tree. This is because the validateBST method recursively traverses each node in the tree once, and the operations performed at each node (checking the value against min_val and max_val, and recursively validating children) take constant time.
+The space complexity of the code is also O(n) in the worst case. This is due to the recursive nature of the validateBST method, which can create a stack of up to n function calls in the worst case, where n is the height of the tree. However, in the best case (a balanced binary tree), the stack depth will be logarithmic in the number of nodes, resulting in a space complexity of O(log n).
