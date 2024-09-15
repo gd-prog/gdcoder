@@ -1,0 +1,195 @@
+Check two bracket expressions
+
+Problem Description
+Given two strings A and B. Each string represents an expression consisting of lowercase English alphabets, '+', '-', '(' and ')'.
+The task is to compare them and check if they are similar. If they are identical, return 1 else, return 0.
+NOTE: It may be assumed that there are at most 26 operands from ‘a’ to ‘z’, and every operand appears only once.
+
+
+Problem Constraints
+1 <= length of the each String <= 100
+
+
+Input Format
+The given arguments are string A and string B.
+
+
+Output Format
+Return 1 if they represent the same expression else return 0.
+
+
+Example Input
+Input 1:
+ A = "-(a+b+c)"
+ B = "-a-b-c"
+Input 2:
+ A = "a-b-(c-d)"
+ B = "a-b-c-d"
+
+
+Example Output
+Output 1:
+ 1
+Output 2:
+ 0
+
+
+Example Explanation
+Explanation 1:
+ The expression "-(a+b+c)" can be written as "-a-b-c" which is equal as B. 
+Explanation 2:
+ Both the expression are different.
+
+
+
+
+public class Solution {
+    private static final int MAX_CHAR = 26;
+    public int solve(String A, String B) {
+        if (areSame(A, B)) {
+            return 1;
+        }
+        return 0;
+    }
+    private static boolean areSame(String expr1, String expr2) {
+        int[] v = new int[MAX_CHAR];  // Array to store counts of operands
+        // Evaluate expression 1 (add)
+        evaluate(expr1, v, true);
+        // Evaluate expression 2 (subtract)
+        evaluate(expr2, v, false);
+        // Check if all operand counts are zero (expressions have the same effect)
+        for (int i = 0; i < MAX_CHAR; i++) {
+            if (v[i] != 0) {
+                return false;
+            }
+        }
+        return true;
+    }
+    private static void evaluate(String expr, int[] v, boolean add) {
+        Stack<Boolean> stk = new Stack<>();  // Stack to store signs
+        stk.push(true);  // Initialize the stack with a positive sign
+        int n = expr.length();
+        int i = 0;
+        while (i < n) {
+            char ch = expr.charAt(i);
+            if (ch == '+' || ch == '-') {  // Skip '+' or '-' signs
+                i++;
+                continue;
+            } else if (ch == '(') {
+                if (adjSign(expr, i)) {  // Check if adjacent sign is '+'
+                    stk.push(stk.peek());  // Keep the same sign
+                } else {
+                    stk.push(!stk.peek());  // Invert the sign
+                }
+            } else if (ch == ')') {
+                stk.pop();  // Pop the sign corresponding to the opening parenthesis
+            } else {
+                int operandIndex = ch - 'a';  // Get the index of the operand
+                boolean currentSign = stk.peek();  // Get the current sign
+                boolean sign = adjSign(expr, i);  // Get the sign adjacent to the operand
+                if (add) {  // If evaluating the first expression, add the operand count
+                    v[operandIndex] += (currentSign == sign) ? 1 : -1;
+                } else {  // If evaluating the second expression, subtract the operand count
+                    v[operandIndex] -= (currentSign == sign) ? 1 : -1;
+                }
+            }
+            i++;
+        }
+    }
+    private static boolean adjSign(String expr, int i) {
+        if (i == 0) {
+            return true;  // If at the beginning of the expression, assume a positive sign
+        }
+        return expr.charAt(i - 1) != '-';  // Check if the previous character is not a '-'
+    }
+}
+
+---
+
+
+class Solution:
+    MAX_CHAR = 26
+    def solve(self, A, B):
+        """
+        Checks if two expressions are equivalent.
+        Args:
+            A: The first expression string.
+            B: The second expression string.
+        Returns:
+            1 if the expressions are equivalent, 0 otherwise.
+        """
+        if self.areSame(A, B):
+            return 1
+        return 0
+    def areSame(self, expr1, expr2):
+        """
+        Compares two expressions for equivalence.
+        Args:
+            expr1: The first expression string.
+            expr2: The second expression string.
+        Returns:
+            True if the expressions are equivalent, False otherwise.
+        """
+        v = [0] * self.MAX_CHAR  # Array to store operand counts
+        # Evaluate expression 1 (add)
+        self.evaluate(expr1, v, True)
+        # Evaluate expression 2 (subtract)
+        self.evaluate(expr2, v, False)
+        # Check if all operand counts are zero (expressions have the same effect)
+        for i in range(self.MAX_CHAR):
+            if v[i] != 0:
+                return False
+        return True
+    def evaluate(self, expr, v, add):
+        """
+        Evaluates an expression and updates the operand counts.
+        Args:
+            expr: The expression string.
+            v: The array to store operand counts.
+            add: A boolean indicating whether to add or subtract operand counts.
+        """
+        stk = []  # Stack to store signs
+        stk.append(True)  # Initialize the stack with a positive sign
+        n = len(expr)
+        i = 0
+        while i < n:
+            ch = expr[i]
+            if ch in "+-":  # Skip '+' or '-' signs
+                i += 1
+                continue
+            elif ch == '(':
+                if self.adjSign(expr, i):  # Check if adjacent sign is '+'
+                    stk.append(stk[-1])  # Keep the same sign
+                else:
+                    stk.append(not stk[-1])  # Invert the sign
+            elif ch == ')':
+                stk.pop()  # Pop the sign corresponding to the opening parenthesis
+            else:
+                operandIndex = ord(ch) - ord('a')  # Get the index of the operand
+                currentSign = stk[-1]  # Get the current sign
+                sign = self.adjSign(expr, i)  # Get the sign adjacent to the operand
+                if add:  # If evaluating the first expression, add the operand count
+                    v[operandIndex] += 1 if currentSign == sign else -1
+                else:  # If evaluating the second expression, subtract the operand count
+                    v[operandIndex] -= 1 if currentSign == sign else -1
+            i += 1
+    def adjSign(self, expr, i):
+        """
+        Checks if the adjacent sign to the character at index i is '+'.
+        Args:
+            expr: The expression string.
+            i: The index of the character.
+        Returns:
+            True if the adjacent sign is '+', False otherwise.
+        """
+        if i == 0:
+            return True  # If at the beginning of the expression, assume a positive sign
+        return expr[i - 1] != '-'  # Check if the previous character is not a '-'
+
+
+---
+
+Time Complexity Analysis
+The code iterates through each character in both input expressions once. The operations within the loops, like stack push, pop, character comparison, and operand count updates, are constant-time operations. Therefore, the overall time complexity is O(m + n), where m and n are the lengths of the two input expressions, respectively.
+Space Complexity Analysis
+The primary data structures used are a stack for the evaluation process and an array to store operand counts. The stack's size is typically limited by the depth of nested parentheses in the expressions. The array's size is fixed and depends on the maximum number of operands (26 in this case). Therefore, the space complexity is O(m + n + 26), which can be simplified to O(m + n) as the constant 26 is relatively small compared to the lengths of the expressions.
