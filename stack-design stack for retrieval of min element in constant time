@@ -1,0 +1,150 @@
+Min Stack
+
+
+Problem Description
+Design a stack that supports push, pop, top, and retrieve the minimum element in constant time.
+	push(x) -- Push element x onto stack.
+	pop() -- Removes the element on top of the stack.
+	top() -- Get the top element.
+	getMin() -- Retrieve the minimum element in the stack.
+NOTE:
+	All the operations have to be constant time operations.
+	getMin() should return -1 if the stack is empty.
+	pop() should return nothing if the stack is empty.
+	top() should return -1 if the stack is empty.
+Problem Constraints
+1 <= Number of Function calls <= 107
+Input Format
+Functions will be called by the checker code automatically.
+Output Format
+Each function should return the values as defined by the problem statement.
+Example Input
+Input 1:
+push(1)
+push(2)
+push(-2)
+getMin()
+pop()
+getMin()
+top()
+Input 2:
+getMin()
+pop()
+top()
+Example Output
+Output 1:
+ -2 1 2
+Output 2:
+ -1 -1
+Example Explanation
+Explanation 1:
+Let the initial stack be : []
+1) push(1) : [1]
+2) push(2) : [1, 2]
+3) push(-2) : [1, 2, -2]
+4) getMin() : Returns -2 as the minimum element in the stack is -2.
+5) pop() : Return -2 as -2 is the topmost element in the stack.
+6) getMin() : Returns 1 as the minimum element in stack is 1.
+7) top() : Return 2 as 2 is the topmost element in the stack.
+Explanation 2:
+Let the initial stack be : []
+1) getMin() : Returns -1 as the stack is empty.
+2) pop() :  Returns nothing as the stack is empty.
+3) top() : Returns -1 as the stack is empty.
+Expected Output
+Enter your input as per the following guideline:
+There are 1 lines in the input Line 1 ( Corresponds to arg 1 ) : The line starts with a number numOperations, corresponding to the number of operations. Then "numOperation" operations follow. Each operation is either : * P : Corresponds to push() in stack * p : Corresponds to pop() * t : Corresponds to top() * g : Corresponds to getMin() call. Note that the function calls are made in order. 
+
+
+
+public class Solution {
+    private Stack<Integer> stack;
+    private Stack<Integer> minStack;  // Stores minimum values encountered so far
+    public Solution() {
+        stack = new Stack<>();
+        minStack = new Stack<>();
+    }
+    public void push(int x) {
+        stack.push(x);  // Push the element onto the main stack
+        // Update the minimum stack if the new element is less than or equal to the current minimum
+        minStack.push(Math.min(x, minStack.isEmpty() ? x : minStack.peek()));
+    }
+    public void pop() {
+        if (!stack.isEmpty()) {
+            stack.pop();  // Pop the top element from the main stack
+            minStack.pop();  // Also pop the corresponding element from the minimum stack
+        }
+    }
+    public int top() {
+        return stack.isEmpty() ? -1 : stack.peek();  // Return the top element of the main stack
+    }
+    public int getMin() {
+        return minStack.isEmpty() ? -1 : minStack.peek();  // Return the top element of the minimum stack
+    }
+}
+---
+
+
+class MinStack:
+    
+    # @param x, an integer
+    # @return nothing
+    def push(self, x):
+        """
+        Pushes the given element x onto the stack.
+        Args:
+            x: The element to be pushed.
+        """
+        self.stack.append(x)
+        if not self.min_stack or x <= self.min_stack[-1]:
+            self.min_stack.append(x)
+    # @return nothing
+    def pop(self):
+        """
+        Removes the top element from the stack.
+        """
+        if self.stack:
+            if self.stack.pop() == self.min_stack[-1]:
+                self.min_stack.pop()
+    # @return an integer
+    def top(self):
+        """
+        Returns the top element of the stack without removing it.
+        Returns:
+            The top element of the stack, or -1 if the stack is empty.
+        """
+        return self.stack[-1] if self.stack else -1
+    # @return an integer
+    def getMin(self):
+        """
+        Returns the minimum element in the stack.
+        Returns:
+            The minimum element of the stack, or -1 if the stack is empty.
+        """
+        return self.min_stack[-1] if self.min_stack else -1
+    def __init__(self):
+        """
+        Initializes the MinStack object.
+        """
+        self.stack = []
+        self.min_stack = []
+
+
+---
+Time Complexity Analysis
+push(x):
+	• Appending to a list is a constant-time operation (O(1)).
+	• Checking the minimum and appending to min_stack is also constant-time.
+	• Overall time complexity: O(1)
+pop():
+	• Popping from a list is constant-time (O(1)).
+	• Checking if the popped element is the minimum and popping from min_stack is also constant-time.
+	• Overall time complexity: O(1)
+top():
+	• Accessing the last element of a list is constant-time (O(1)).
+	• Overall time complexity: O(1)
+getMin():
+	• Accessing the last element of min_stack is constant-time (O(1)).
+	• Overall time complexity: O(1)
+Space Complexity Analysis
+The stack and min_stack lists store elements. In the worst case, both lists can store all elements pushed onto the stack. Therefore, the space complexity is O(n), where n is the maximum number of elements stored in the stack.
