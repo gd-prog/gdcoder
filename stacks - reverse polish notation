@@ -1,0 +1,117 @@
+Evaluate Expression
+
+Problem Description
+An arithmetic expression is given by a string array A of size N. Evaluate the value of an arithmetic expression in Reverse Polish Notation.
+Valid operators are +, -, *, /. Each string may be an integer or an operator.
+
+Note: Reverse Polish Notation is equivalent to Postfix Expression, where operators are written after their operands.
+
+
+Problem Constraints
+1 <= N <= 105
+
+
+Input Format
+The only argument given is string array A.
+
+
+Output Format
+Return the value of arithmetic expression formed using reverse Polish Notation.
+
+
+Example Input
+Input 1:
+A =   ["2", "1", "+", "3", "*"]
+Input 2:
+A = ["4", "13", "5", "/", "+"]
+
+
+Example Output
+Output 1:
+9
+Output 2:
+6
+
+
+public class Solution {
+    public int evalRPN(String[] A) {
+        Stack <Integer> stk=new Stack<>();
+        for(String element:A){
+            if(isOperator (element)){
+                // Operator encountered pop two operands perform operation and push result
+                int operand2=stk.pop();
+                int operand1=stk.pop();
+                int result=calculate(operand1,operand2,element);
+                stk.push(result);
+            }
+            else {
+                //Operand encountered , convert to integer and push to Stack
+                stk.push(Integer.parseInt(element));
+            }
+        }
+        // Check if its only one element remaining (final result)
+        if (stk.size() != 1) {
+        throw new IllegalArgumentException("Invalid RPN expression");
+    }
+    return stk.pop();
+  
+    }
+    
+    private static boolean isOperator(String element){
+      return element.equals("+") || element.equals("-") || element.equals("*") || element.equals("/");
+  }
+    private static int calculate(int operand1, int operand2, String operator) {
+        switch (operator) {
+        case "+":
+            return operand1 + operand2;
+        case "-":
+            return operand1 - operand2;
+        case "*":
+            return operand1 * operand2;
+        case "/":
+            if (operand2 == 0) {
+            throw new ArithmeticException("Division by zero");
+            }
+        return operand1 / operand2;  // Integer division for RPN
+        default:
+        throw new IllegalArgumentException("Invalid operator: " + operator);
+    }
+  
+    }
+}
+
+---
+
+class Solution:
+    # @param A : list of strings
+    # @return an integer
+    def evalRPN(self, A):
+        """
+        Evaluates a Reverse Polish Notation expression.
+        Args:
+            A: A list of strings representing the RPN expression.
+        Returns:
+            The evaluated value of the expression.
+        """
+        stack = []  # Initialize a stack to store intermediate results
+        operators = {"+": lambda x, y: x + y,
+                     "-": lambda x, y: x - y,
+                     "*": lambda x, y: x * y,
+                     "/": lambda x, y: x // y}  # Dictionary of operators and their corresponding functions
+        for token in A:
+            if token in operators:  # If the token is an operator
+                operand2 = stack.pop()  # Pop the second operand from the stack
+                operand1 = stack.pop()  # Pop the first operand from the stack
+                result = operators[token](operand1, operand2)  # Perform the operation and get the result
+                stack.append(result)  # Push the result onto the stack
+            else:  # If the token is an operand (number)
+                stack.append(int(token))  # Convert the token to an integer and push it onto the stack
+        return stack.pop()  # The top element of the stack will be the final result
+
+
+---
+Time Complexity Analysis
+The code iterates through each token in the input expression once. The operations within the loop, like stack push, pop, character comparison, and arithmetic operations, are constant-time operations. Therefore, the overall time complexity is O(n), where n is the number of tokens in the expression.
+
+Space Complexity Analysis
+The primary data structure used is a stack. In the worst case, the stack might need to store all intermediate results, which could be proportional to the number of tokens in the expression. However, for well-formed RPN expressions, the stack size is typically limited. Therefore, the space complexity is also O(n) in general, but it can be lower in practice for balanced expressions.
