@@ -1,0 +1,73 @@
+Number of digit one
+
+Problem Description
+Given an integer A, find and return the total number of digit 1 appearing in all non-negative integers less than or equal to A.
+
+
+Problem Constraints
+0 <= A <= 109
+
+
+Input Format
+The only argument given is the integer A.
+
+
+Output Format
+Return the total number of digit 1 appearing in all non-negative integers less than or equal to A.
+
+---
+
+
+class Solution:
+    def solve(self, A):
+        count = 0
+        factor = 1  # This represents the current digit's place value (1, 10, 100, ...)
+        while factor <= A:
+            lower_numbers = A - (A // factor) * factor
+            current_digit = (A // factor) % 10
+            higher_numbers = A // (factor * 10)
+            # Count how many times '1' appears in the current digit place
+            if current_digit == 0:
+                count += higher_numbers * factor
+            elif current_digit == 1:
+                count += higher_numbers * factor + lower_numbers + 1
+            else:
+                count += (higher_numbers + 1) * factor
+            
+            factor *= 10  # Move to the next digit place
+        return count
+
+---
+
+public class Solution {
+    /**
+     * Calculates the total number of occurrences of the digit 1 in all non-negative integers less than or equal to A.
+     *
+     * @param A the upper bound of the range
+     * @return the total number of occurrences of the digit 1
+     */
+    public int solve(int A) {
+        int ans = 0; // Initialize the total count of 1s
+        // Iterate through each place value (units, tens, hundreds, etc.)
+        for (int i = 1; i <= A; i *= 10) {
+            int divider = i * 10; // Calculate the next higher power of 10
+            // Find the number of 1s in the current place
+            ans += (A / divider) * i // Number of 1s in higher places
+                    + Math.min(Math.max(A % divider - i + 1, 0), i); // Number of 1s in the current place
+        }
+        return ans;
+    }
+}
+
+---
+Time Complexity:
+	• Outer loop: Iterates from 1 to A, increasing by a factor of 10 in each iteration. The number of iterations is roughly log(A) base 10.
+	• Inner operations:
+		○ (A / divider) * i: Integer division and multiplication, which are constant time operations.
+		○ Math.min(Math.max(A % divider - i + 1, 0), i): A few constant time comparison and arithmetic operations.
+Therefore, the overall time complexity is O(log(A)).
+Space Complexity:
+The code uses a few integer variables (ans, i, divider) that occupy constant space. There's no data structure that grows with the input size.
+Hence, the space complexity is O(1).
+In conclusion, the time complexity of the code is O(log(A)) and the space complexity is O(1).
+This means that the algorithm's running time grows logarithmically with the input A, making it efficient for large values of A. The space usage remains constant regardless of the input size.
