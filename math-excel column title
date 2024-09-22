@@ -1,0 +1,105 @@
+Excel column title
+
+Problem Description
+Given a positive integer A, return its corresponding column title as it appears in an Excel sheet.
+For example:
+    1 -> A
+    2 -> B
+    3 -> C
+    ...
+    26 -> Z
+    27 -> AA
+    28 -> AB 
+
+
+Problem Constraints
+1 <= A <= 109
+
+
+Input Format
+First and only argument of input contains single integer A
+
+
+Output Format
+Return a string denoting the corresponding title.
+
+
+
+
+
+
+public class Solution {
+    public String convertToTitle(int A) {
+        // Create an array of characters representing the alphabet
+        char[] alphabet = new char[26];
+        for (int i = 0; i < 26; i++) {
+            alphabet[i] = (char)('A' + i);
+        }
+        // Initialize variables for the base (26) and index
+        int base = 26;
+        int index;
+        // Build the result string from right to left
+        String result = "";
+        while (A > 0) {
+            // Calculate the index of the current character
+            index = (A - 1) % base;
+            // Append the character to the result string
+            result = alphabet[index] + result;
+            // Update A for the next iteration
+            A = (A - 1) / base;
+        }
+        return result;
+    }
+}
+
+
+Alternate 
+
+
+public class Solution {
+    public String convertToTitle(int A) {
+        char[] array = new char[26];
+        for (int i = 0; i < 26; i++)
+            array[i] = (char)('A' + i);
+        int num = 26;
+        int index;
+        String res = "";
+        // find the characters from right to left
+        while (A > 0) {
+            index = (A - 1 + num) % num;
+            A = (A - 1) / num;
+            res = array[index] + res;
+        }
+        return res;
+    }
+}
+
+---
+
+class Solution:
+    def convertToTitle(self, A):
+        """Converts a given integer to its corresponding Excel column title.
+        Args:
+            A: The integer to convert.
+        Returns:
+            The corresponding Excel column title as a string.
+        """
+        # Create a list of characters representing the alphabet
+        alphabet = [chr(ord('A') + i) for i in range(26)]
+        # Initialize variables for the base (26) and result string
+        base = 26
+        result = ""
+        # Convert the integer to the column title
+        while A > 0:
+            # Calculate the index of the current character
+            index = (A - 1) % base
+            # Append the character to the result string
+            result = alphabet[index] + result
+            # Update A for the next iteration
+            A = (A - 1) // base
+        return result
+
+
+---
+The time complexity of the provided code to convert an integer to its corresponding Excel column title is O(log n), where n is the input integer. This is because the while loop iterates approximately log base 26 of n times. In each iteration, constant time operations are performed, resulting in a total time complexity of O(log n).
+The space complexity is O(1) as the code only uses a constant amount of extra space for the variables and the result string. The size of the alphabet list is also constant and does not depend on the input integer. Therefore, the space complexity remains O(1) regardless of the input size.
