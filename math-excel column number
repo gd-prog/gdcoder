@@ -1,0 +1,77 @@
+Excel Column Number
+
+Problem Description
+Given a column title as appears in an Excel sheet, return its corresponding column number.
+
+
+Problem Constraints
+1 <= length of the column title <= 5
+
+
+Input Format
+The only argument is a string that represents the column title in the excel sheet.
+
+
+Output Format
+Return a single integer that represents the corresponding column number.
+
+
+public class Solution {
+    public int titleToNumber(String A) {
+        int n = A.length();
+        int ans = 0;
+        int mul = 1;
+        // Iterate from the last character to the first character
+        for (int i = n - 1; i >= 0; i--) {
+            // Calculate the value of the current character
+            int charValue = A.charAt(i) - 'A' + 1;
+            // Add the value of the current character to the answer, multiplied by the appropriate power of 26
+            ans += mul * charValue;
+            // Update the multiplier for the next character
+            mul *= 26;
+        }
+        return ans;
+    }
+}
+
+
+
+class Solution:
+    # @param A : string
+    # @return an integer
+    def titleToNumber(self, A):
+        """
+        Converts an Excel column title to its corresponding column number.
+        Args:
+            A (str): The Excel column title.
+        Returns:
+            int: The corresponding column number.
+        """
+        n = len(A)  # Get the length of the column title
+        ans = 0     # Initialize the answer to 0
+        mul = 1     # Initialize the multiplier to 1
+        for i in range(n - 1, -1, -1):
+            """
+            Iterate through the column title from right to left.
+            - Calculate the contribution of the current character to the column number
+              by multiplying its value (ord(A[i]) - ord('A') + 1) by the current multiplier.
+            - Add the contribution to the answer.
+            - Update the multiplier for the next character by multiplying it by 26.
+            """
+            ans += mul * (ord(A[i]) - ord('A') + 1)
+            mul *= 26
+        return ans
+
+---
+Time Complexity Analysis
+Loop: Iterates from n-1 to 0, which is n iterations.
+Operations inside the loop:
+	ord(A[i]) - ord('A') + 1: Constant time operations.
+	mul *= 26: Constant time operation.
+	ans += mul * (ord(A[i]) - ord('A') + 1): Constant time operation.
+Therefore, the overall time complexity is O(n), where n is the length of the input string A.
+
+Space Complexity Analysis
+The code uses a few variables (n, ans, mul) that occupy constant space. There's no data structure that grows with the input size.
+Therefore, the space complexity is O(1).
+In conclusion, the time complexity of the code is O(n) and the space complexity is O(1).
