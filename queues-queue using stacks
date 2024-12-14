@@ -1,0 +1,158 @@
+Queue using stacks
+
+Problem Description
+Implement a First In First Out (FIFO) queue using stacks only.
+The implemented queue should support all the functions of a normal queue (push, peek, pop, and empty).
+Implement the UserQueue class:
+• void push(int X) : Pushes element X to the back of the queue.
+• int pop() : Removes the element from the front of the queue and returns it.
+• int peek() : Returns the element at the front of the queue.
+• boolean empty() : Returns true if the queue is empty, false otherwise.
+NOTES:
+• You must use only standard operations of a stack, which means only push to top, peek/pop from top, size, and is empty operations are valid.
+• Depending on your language, the stack may not be supported natively. You may simulate a stack using a list or deque (double-ended queue) as long as you use only a stack's standard operations.
+
+
+Problem Constraints
+1 <= X <= 109
+At most 1000 calls will be made to push, pop, peek, and empty function.
+All the calls to pop and peek are valid. i.e. pop and peek are called only when the queue is non-empty.
+
+
+Example Input
+Input 1:
+ 1) UserQueue()
+ 2) push(20)
+ 3) empty()
+ 4) peek()
+ 5) pop()
+ 6) empty()
+ 7) push(30)
+ 8) peek()
+ 9) push(40)
+ 10) peek()
+Input 2:
+ 1) UserQueue()
+ 2) push(10)
+ 3) push(20)
+ 4) push(30)
+ 5) pop()
+ 6) pop()
+
+
+Example Output
+Output 1:
+ false
+ 20
+ 20
+ true
+ 30
+ 30 
+Output 2:
+ 10
+ 20
+
+
+Example Explanation
+Explanation 1:
+ Queue => 20
+ Queue => -
+ Queue => 30
+ Queue => 30, 40 
+Explanation 2:
+ Queue => 10
+ Queue => 10, 20
+ Queue => 10, 20, 30
+ Queue => 20, 30
+ Queue => 30
+
+
+public static class UserQueue {
+    static Stack<Integer> s;
+    static Stack<Integer> s1;
+    /** Initialize your data structure here. */
+    UserQueue() {
+        s = new Stack<>();
+        s1 = new Stack<>();
+    }
+    
+    /** Push element X to the back of queue. */
+    static void push(int X) {
+        s.push(X);
+    }
+    
+    /** Removes the element from in front of queue and returns that element. */
+    static int pop() {
+        if(s1.isEmpty()){
+            while(!s.isEmpty())
+            {
+                s1.push(s.pop());
+            }
+        }
+        return s1.pop();
+    }
+    
+    /** Get the front element of the queue. */
+    static int peek() {
+        if(s1.isEmpty()){
+            while(!s.isEmpty()){
+                s1.push(s.pop());
+            }
+        }
+        return s1.peek();
+    }
+    
+    /** Returns whether the queue is empty. */
+    static boolean empty() {
+        return s1.isEmpty() && s.isEmpty();
+    }
+}
+
+Python 
+
+
+class UserQueue:
+    def __init__(self):
+        """
+        Initialize your data structure here.
+        """
+        self.s = []  # Main stack
+        self.s1 = []  # Temporary stack
+    def push(self, x: int) -> None:
+        """
+        Push element x to the back of queue.
+        """
+        self.s.append(x)
+    def pop(self) -> int:
+        """
+        Removes the element from in front of queue and returns that element.
+        """
+        if not self.s1:
+            while self.s:
+                self.s1.append(self.s.pop())
+        return self.s1.pop()
+    def peek(self) -> int:
+        """
+        Get the front element.
+        """
+        if not self.s1:
+            while self.s:
+                self.s1.append(self.s.pop())
+        return self.s1[-1]
+    def empty(self) -> bool:
+        """
+        Returns whether the queue is empty.
+        """
+        return not self.s1 and not self.s
+
+
+-----
+Time Complexity:
+	• push: The push operation simply appends an element to the s stack, which is a constant-time operation (O(1)).
+	• pop and peek: These operations might involve transferring elements from the s stack to the s1 stack if s1 is empty. In the worst case, all elements from s would need to be transferred, resulting in O(N) time complexity, where N is the number of elements in the queue. However, in practice, the average case time complexity is O(1), as the elements are typically transferred only once for a sequence of pop or peek operations.
+	• empty: This operation checks the emptiness of both stacks, which is a constant-time operation (O(1)).
+Space Complexity:
+	• The s and s1 stacks can store up to N elements, where N is the maximum size of the queue. Therefore, the space complexity of the UserQueue class is O(N).
+In summary, the UserQueue class has a time complexity of O(1) for most operations, with a worst-case time complexity of O(N) for pop and peek. The space complexity is O(N).
+
+

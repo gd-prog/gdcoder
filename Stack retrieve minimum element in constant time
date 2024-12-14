@@ -1,0 +1,192 @@
+/* Problem
+
+Design a stack that supports push, pop, top, and retrieve the minimum element in constant time.
+push(x) -- Push element x onto stack.
+pop() -- Removes the element on top of the stack.
+top() -- Get the top element.
+getMin() -- Retrieve the minimum element in the stack.
+NOTE:
+All the operations have to be constant time operations.
+getMin() should return -1 if the stack is empty.
+pop() should return nothing if the stack is empty.
+top() should return -1 if the stack is empty.
+*/
+
+Java code
+public class Solution {
+
+  private Stack<Integer> stack;
+  private Stack<Integer> minStack;  // Stores minimum values encountered so far
+
+  public Solution() {
+    stack = new Stack<>();
+    minStack = new Stack<>();
+  }
+
+  public void push(int x) {
+    stack.push(x);
+    // Update minimum stack if the new element is less than or equal to the current minimum
+    minStack.push(Math.min(x, minStack.isEmpty() ? x : minStack.peek()));
+  }
+
+  public void pop() {
+    if (!stack.isEmpty()) {
+      stack.pop();
+      minStack.pop();
+    }
+  }
+
+  public int top() {
+    return stack.isEmpty() ? -1 : stack.peek();
+  }
+
+  public int getMin() {
+    return minStack.isEmpty() ? -1 : minStack.peek();
+  }
+}
+
+Python code
+class MinStack:
+  """
+  A stack that supports push, pop, top, and getMin in constant time.
+  """
+
+  def __init__(self):
+    """
+    Initializes the stack with an empty list for elements and another list to store minimum values.
+    """
+    self.stack = []
+    self.min_stack = []  # Stores minimum values encountered so far
+
+  def push(self, x: int) -> None:
+    """
+    Pushes an element onto the stack.
+    """
+    self.stack.append(x)
+    # Update minimum stack if the new element is less than or equal to the current minimum
+    self.min_stack.append(min(x, self.min_stack[-1] if self.min_stack else x))
+
+  def pop(self) -> None:
+    """
+    Removes the element on top of the stack.
+    """
+    if self.stack:
+      self.stack.pop()
+      self.min_stack.pop()
+
+  def top(self) -> int:
+    """
+    Returns the element on top of the stack.
+    """
+    return self.stack[-1] if self.stack else -1
+
+  def getMin(self) -> int:
+    """
+    Retrieves the minimum element in the stack.
+    """
+    return self.min_stack[-1] if self.min_stack else -1
+
+/* Time and space complexity ...
+
+Time Complexity:
+
+Push: O(1)
+Pop: O(1)
+Top: O(1)
+GetMin: O(1)
+Space Complexity:
+
+O(n)
+Explanation:
+
+Time Complexity:
+
+Push: Adding an element to the stack and updating the minStack involve constant time operations like comparisons and element access. Therefore, the push operation has a time complexity of O(1).
+Pop: Removing elements from both stack and minStack are constant time operations, leading to an overall O(1) time complexity for pop.
+Top: Accessing the top element of the stack is a constant time operation, resulting in O(1) time complexity for top.
+GetMin: Similar to top, accessing the top element of the minStack is a constant time operation, leading to O(1) time complexity for getMin.
+Space Complexity:
+
+The code utilizes two stacks: stack and minStack. In the worst case, the number of elements in both stacks can grow proportionally with the input size (n). Therefore, the space complexity is O(n).
+Additional Notes:
+
+The time complexity remains constant (O(1)) for all operations even if the input contains repeated minimum elements. This is because the update in minStack during push only happens when the new element is less than or equal to the current minimum.
+While the space complexity is O(n) in the worst case, it's a trade-off for the efficient retrieval of minimum elements in constant time.
+Overall:
+
+This implementation achieves constant time operations (O(1)) for all essential functions like push, pop, top, and getMin. However, it uses additional space proportional to the input size (O(n)) due to the second stack minStack. This space complexity is a necessary cost for maintaining the efficient retrieval of minimum elements.
+
+*/
+
+/*
+## Dry Run with Graphical Representation
+
+**Scenario:** Let's perform a dry run on the code, pushing the elements: `[5, 1, 3, 2]`
+
+**Initial State:**
+
+```
+         Stack (regular)   |   Min Stack
+        ------------------ | --------------
+        | (Empty)           | | (Empty)
+```
+
+**Pushing 5:**
+
+1. Push 5 onto the `stack`.
+2. Since 5 is the first element, it becomes the minimum element. Push 5 onto the `minStack`.
+
+```
+         Stack (regular)   |   Min Stack
+        ------------------ | --------------
+        |        5          | |        5
+```
+
+**Pushing 1:**
+
+1. Push 1 onto the `stack`.
+2. 1 is less than the current minimum (5), so update the `minStack` with 1.
+
+```
+         Stack (regular)   |   Min Stack
+        ------------------ | --------------
+        |        5          | |        1
+        |        1          | |
+```
+
+**Pushing 3:**
+
+1. Push 3 onto the `stack`.
+2. 3 is greater than the current minimum (1), so we don't update the `minStack`.
+
+```
+         Stack (regular)   |   Min Stack
+        ------------------ | --------------
+        |        5          | |        1
+        |        1          | |
+        |        3          | |
+```
+
+**Pushing 2:**
+
+1. Push 2 onto the `stack`.
+2. 2 is greater than the current minimum (1), but less than the element at the top of the `minStack` (5). However, we only update `minStack` when the new element is less than or equal to the current minimum (1) in `minStack`. Therefore, we don't update `minStack` here.
+
+```
+         Stack (regular)   |   Min Stack
+        ------------------ | --------------
+        |        5          | |        1
+        |        1          | |
+        |        3          | |
+        |        2          | |
+```
+
+**Explanation:**
+
+This dry run showcases how the `minStack` only gets updated when a new element is less than or equal to the current minimum value encountered so far. This ensures that the `minStack` always reflects the true minimum element in the `stack`.
+
+**Additional Notes:**
+
+- Even though 2 is not the minimum element in the `stack`, it doesn't affect the functionality of retrieving the actual minimum (1) using the `getMin` function.
+- The space complexity trade-off for maintaining the `minStack` allows for efficient retrieval of the minimum element in constant time (O(1)).
+*/

@@ -1,0 +1,103 @@
+/*
+Maximum Height of Staircase
+Problem Description
+Given an integer A representing the number of square blocks. The height of each square block is 1. The task is to create a staircase of max-height using these blocks.
+
+The first stair would require only one block, and the second stair would require two blocks, and so on.
+
+Find and return the maximum height of the staircase.
+
+
+
+Problem Constraints
+0 <= A <= 109
+
+
+Input Format
+The only argument given is integer A.
+
+
+
+Output Format
+Return the maximum height of the staircase using these blocks.
+
+
+
+
+*/
+
+
+Python
+--------
+
+class Solution:
+    # @param A : integer
+    # @return an integer
+    def solve(self, A):
+        """
+        Finds the maximum height of a staircase using A blocks.
+
+        Args:
+            A: The number of blocks.
+
+        Returns:
+            The maximum height of the staircase.
+        """
+
+        low, high = 1, A
+
+        while low <= high:
+            mid = (low + high) // 2
+            required_blocks = mid * (mid + 1) // 2
+
+            if required_blocks <= A:
+                low = mid + 1
+            else:
+                high = mid - 1
+
+        return low - 1
+
+Java
+-----
+
+class Solution {
+    // @param A : integer
+    // @return an integer
+    public int solve(int A) {
+/*        Finds the maximum height of a staircase using A blocks.
+
+        Args:
+            A: The number of blocks.
+
+        Returns:
+            The maximum height of the staircase.
+*/
+
+        long low = 1, high = A;
+
+        while (low <= high) {
+            long mid = (low + high) / 2;
+            long requiredBlocks = mid * (mid + 1) / 2;
+
+            if (requiredBlocks <= A) {
+                low = mid + 1;
+            } else {
+                high = mid - 1;
+            }
+        }
+
+        // The correct return value is low - 1
+        return (int)(low - 1);
+    }
+}
+
+===
+
+The time complexity of the  code remains O(log A) due to the binary search algorithm. The space complexity is still O(1) as we're using constant space for variables.
+
+Here's a breakdown of the time complexity:
+
+Binary search: The core of the algorithm is the binary search, which repeatedly divides the search space in half. This reduces the search space by a factor of 2 in each iteration.
+Calculations: The calculations for mid and requiredBlocks are constant time operations.
+Comparisons: The comparison between requiredBlocks and A is also a constant time operation.
+Since the binary search reduces the search space exponentially, the overall time complexity is logarithmic with respect to the input A.

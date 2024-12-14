@@ -1,0 +1,174 @@
+Reverse Link List 
+
+
+Problem Description
+Reverse a linked list A from position B to C.
+NOTE: Do it in-place and in one-pass.
+
+
+Problem Constraints
+1 <= |A| <= 106
+1 <= B <= C <= |A|
+
+
+Input Format
+The first argument contains a pointer to the head of the given linked list, A.
+The second arugment contains an integer, B.
+The third argument contains an integer C.
+
+
+Output Format
+Return a pointer to the head of the modified linked list.
+
+
+Example Input
+Input 1:
+ A = 1 -> 2 -> 3 -> 4 -> 5
+ B = 2
+ C = 4
+Input 2:
+ A = 1 -> 2 -> 3 -> 4 -> 5
+ B = 1
+ C = 5
+
+
+Example Output
+Output 1:
+ 1 -> 4 -> 3 -> 2 -> 5
+Output 2:
+ 5 -> 4 -> 3 -> 2 -> 1
+
+
+Example Explanation
+Explanation 1:
+ In the first example, we want to reverse the highlighted part of the given linked list : 1 -> 2 -> 3 -> 4 -> 5 
+ Thus, the output is 1 -> 4 -> 3 -> 2 -> 5 
+Explanation 2:
+ In the second example, we want to reverse the highlighted part of the given linked list : 1 -> 4 -> 3 -> 2 -> 5  
+ Thus, the output is 5 -> 4 -> 3 -> 2 -> 1 
+
+
+
+
+
+
+/**
+ * Definition for singly-linked list.
+ * class ListNode {
+ *     public int val;
+ *     public ListNode next;
+ *     ListNode(int x) { val = x; next = null; }
+ * }
+ */
+public class Solution {
+  /**
+   * Reverses a portion of a singly linked list between positions B and C (inclusive).
+   *
+   * @param A (ListNode): The head of the singly linked list.
+   * @param B (int): The starting position of the reversal (1-based indexing).
+   * @param C (int): The ending position of the reversal (1-based indexing).
+   * @return (ListNode): The head of the modified linked list with the reversed portion.
+   */
+  public ListNode reverseBetween(ListNode A, int B, int C) {
+    // Handle edge cases: Empty list or B == C, return original list.
+    if (A == null || B == C) {
+      return A;
+    }
+    // Create a dummy node to simplify handling edge cases.
+    ListNode dummy = new ListNode(0);
+    dummy.next = A;
+    ListNode prev = dummy;
+    // Move prev to the node before position B.
+    for (int i = 1; i < B; i++) {
+      prev = prev.next;
+      // Check if B is out of bounds (prev becomes null).
+      if (prev == null) {
+        return A; // Original list if B is beyond the list length.
+      }
+    }
+    // Start reversing from position B to C.
+    ListNode start = prev.next;
+    ListNode then = start.next;
+    for (int i = 0; i < C - B; i++) {
+      // Reverse links: point start.next to the node after then,
+      // then.next to the current start node, and prev.next to then.
+      start.next = then.next;
+      then.next = prev.next;
+      prev.next = then;
+      // Update then for the next iteration.
+      then = start.next;
+    }
+    // Connect the reversed portion back to the rest of the list.
+    return dummy.next;
+  }
+}
+
+---
+# Definition for singly-linked list.
+class ListNode:
+    def __init__(self, val=0, next=None):
+        self.val = val
+        self.next = next
+
+class Solution:
+    def reverseBetween(self, A: ListNode, B: int, C: int) -> ListNode:
+        """
+        Reverses a portion of a singly linked list between positions B and C (inclusive).
+
+        Args:
+            A: The head of the singly linked list.
+            B: The starting position of the reversal (1-based indexing).
+            C: The ending position of the reversal (1-based indexing).
+
+        Returns:
+            The head of the modified linked list with the reversed portion.
+        """
+
+        # Handle edge cases: Empty list or B == C, return original list.
+        if not A or B == C:
+            return A
+
+        # Create a dummy node to simplify handling edge cases.
+        dummy = ListNode(0)
+        dummy.next = A
+        prev = dummy
+
+        # Move prev to the node before position B.
+        for i in range(1, B):
+            prev = prev.next
+            # Check if m is out of bounds (prev becomes None).
+            if not prev:
+                return A  # Original list if B is beyond the list length.
+
+        # Start reversing from position B to C.
+        start = prev.next
+        then = start.next
+        for _ in range(C - B):
+            # Reverse links
+            start.next = then.next
+            then.next = prev.next
+            prev.next = then
+            # Update then for the next iteration.
+            then = start.next
+
+        # Connect the reversed portion back to the rest of the list.
+        return dummy.next
+
+
+----
+Time Complexity:
+
+The code iterates through the linked list once to find the starting position B and then iterates again to reverse the portion between B and C.
+Both iterations have a worst-case time complexity of O(N), where N is the number of nodes in the linked list.
+Therefore, the overall time complexity is O(N).
+
+Space Complexity:
+
+The code uses constant additional space for the pointers dummy, prev, start, and then.
+Therefore, the space complexity is O(1).
+
+In summary:
+
+Time Complexity: O(N)
+Space Complexity: O(1)
+This means the algorithm's running time is directly proportional to the size of the linked list, and it uses a constant amount of additional memory regardless of the input size.

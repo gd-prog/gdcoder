@@ -1,0 +1,133 @@
+Remove Nth Node from List End
+
+
+
+
+Problem Description
+Given a linked list A, remove the B-th node from the end of the list and return its head.
+For example, given linked list: 1->2->3->4->5, and B = 2.
+After removing the second node from the end, the linked list becomes 1->2->3->5.
+
+NOTE: If B is greater than the size of the list, remove the first node of the list.
+Try doing it using constant additional space.
+
+
+Problem Constraints
+1 <= |A| <= 106
+
+
+Input Format
+The first argument of input contains a pointer to the head of the linked list. The second argument of input contains the integer B.
+
+
+Output Format
+Return the head of the linked list after deleting the B-th element from the end.
+
+
+Example Input
+Input 1:
+A = 1->2->3->4->5
+B = 2
+Input 2:
+A = 1
+B = 1
+
+
+Example Output
+Output 1:
+1->2->3->5
+Output 2:
+  
+
+
+Example Explanation
+Explanation 1:
+In the first example, 4 is the second last element.
+Explanation 2:
+In the second example, 1 is the first and the last element.
+
+
+
+/**
+ * Definition for singly-linked list.
+ * class ListNode {
+ *     public int val;
+ *     public ListNode next;
+ *     ListNode(int x) { val = x; next = null; }
+ * }
+ */
+public class Solution {
+    public ListNode removeNthFromEnd(ListNode A, int B) {
+        ListNode a1=A,a2=A;
+        int size=0;
+        while(a1!=null){
+            a1=a1.next;
+            size++;
+        }
+        if(B>=size){
+            A=A.next;
+        }
+        else{
+            for(int i=0;i<size-B-1;i++){
+                a2=a2.next;
+            }
+            a2.next=a2.next.next;
+            }            
+        return A;
+    }
+}
+
+---
+
+# Definition for singly-linked list.
+class ListNode:
+    def __init__(self, x):
+        self.val = x
+        self.next = None
+class Solution:
+    def removeNthFromEnd(self, A: ListNode, B: int) -> ListNode:
+        """
+        Removes the B-th node from the end of a linked list and returns its head.
+        Args:
+            A: The head of the linked list.
+            B: The position of the node to remove from the end.
+        Returns:
+            The head of the modified linked list.
+        """
+        if not A:  # Handle empty list case
+            return None
+        # Initialize two pointers
+        p1 = A
+        p2 = A
+        # Move p2 B positions ahead (or to the end if B is greater than list length)
+        for _ in range(B):
+            if not p2:  # Handle B greater than list length
+                return A.next  # Remove head
+            p2 = p2.next
+        # Move p1 and p2 together until p2 reaches the end
+        while p2 and p2.next:
+            p1 = p1.next
+            p2 = p2.next
+        # Remove the B-th node (or first node if B is greater than list length)
+        if p2:  # If p2 is not None, remove the B-th node from the end
+            p1.next = p1.next.next
+        else:   # If p2 is None, remove the head (B was greater than list length)
+            A = A.next
+        return A
+
+---
+
+Time Complexity:
+	• Initialization: The code initializes two pointers p1 and p2, which takes constant time O(1).
+	• Moving p2 B Positions: The for loop iterates B times, moving p2 one position forward in each iteration. This takes O(B) time.
+	• Moving p1 and p2 Together: The while loop iterates until p2 reaches the end of the list. In the worst case, p2 will need to traverse the entire list, taking O(N) time, where N is the length of the linked list.
+	• Removing the Node: Setting p1.next to p1.next.next takes constant time O(1).
+Therefore, the overall time complexity is O(B + N). However, since B is always less than or equal to N (the list length), we can simplify this to O(N).
+Space Complexity:
+	• The code only uses two pointers, p1 and p2, which occupy constant space O(1).
+Therefore, the space complexity of the algorithm is O(1).
+In summary:
+	• Time Complexity: O(N)
+	• Space Complexity: O(1)
+This means the algorithm's running time is proportional to the length of the linked list, and it uses a constant amount of additional memory regardless of the input size.
+

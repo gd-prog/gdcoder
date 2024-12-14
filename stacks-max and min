@@ -1,0 +1,244 @@
+Problem Description
+Given an array of integers A.
+
+The value of an array is computed as the difference between the maximum element in the array and the minimum element in the array A.
+
+Calculate and return the sum of values of all possible subarrays of A modulo 109+7.
+
+
+
+Problem Constraints
+1 <= |A| <= 100000
+
+1 <= A[i] <= 1000000
+
+
+
+Input Format
+The first and only argument given is the integer array A.
+
+
+
+Output Format
+Return the sum of values of all possible subarrays of A modulo 109+7.
+
+
+
+
+
+
+
+
+
+Java
+
+public class Solution {
+    int[] a;
+
+    public void findNextGreaterElement(int[] Next_greater_element, int n) {
+        // This function calculates the next greater element index for each element in the array.
+        Stack<Integer> s = new Stack<>();
+        // Initialize all elements in Next_greater_element to n + 1 to indicate no greater element found.
+        for (int i = 0; i < n; i++) {
+            Next_greater_element[i + 1] = n + 1;
+        }
+        for (int i = 1; i <= n; i++) {
+            if (s.empty()) {
+                // If the stack is empty, push the current element.
+                s.push(i);
+            } else {
+                // While the stack is not empty and the current element is greater than the top element:
+                while (!s.empty() && a[s.peek()] <= a[i]) {
+                    // Set the next greater element for the top element to the current index.
+                    Next_greater_element[s.peek()] = i;
+                    // Pop the top element from the stack.
+                    s.pop();
+                }
+                // Push the current element onto the stack.
+                s.push(i);
+            }
+        }
+    }
+
+    public void findPreviousGreaterElement(int[] Previous_greater_element, int n) {
+        // This function calculates the previous greater element index for each element in the array.
+        Stack<Integer> s = new Stack<>();
+        // Initialize all elements in Previous_greater_element to 0 to indicate no greater element found.
+        for (int i = 0; i < n; i++) {
+            Previous_greater_element[i + 1] = 0;
+        }
+        for (int i = n; i > 0; i--) {
+            if (s.empty()) {
+                // If the stack is empty, push the current element.
+                s.push(i);
+            } else {
+                // While the stack is not empty and the current element is greater than the top element:
+                while (!s.empty() && a[i] > a[s.peek()]) {
+                    // Set the previous greater element for the top element to the current index.
+                    Previous_greater_element[s.peek()] = i;
+                    // Pop the top element from the stack.
+                    s.pop();
+                }
+                // Push the current element onto the stack.
+                s.push(i);
+            }
+        }
+    }
+
+    public void findPreviousSmallerElement(int[] Previous_smaller_element, int n) {
+        // This function calculates the previous smaller element index for each element in the array.
+        Stack<Integer> s = new Stack<>();
+        // Initialize all elements in Previous_smaller_element to 0 to indicate no smaller element found.
+        for (int i = 0; i < n; i++) {
+            Previous_smaller_element[i + 1] = 0;
+        }
+        for (int i = n; i > 0; i--) {
+            if (s.empty()) {
+                // If the stack is empty, push the current element.
+                s.push(i);
+            } else {
+                // While the stack is not empty and the current element is less than or equal to the top element:
+                while (!s.empty() && a[i] <= a[s.peek()]) {
+                    // Set the previous smaller element for the top element to the current index.
+                    Previous_smaller_element[s.peek()] = i;
+                    // Pop the top element from the stack.
+                    s.pop();
+                }
+                // Push the current element onto the stack.
+                s.push(i);
+            }
+        }
+    }
+
+    public void findNextSmallerElement(int[] Next_smaller_element, int n) {
+        // This function calculates the next smaller element index for each element in the array.
+        Stack<Integer> s = new Stack<>();
+        // Initialize all elements in Next_smaller_element to n + 1 to indicate no smaller element found.
+        for (int i = 0; i < n; i++) {
+            Next_smaller_element[i + 1] = n + 1;
+        }
+        for (int i = 1; i <= n; i++) {
+            if (s.empty()) {
+                // If the stack is empty, push the current element.
+                s.push(i);
+            } else {
+                // While the stack is not empty and the current element is less than the top element:
+                while (!s.empty() && a[i] < a[s.peek()]) {
+                    // Set the next smaller element for the top element to the current index.
+                    Next_smaller_element[s.peek()] = i;
+                    // Pop the top element from the stack.
+                    s.pop();
+                }
+                // Push the current element onto the stack.
+                s.push(i);
+            }
+        }
+    }
+
+    public int solve(int[] A) {
+        int n = A.length, mod = 1000 * 1000 * 1000 + 7;
+        a = new int[n + 1];
+        int Next_greater_element[] = new int[n + 1];
+        int Previous_greater_element[] = new int[n + 1];
+        int Previous_smaller_element[] = new int[n + 1];
+        int Next_smaller_element[] = new int[n + 1];
+        for (int i = 0; i < n; i++) {
+            a[i + 1] = A[i];
+        }
+        findNextGreaterElement(Next_greater_element, n);
+        findPreviousGreaterElement(Previous_greater_element, n);
+        findPreviousSmallerElement(Previous_smaller_element, n);
+        findNextSmallerElement(Next_smaller_element, n);
+        long ans = 0;
+        for (int i = 1; i <= n; i++) {
+            long right = Next_greater_element[i] - i;
+            long left = i - Previous_greater_element[i];
+            ans += (((left * right) % mod) * a[i]) % mod;
+            ans %= mod;
+            left = i - Previous_smaller_element[i];
+            right = Next_smaller_element[i] - i;
+            ans -= (((left * right) % mod) * a[i]) % mod;
+            ans += mod;
+            ans %= mod;
+        }
+        return (int) ans;
+    }
+}
+
+
+
+
+
+
+
+
+Python
+
+from collections import deque
+
+class Solution:
+    def solve(self, A):
+        """
+        This function calculates the sum of values of all possible subarrays of A modulo 10**9 + 7.
+
+        Args:
+            A: The input array.
+
+        Returns:
+            The sum of the values for all subarrays (modulo 10**9 + 7).
+        """
+        mod = 10**9 + 7
+        n = len(A)
+        next_greater = [n] * n
+        previous_greater = [-1] * n
+        next_smaller = [n] * n
+        previous_smaller = [-1] * n
+
+        stack = deque()
+        # Find next greater elements
+        for i in range(n):
+            while stack and A[stack[-1]] < A[i]:
+                next_greater[stack.pop()] = i
+            stack.append(i)
+
+        stack.clear()
+        # Find previous greater elements
+        for i in range(n-1, -1, -1):
+            while stack and A[stack[-1]] <= A[i]:
+                previous_greater[stack.pop()] = i
+            stack.append(i)
+
+        stack.clear()
+        # Find next smaller elements
+        for i in range(n):
+            while stack and A[stack[-1]] > A[i]:
+                next_smaller[stack.pop()] = i
+            stack.append(i)
+
+        stack.clear()
+        # Find previous smaller elements
+        for i in range(n-1, -1, -1):
+            while stack and A[stack[-1]] >= A[i]:
+                previous_smaller[stack.pop()] = i
+            stack.append(i)
+
+        ans = 0
+        # Calculate contribution for each element
+        for i in range(n):
+            # Calculate the lengths of subarrays that start with A[i] and end with the next greater/smaller element
+            left_greater = i - previous_greater[i]
+            right_greater = next_greater[i] - i
+            left_smaller = i - previous_smaller[i]
+            right_smaller = next_smaller[i] - i
+
+            # Calculate the maximum and minimum contributions to the sum
+            max_contribution = (left_greater * right_greater) % mod * A[i] % mod
+            min_contribution = (left_smaller * right_smaller) % mod * A[i] % mod
+
+            # Add the maximum contribution and subtract the minimum contribution to the final answer
+            ans = (ans + max_contribution - min_contribution + mod) % mod
+
+        return ans
+
+
+

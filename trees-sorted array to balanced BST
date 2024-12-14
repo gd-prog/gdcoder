@@ -1,0 +1,110 @@
+Sorted Array to Balanced BST
+Given an array where elements are sorted in ascending order, convert it to a height Balanced Binary Search Tree (BBST).
+Balanced tree : a height-balanced binary tree is defined as a binary tree in which the depth of the two subtrees of every node never differ by more than 1.
+
+
+
+/**
+ * Definition for a binary tree node.
+ * class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode(int x) { val = x; }
+ * }
+ */
+public class Solution {
+  // DO NOT MODIFY THE ARGUMENTS WITH "final" PREFIX. IT IS READ ONLY
+
+  /**
+   * Converts a sorted array to a height-balanced Binary Search Tree (BST).
+   *
+   * @param A The sorted array to be converted.
+   * @return The root node of the constructed BST.
+   *
+   * Time complexity: O(n), where n is the length of the array.
+   * Space complexity: O(log n) due to the recursive call stack.
+   */
+  public TreeNode sortedArrayToBST(int[] A) {
+    return sortedArrToBST(A, 0, A.length - 1);
+  }
+
+  /**
+   * Recursive helper function to build the BST from a sorted array segment.
+   *
+   * @param A The sorted array.
+   * @param left The starting index of the sub-array to be processed.
+   * @param right The ending index of the sub-array to be processed.
+   * @return The root node of the BST constructed from the sub-array.
+   */
+  private TreeNode sortedArrToBST(int[] A, int left, int right) {
+    if (left > right) {
+      return null;  // Base case: empty sub-array
+    }
+
+    int mid = (left + right) / 2;
+    TreeNode root = new TreeNode(A[mid]);  // Root is the middle element
+
+    // Recursively build left and right subtrees
+    root.left = sortedArrToBST(A, left, mid - 1);
+    root.right = sortedArrToBST(A, mid + 1, right);
+
+    return root;
+  }
+}
+
+----
+# Definition for a binary tree node
+class TreeNode:
+    def __init__(self, val=0, left=None, right=None):
+        self.val = val
+        self.left = left
+        self.right = right
+
+class Solution:
+    # @param A : tuple of integers
+    # @return the root node in the tree
+    def sortedArrayToBST(self, A):
+        """
+        Converts a sorted array to a height-balanced Binary Search Tree (BST).
+
+        Args:
+            A (tuple of integers): The sorted array to be converted.
+
+        Returns:
+            TreeNode: The root node of the constructed BST.
+
+        This function uses a recursive helper function to divide the array into sub-arrays,
+        construct the root node from the middle element, and recursively build the left
+        and right subtrees.
+        """
+
+        def helper(left, right):
+            """
+            Recursive helper function to build the BST from a sorted array segment.
+
+            Args:
+                left (int): The starting index of the sub-array to be processed.
+                right (int): The ending index of the sub-array to be processed.
+
+            Returns:
+                TreeNode: The root node of the BST constructed from the sub-array.
+            """
+
+            if left > right:
+                return None  # Base case: empty sub-array
+
+            mid = (left + right) // 2
+            root = TreeNode(A[mid])  # Root is the middle element
+
+            # Recursively build left and right subtrees
+            root.left = helper(left, mid - 1)
+            root.right = helper(mid + 1, right)
+
+            return root
+
+        return helper(0, len(A) - 1)
+
+---
+The time complexity of the provided code to convert a sorted array to a height-balanced Binary Search Tree (BST) is O(n), where n is the length of the input array. This is because the helper function recursively divides the array into sub-arrays, and each node in the resulting BST is visited exactly once. The operations performed at each node (creating the node, setting its value, and recursively building its children) take constant time.
+The space complexity of the code is O(log n) in the best case (a balanced BST) and O(n) in the worst case (a skewed BST). This is due to the recursive nature of the helper function, which can create a stack of up to log n function calls in the best case (balanced BST) and n function calls in the worst case (skewed BST). In the best case, the height of the BST is logarithmic in the number of nodes, leading to a logarithmic space complexity. In the worst case, the BST is skewed, and the height is equal to the number of nodes, resulting in a linear space complexity.

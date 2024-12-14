@@ -1,0 +1,87 @@
+Compute nCr % m
+
+
+Problem Description
+Given three integers A, B, and C, where A represents n, B represents r, and C represents m, find and return the value of nCr % m where nCr % m = (n!/((n-r)!*r!))% m.
+x! means factorial of x i.e. x! = 1 * 2 * 3... * x.
+
+
+Problem Constraints
+1 <= A * B <= 106
+1 <= B <= A
+1 <= C <= 106
+
+
+Input Format
+The first argument given is integer A ( = n).
+The second argument given is integer B ( = r).
+The third argument given is integer C ( = m).
+
+
+Output Format
+Return the value of nCr % m.
+
+
+
+public class Solution {
+    public int solve(int A, int B, int C) {
+        // dp[n][r] will store the value of nCr (number of combinations of n items taken r at a time)
+        int[][] dp = new int[A + 1][B + 1];
+        // Iterate over all possible values of n (from 0 to A)
+        for(int i = 0; i <= A; i++) {
+            // Iterate over all possible values of r (from 0 to the minimum of i and B)
+            for(int j = 0; j <= Math.min(i, B); j++) {
+                // Base cases: if r equals n (nCr = 1) or r equals 0 (nC0 = 1)
+                if(j == i || j == 0) {
+                    dp[i][j] = 1; // There is 1 way to choose all or none
+                } else {
+                    // Use the recursive relation to calculate nCr:
+                    // nCr = (n - 1)C(r - 1) + (n - 1)Cr
+                    dp[i][j] = (dp[i - 1][j - 1] % C + dp[i - 1][j] % C) % C;
+                    // The result is taken modulo C to avoid overflow
+                }
+            }
+        }
+        // Return the result of A choose B, also taken modulo C
+        return dp[A][B] % C;
+    }
+}
+
+
+---
+
+
+class Solution:
+    def solve(self, A, B, C):
+        """
+        Calculates the value of nCr (combination of n items taken r at a time) modulo C.
+        Args:
+            A: The total number of items.
+            B: The number of items to choose.
+            C: The modulus to apply.
+        Returns:
+            The value of nCr modulo C.
+        """
+        # Create a 2D dp array to store the calculated values
+        dp = [[0] * (B + 1) for _ in range(A + 1)]
+        # Fill the base case for 0C0
+        dp[0][0] = 1  # 0C0 is defined as 1
+        # Fill the dp table using the recurrence relation
+        for i in range(1, A + 1):
+            # We always have 1 way to choose 0 items from any number of items
+            dp[i][0] = 1  # nC0 = 1 for any n >= 0
+            
+            for j in range(1, min(i, B) + 1):
+                # nCr = (n - 1)C(r - 1) + (n - 1)Cr
+                dp[i][j] = (dp[i - 1][j - 1] % C + dp[i - 1][j] % C) % C
+        # Return the result of A choose B
+        return dp[A][B] % C
+
+---
+Time Complexity Analysis
+Outer loop: Iterates from 1 to A. This loop runs A-1 times.Inner loop: Iterates from 1 to min(i, B). In the worst case, B is A, so this loop runs A-1 times as well.
+Therefore, the total number of iterations is (A-1) * (A-1) = A^2 - 2A + 1.
+Since the operations inside the loops are constant time (modulo operations and additions), the overall time complexity is O(A^2).
+Space Complexity Analysis
+The dp array is of size (A+1) x (B+1). In the worst case, B is A, so the space complexity is O((A+1) * (A+1)), which simplifies to O(A^2).
+Therefore, both the time and space complexity of the given code are O(A^2).

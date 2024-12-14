@@ -1,0 +1,100 @@
+Serialize Binary Tree
+
+Problem Description
+Given the root node of a Binary Tree denoted by A. You have to Serialize the given Binary Tree in the described format.
+Serialize means encode it into a integer array denoting the Level Order Traversal of the given Binary Tree.
+NOTE:
+• In the array, the NULL/None child is denoted by -1.
+• For more clarification check the Example Input.
+
+
+Problem Constraints
+1 <= number of nodes <= 105
+
+
+Input Format
+Only argument is a A denoting the root node of a Binary Tree.
+
+
+Output Format
+Return an integer array denoting the Level Order Traversal of the given Binary Tree.
+
+
+
+# Definition for a binary tree node.
+class TreeNode:
+    def __init__(self, val=0, left=None, right=None):
+        self.val = val
+        self.left = left
+        self.right = right
+class Solution:
+    # @param A : root node of tree
+    # @return a list of integers
+    def solve(self, root: TreeNode):
+        if not root:
+            return [-1]
+        result = []
+        queue = [root]
+        while queue:
+            node = queue.pop(0)
+            if not node:
+                result.append(-1)
+            else:
+                result.append(node.val)
+                queue.append(node.left)
+                queue.append(node.right)
+        return result
+
+
+
+
+
+/**
+ * Definition for binary tree
+ * class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode(int x) {
+ *         val = x;
+ *         left=null;
+ *         right=null;
+ *     }
+ * }
+ */
+public class Solution {
+    public int[] solve(TreeNode A) {
+        // If the root is null, return an array containing -1
+        if (A == null) {
+            return new int[]{-1};
+        }
+        // Create a list to store the serialized values and a queue for level order traversal
+        List<Integer> result = new ArrayList<>();
+        Queue<TreeNode> queue = new LinkedList<>();
+        queue.offer(A);
+        // Perform level order traversal
+        while (!queue.isEmpty()) {
+            TreeNode node = queue.poll();
+            // If the current node is null, add -1 to the list
+            if (node == null) {
+                result.add(-1);
+            } else {
+                // Add the node's value to the list and enqueue its children
+                result.add(node.val);
+                queue.offer(node.left);
+                queue.offer(node.right);
+            }
+        }
+        // Convert the list to an int array
+        int[] resultArray = new int[result.size()];
+        for (int i = 0; i < result.size(); i++) {
+            resultArray[i] = result.get(i);
+        }
+        return resultArray;
+    }
+}
+
+
+The time complexity of the provided Java code for serializing a binary tree into a level order traversal array is O(N), where N is the number of nodes in the tree. This is because the code performs level order traversal, visiting each node exactly once.
+The space complexity is also O(N) due to the queue used for level order traversal. In the worst case (a complete binary tree), the queue will need to store all nodes at a particular level, which can be up to N/2 nodes. Additionally, the result list will store N elements, contributing to the overall space complexity.
+

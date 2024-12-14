@@ -1,0 +1,211 @@
+/*
+Given a string A denoting an expression. It contains the following operators '+', '-', '*', '/'.
+
+Check whether A has redundant braces or not.
+
+NOTE: A will be always a valid expression and will not contain any white spaces.
+
+*/
+
+Java
+
+public class Solution {
+
+    public int braces(String A) {
+        // Use a stack to keep track of characters
+        Stack<Character> stack = new Stack<>();
+        for (char ch : A.toCharArray()) {
+            if (ch == ')') {
+                // Check for redundant braces based on elements popped
+                char top = stack.pop();
+                boolean hasOperator = false;
+                while (top != '(') {
+                    // If we find an operator, set the flag to true
+                    if (top == '+' || top == '-' || top == '*' || top == '/') {
+                        hasOperator = true;
+                    }
+                    top = stack.pop();
+                }
+                // If no operator was found inside the braces, they are redundant  // Remark
+                if (!hasOperator) {
+                    return 1;
+                }
+            } else {
+                // Push every other character onto the stack
+                stack.push(ch);
+            }
+        }
+        // If we complete the loop without finding redundant braces
+        return 0;
+    }
+}
+
+
+
+Python
+
+class Solution:
+  # @param A : string
+  # @return an integer
+    def braces(self, A):
+        """
+        Checks if the given expression has redundant braces.
+        Args:
+            A: A string representing the expression.
+        Returns:
+            1 if there are redundant braces, 0 otherwise.
+        """
+        stack = []
+        for char in A:
+            if char == ')':
+                top = stack.pop()
+                elements_inside = 0
+                while top != '(':
+                    elements_inside += 1
+                    top = stack.pop()
+                if elements_inside < 2:
+                    return 1
+            else:
+                stack.append(char)
+        # If the stack is empty after processing, all braces are valid
+        return 0
+
+
+/*
+Time Complexity:
+
+The code iterates through the entire input string A once in the for loop, with a character processed in each iteration. This has a linear time complexity of O(n).
+Inside the loop, the operations like pushing/popping elements from the stack, comparisons, and checking for operators are all constant time operations.
+These constant time operations are nested within the loop but do not significantly affect the overall complexity. Therefore, the dominant factor is the single iteration through the string, leading to O(n) time complexity.
+Space Complexity:
+
+The code uses a stack (stack) to store characters during processing.
+In the worst case, the entire expression could be enclosed within parentheses, leading to all characters being pushed onto the stack.
+The size of the stack can potentially grow linearly with the length of the input string (n). This is the dominant factor for space complexity, resulting in O(n) space complexity.
+*/
+
+/* Dry run
+Input Expression: A = "a+(b*c)"
+
+Step-by-Step Breakdown:
+
+1. Initialization:
+
+Stack: [] (Empty)
+2. Processing Character 'a':
+
+As 'a' is an operand, it's pushed onto the stack.
+Stack: [a]
+3. Processing Character '+':
+
+'+' is an operator, so it's pushed onto the stack.
+Stack: [a, +]
+4. Processing Character '(':
+
+'(' is pushed onto the stack for tracking the beginning of a parenthetical expression.
+Stack: [a, +, (]
+5. Processing Character 'b':
+
+'b' is an operand, so it's pushed onto the stack.
+Stack: [a, +, (, b]
+6. Processing Character '*':
+
+'*' is an operator, so it's pushed onto the stack.
+Stack: [a, +, (, b, *]
+7. Processing Character 'c':
+
+'c' is an operand, so it's pushed onto the stack.
+Stack: [a, +, (, b, *, c]
+8. Processing Character ')':
+
+This is a closing parenthesis.
+We pop elements from the stack until we encounter the corresponding '('.
+Popped: 'c' (operand). Stack: [a, +, (, b, *]
+Popped: '*' (operator). Stack: [a, +, (, b]
+We've reached the opening parenthesis, and the popped elements include an operator (*).
+Since an operator was found inside the parentheses, it's a valid expression. No further action needed.
+9. Processing Remaining Characters:
+
+There are no more characters in the string.
+10. Final Stack:
+
+Stack: [a, +, (, b]
+Graphical Representation:
+
+             +----------+
+             |         | a (operand)
+             +----------+
+                   |
+                   v
+             +----------+
+             |         | a (operand)
+             +----------+
+                   |
+                   v
+             +----------+
+             |         | a (operand)
+             +----------+
+                   |
+                   v (Operator)
+             +----------+
+             |         | a (operand)
+             +----------+
+                   |
+                   v (Opening Parenthesis)
+             +----------+
+             |         | a (operand)
+             +----------+
+                   |
+                   v (Operator)
+             +----------+
+             |         | a (operand)
+             +----------+
+                   |
+                   v (Operand)
+             +----------+
+             |         | a (operand)
+             +----------+
+                   |
+                   v (Operator)
+             +----------+
+             |         | a (operand)
+             +----------+
+                   |
+                   v (Operand)
+             +----------+
+             |         | a (operand)  <-- Stack after processing 'b'
+             +----------+
+                   |
+                   v (Operator)
+             +----------+
+             |         | a (operand)
+             +----------+
+                   |
+                   v (Operand)
+             +----------+
+             |         | a (operand)  <-- Stack after processing 'c'
+             +----------+
+                   |
+                   v (Closing Parenthesis)
+             +----------+
+             |         | b (operand)   <-- Popped element (operand)
+             +----------+          |
+                   |                   v (Continue popping)
+             +----------+
+             |         | a (operand)   <-- Stack after popping 'c'
+             +----------+          |
+                   |                   v (Continue popping)
+             +----------+
+             |         | a (operand)   <-- Stack after popping '*' (operator)
+             +----------+          |
+                   |                   v (Reached opening parenthesis)
+                   +----------+         We found an operator inside the parentheses.
+                   |         |         No redundant braces.
+
+**Conclusion:**
+
+The expression `a+(b*c)` does not have redundant braces. This is verified through the dry run process where an operator (*) was found inside the parentheses during the processing of the closing parenthesis ')'.
+
+
+
+*/

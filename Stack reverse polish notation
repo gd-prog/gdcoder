@@ -1,0 +1,196 @@
+/* Java
+An arithmetic expression is given by a string array A of size N. Evaluate the value of an arithmetic expression in Reverse Polish Notation.
+
+Valid operators are +, -, *, /. Each string may be an integer or an operator.
+
+Note: Reverse Polish Notation is equivalent to Postfix Expression, where operators are written after their operands.
+
+*/
+
+
+
+
+
+public class EvaluateRPN { // descriptive class name
+
+  public static int evalRPN(String[] tokens) {
+    Stack<Integer> stack = new Stack<>(); // Initialize an empty stack
+
+    for (String token : tokens) {
+      if (isOperator(token)) {
+        // Operator encountered, pop two operands, perform operation, and push result
+        if (stack.size() < 2) {  // Handle insufficient operands for operators
+          throw new IllegalArgumentException("Invalid RPN expression: Missing operands");
+        }
+        int operand2 = stack.pop();
+        int operand1 = stack.pop();
+        int result = calculate(operand1, operand2, token);
+        stack.push(result);
+      } else {
+        // Operand encountered, convert to integer and push to stack
+        try {
+          stack.push(Integer.parseInt(token));  // Handle potential non-integer input
+        } catch (NumberFormatException e) {
+          throw new IllegalArgumentException("Invalid RPN expression: Invalid operand format");
+        }
+      }
+    }
+
+    // Check if only one element remaining (final result)
+    if (stack.size() != 1) {
+      throw new IllegalArgumentException("Invalid RPN expression: Extra tokens");
+    }
+
+    return stack.pop();
+  }
+
+  private static boolean isOperator(String token) {
+    return token.equals("+") || token.equals("-") || token.equals("*") || token.equals("/");
+  }
+
+  private static int calculate(int operand1, int operand2, String operator) {
+    switch (operator) {
+      case "+":
+        return operand1 + operand2;
+      case "-":
+        return operand1 - operand2;
+      case "*":
+        return operand1 * operand2;
+      case "/":
+        if (operand2 == 0) {
+          throw new ArithmeticException("Division by zero");
+        }
+        return operand1 / operand2;  // Integer division for RPN
+      default:
+        throw new IllegalArgumentException("Invalid operator: " + operator);
+    }
+  }
+
+  public static void main(String[] args) {
+    String[] expression = {"2", "1", "+", "3", "*"};
+    int result = evalRPN(expression);
+    System.out.println(result); // Output: 9
+  }
+}
+
+/* Explanation
+
+Class Name: The class name is changed to EvaluateRPN for better clarity.
+evalRPN Method:
+The function signature remains the same: public static int evalRPN(String[] tokens).
+Stack Initialization: An empty stack (stack) is created to store operands during processing.
+Iteration over Tokens: The for loop iterates through each token in the input array (tokens).
+Operator Handling:
+If the token is an operator, the code checks for potential insufficient operands by verifying stack.size() >= 2. If fewer than two operands are present, an IllegalArgumentException is thrown.
+It then pops two operands (operand2, operand1) from the stack and calls calculate to perform the operation based on the operator.
+The result is pushed back onto the stack.
+Operand Handling:
+If the token is an operand, it's converted to an integer using Integer.parseInt within a try-catch block. This handles potential non-integer input by throwing an IllegalArgumentException if the conversion fails.
+The converted integer is pushed onto the stack.
+Final Check: After processing, the code ensures there's only one element left in the stack (the final result) by checking stack.size() == 1. If not, it throws an IllegalArgumentException indicating extra tokens.
+Return Result: The final element (the result) is popped from the stack and returned.
+isOperator Method: This helper method remains unchanged, checking if a token is a supported operator.
+calculate Method: This helper method also remains the same, performing calculations based on the operator and handling division by zero.
+main Method: This method demonstrates how to use evalRPN with a sample RPN expression and prints the result.
+
+*/
+
+/* Time Complexity
+
+Best-case: O(n), where n is the number of tokens in the expression. This occurs for a well-formed expression where the number of operands and operators is balanced.
+Average-case: O(n), as the main loop iterates through all tokens.
+Worst-case: O(n), similar to the average case.
+*/
+
+/* Space complexity
+The code uses a stack to store operands during processing. In the worst case, where the entire expression consists of operands before encountering an operator, the stack depth will be equal to the number of operands (n). Therefore, the space complexity is O(n).
+*/
+
+/* Dry run
+Input: ["2", "1", "+", "3", "*"]
+
+Step	Token	Stack Before	Action (Pop)	Stack After
+1	"2"	(Empty)	Push	"2"
+2	"1"	"2"	Push	"2", "1"
+3	"+"	"2", "1"	Pop 2 operands, calculate	"3"
+5	"*"	"3", "3"	Pop 2 operands, calculate	"9"
+
+*/
+
+/* Python code
+
+class Solution:
+  """
+  This class defines a method to evaluate a Reverse Polish Notation (RPN) expression.
+  """
+
+  def evalRPN(self, A):
+    """
+    Evaluates the value of an arithmetic expression in Reverse Polish Notation (RPN).
+
+    Args:
+        A: A list of strings representing the RPN expression.
+
+    Returns:
+        The integer value of the evaluated expression.
+
+    Raises:
+        ValueError: If the RPN expression is invalid (missing operands or extra tokens).
+        ZeroDivisionError: If division by zero occurs.
+    """
+    stack = []
+    for char in A:
+      if char in "+-*/":
+        # Operator encountered, pop two operands and perform operation
+        try:
+          operand2 = stack.pop()  # Pop second operand (right operand)
+          operand1 = stack.pop()  # Pop first operand (left operand)
+          if char == "+":
+            result = operand1 + operand2
+          elif char == "-":
+            result = operand1 - operand2
+          elif char == "*":
+            result = operand1 * operand2
+          else:  # char == "/"
+            if operand2 == 0:
+              raise ZeroDivisionError("Division by zero")
+            result = operand1 // operand2  # Integer division for RPN
+        except IndexError:
+          raise ValueError("Invalid RPN expression: Missing operands")
+        stack.append(result)  # Push the operation result
+      else:
+        # Operand encountered, convert to integer and push to stack
+        try:
+          stack.append(int(char))
+        except ValueError:
+          raise ValueError("Invalid RPN expression: Invalid operand format")
+
+    # Check if only one element remaining (final result)
+    if len(stack) != 1:
+      raise ValueError("Invalid RPN expression: Extra tokens")
+
+    return stack.pop()  # Return the final result
+
+# Example usage (optional)
+expression = ["2", "1", "+", "3", "*"]
+result = Solution().evalRPN(expression)
+print(result)  # Output: 9
+
+*/
+/* Python code explained
+Class Definition: The class Solution is declared.
+evalRPN Method:
+It takes a list of strings A representing the RPN expression as input.
+It initializes an empty stack stack to store operands during processing.
+It iterates through each character char in A:
+If char is an operator:
+It attempts to pop two operands from the stack using a try-except block. This catches IndexError if there are not enough operands and raises a ValueError indicating an invalid expression.
+Based on the operator, it performs the calculation and stores the result.
+It handles division by zero by raising a ZeroDivisionError.
+The calculated result is pushed back onto the stack.
+If char is an operand:
+It attempts to convert the string to an integer using a try-except block. This catches ValueError if the conversion fails and raises a ValueError indicating an invalid operand format.
+The converted integer is pushed onto the stack.
+After processing, it checks if there's only one element remaining in the stack (the final result). If not, it raises a ValueError indicating extra tokens.
+It returns the final result (the last element) by popping it from the stack.
+*/

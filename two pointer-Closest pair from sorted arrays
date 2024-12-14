@@ -1,0 +1,126 @@
+Closest pair from sorted arrays
+
+Problem Description
+Given two sorted arrays of distinct integers, A and B, and an integer C, find and return the pair whose sum is closest to C and the pair has one element from each array.
+More formally, find A[i] and B[j] such that abs((A[i] + B[j]) - C) has minimum value.
+If there are multiple solutions find the one with minimum i and even if there are multiple values of j for the same i then return the one with minimum j.
+Return an array with two elements {A[i], B[j]}.
+
+
+Problem Constraints
+1 <= length of both the arrays <= 105
+1 <= A[i], B[i] <= 109
+1 <= C <= 109
+
+
+Input Format
+The first argument given is the integer array A.
+The second argument given is the integer array B.
+The third argument given is integer C.
+
+
+Output Format
+Return an array of size 2 denoting the pair which has sum closest to C.
+
+
+Example Input
+Input 1:
+ A = [1, 2, 3, 4, 5]
+ B = [2, 4, 6, 8]
+ C = 9
+Input 2:
+ A = [5, 10, 20]
+ B = [1, 2, 30]
+ C = 13
+
+
+Example Output
+Output 1:
+ [1, 8]
+Output 2:
+ [10, 2]
+
+
+
+import java.util.Arrays;
+public class Solution {
+    public int[] solve(int[] A, int[] B, int C) {
+        // Sort the arrays
+        Arrays.sort(A);
+        Arrays.sort(B);
+        // Initialize pointers
+        int n = A.length;
+        int m = B.length;
+        int i = 0;
+        int j = m - 1;
+        // Initialize variables
+        int[] closestPair = new int[2];
+        int smallestDiff = Integer.MAX_VALUE;
+        // Two-pointer approach
+        while (i < n && j >= 0) {
+            int sumPair = A[i] + B[j];
+            int diff = Math.abs(sumPair - C);
+            if (diff < smallestDiff || (diff == smallestDiff && (A[i] < closestPair[0] || (A[i] == closestPair[0] && B[j] < closestPair[1])))) {
+                smallestDiff = diff;
+                closestPair[0] = A[i];
+                closestPair[1] = B[j];
+            }
+            if (sumPair < C) {
+                i++;
+            } else {
+                j--;
+            }
+        }
+        return closestPair;
+    }
+}
+
+
+
+
+class Solution:
+    # @param A : list of integers
+    # @param B : list of integers
+    # @param C : integer
+    # @return a list of integers
+    def solve(self, A, B, C):
+        # Initialize pointers
+        i = 0
+        j = len(B) - 1
+        
+        # Initialize variables to track the closest pair
+        closest_pair = (None, None)
+        smallest_diff = float('inf')
+        
+        # Iterate while pointers are within bounds
+        while i < len(A) and j >= 0:
+            sum_pair = A[i] + B[j]
+            diff = abs(sum_pair - C)
+            
+            # Check if this pair is closer to C
+            if diff < smallest_diff or (diff == smallest_diff and (A[i] < closest_pair[0] or (A[i] == closest_pair[0] and B[j] < closest_pair[1]))):
+                smallest_diff = diff
+                closest_pair = (A[i], B[j])
+            
+            # Move pointers based on the comparison
+            if sum_pair < C:
+                i += 1
+            else:
+                j -= 1
+        
+        return list(closest_pair)
+
+
+The time and space complexity of the provided code to find the pair of elements from two sorted arrays whose sum is closest to a given target value are:
+Time Complexity:
+	• Overall: O(n + m)
+	• Sorting: O(n log n) + O(m log m)
+	• Two-pointer approach: O(n + m)
+The sorting of the two arrays using Arrays.sort has a time complexity of O(n log n) for the first array and O(m log m) for the second array. The two-pointer approach iterates through both arrays at most once, resulting in a time complexity of O(n + m). Therefore, the overall time complexity is O(n log n + m log m + n + m), which can be simplified to O(max(n log n, m log m)).
+Space Complexity:
+	• Overall: O(1)
+	• Sorting: O(n) + O(m) (in-place sorting)
+	• Two-pointer approach: O(1)
+The sorting algorithms used in Java typically have an in-place implementation, meaning they do not require additional space beyond the input arrays. The two-pointer approach only uses constant extra space for variables, so the overall space complexity is O(n + m + 1), which can be simplified to O(max(n, m)).
+In summary, the time complexity of the code is O(max(n log n, m log m)), and the space complexity is O(max(n, m)). The dominant factor in the time complexity is the sorting of the arrays, while the space complexity is primarily determined by the size of the input arrays.
+

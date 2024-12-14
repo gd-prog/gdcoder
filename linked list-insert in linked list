@@ -1,0 +1,172 @@
+Insert in Linked List
+
+Problem Description
+You are given A which is the head of a linked list. Also given is the value B and position C. Complete the function that should insert a new node with the said value at the given position.
+
+Notes:
+
+In case the position is more than length of linked list, simply insert the new node at the tail only.
+In case the pos is 0, simply insert the new node at head only.
+Follow 0-based indexing for the node numbering.
+
+
+Problem Constraints
+0 <= size of linked list <= 105
+
+1 <= value of nodes <= 109
+
+1 <= B <= 109
+
+0 <= C <= 105
+
+
+
+Input Format
+The first argument A is the head of a linked list.
+
+The second argument B is an integer which denotes the value of the new node
+
+The third argument C is an integer which denotes the position of the new node
+
+
+
+Output Format
+Return the head of the linked list
+
+
+Python
+# Definition for singly-linked list.
+class ListNode:
+    def __init__(self, x):
+        self.val = x
+        self.next = None
+
+class Solution:
+    def solve(self, A, B, C):
+        """
+        Inserts a new node with value B at position C in the linked list.
+
+        Args:
+            A: The head of the linked list.
+            B: The value of the new node.
+            C: The position to insert the new node (0-based indexing).
+
+        Returns:
+            The head of the modified linked list.
+        """
+
+        # Input validation: Check for invalid position
+        if C < 0:
+            raise ValueError("Invalid position: Cannot insert at a negative index.")
+
+        # Create the new node
+        new_node = ListNode(B)
+
+        # Handle insertion at the beginning (C == 0)
+        if C == 0:
+            new_node.next = A
+            return new_node
+
+        # Find the node before the insertion position (C > 0)
+        prev = None
+        current = A
+        count = 0
+        while current and count < C:
+            prev = current
+            current = current.next
+            count += 1
+
+        # Handle insertion at the end (C is greater than or equal to the length of the list)
+        if not current:
+            if prev:  # Append to the end of the existing list
+                prev.next = new_node
+            else:  # Empty list, make the new node the head
+                return new_node
+        else:  # Standard insertion in the middle
+            prev.next = new_node
+            new_node.next = current
+
+        return A
+
+Java
+
+/**
+ * Definition for singly-linked list.
+ * public class ListNode {
+ *     int val;
+ *     ListNode next;
+ *     ListNode(int x) { val = x; next = null; }
+ * }
+ */
+class Solution {
+    public ListNode solve(ListNode A, int B, int C) {
+/*        """
+        Inserts a new node with value B at position C in the linked list.
+
+        Args:
+            A: The head of the linked list.
+            B: The value of the new node.
+            C: The position to insert the new node (0-based indexing).
+
+        Returns:
+            The head of the modified linked list.
+        """
+*/
+
+        // Input validation: Check for invalid position
+        if (C < 0) {
+            throw new IllegalArgumentException("Invalid position: Cannot insert at a negative index.");
+        }
+
+        // Create the new node
+        ListNode new_node = new ListNode(B);
+
+        // Handle insertion at the beginning (C == 0)
+        if (C == 0) {
+            new_node.next = A;
+            return new_node;
+        }
+
+        // Find the node before the insertion position (C > 0)
+        ListNode prev = null;
+        ListNode current = A;
+        int count = 0;
+        while (current != null && count < C) {
+            prev = current;
+            current = current.next;
+            count++;
+        }
+
+        // Handle insertion at the end (C is greater than or equal to the length of the list)
+        if (current == null) {
+            if (prev != null) {  // Append to the end of the existing list
+                prev.next = new_node;
+            } else {  // Empty list, make the new node the head
+                return new_node;
+            }
+        } else {  // Standard insertion in the middle
+            prev.next = new_node;
+            new_node.next = current;
+        }
+
+
+        return A;
+    }
+}
+
+
+The provided function for inserting a new node into a linked list has the following time and space complexities:
+
+Time Complexity:
+
+Best Case: O(1) - This occurs when the insertion happens at the beginning of the list (C = 0). It only requires creating the new node and updating its next pointer to point to the current head.
+Average Case: O(N) - In the average case, the function needs to traverse the list until it reaches the position C where the new node needs to be inserted. This can take up to N steps in the worst case, where N is the number of elements in the list.
+Worst Case: O(N) - Similar to the average case, the worst-case time complexity is O(N). This occurs when the insertion happens at the end of the list (C is close to N) or when the list is empty (C is 0 and the list is empty).
+Space Complexity:
+
+Overall: O(1) - The space complexity of the function is constant. It only creates a single new node (ListNode) regardless of the size of the input list or the insertion position.
+Here's a breakdown of why:
+
+We create a new node (ListNode) to be inserted. However, this is independent of the size of the list.
+All other operations involve manipulating existing pointers within the linked list structure, not creating additional data structures.
+Therefore, the function has a constant space complexity even though it might iterate through the list in the worst case.

@@ -1,0 +1,106 @@
+
+Redundant Braces
+
+Problem Description
+Given a string A denoting an expression. It contains the following operators '+', '-', '*', '/'.
+Check whether A has redundant braces or not.
+NOTE: A will be always a valid expression and will not contain any white spaces.
+
+
+Problem Constraints
+1 <= |A| <= 105
+
+
+Input Format
+The only argument given is string A.
+
+
+Output Format
+Return 1 if A has redundant braces else, return 0.
+
+
+Example Input
+Input 1:
+ A = "((a+b))"
+Input 2:
+ A = "(a+(a+b))"
+
+
+Example Output
+Output 1:
+ 1
+Output 2:
+ 0
+
+
+Example Explanation
+Explanation 1:
+ ((a+b)) has redundant braces so answer will be 1.
+Explanation 2:
+ (a+(a+b)) doesn't have have any redundant braces so answer will be 0.
+
+
+
+public class Solution {
+  public int braces(String A) {
+        // Use a stack to keep track of characters
+        Stack<Character> stack = new Stack<>();
+        for (char ch : A.toCharArray()) {
+            if (ch == ')') {
+                // Check for redundant braces based on elements popped
+                char top = stack.pop();
+                boolean hasOperator = false;
+                while (top != '(') {
+                    // If we find an operator, set the flag to true
+                    if (top == '+' || top == '-' || top == '*' || top == '/') {
+                        hasOperator = true;
+                    }
+                    top = stack.pop();
+                }
+                // If no operator was found inside the braces, they are redundant
+                if (!hasOperator) {
+                    return 1;
+                }
+            } else {
+                // Push every other character onto the stack
+                stack.push(ch);
+            }
+        }
+        // If we complete the loop without finding redundant braces
+        return 0;
+   }
+}
+
+---
+
+class Solution:
+    def braces(self, A):
+        """
+        Checks if the given expression has redundant braces.
+        Args:
+            A: The input expression string.
+        Returns:
+            1 if the expression has redundant braces, 0 otherwise.
+        """
+        stack = []  # Initialize a stack to store characters
+        is_redundant = False
+        for char in A:
+            if char in ["(", "+", "-", "*", "/"]:
+                stack.append(char)
+            elif char == ")":
+                if stack and stack[-1] == "(":  # Immediate pop hits an opening parenthesis
+                    is_redundant = True
+                else:
+                    while stack and stack[-1] != "(":
+                        stack.pop()
+                    if stack:
+                        stack.pop()  # Remove the opening parenthesis
+        return 1 if is_redundant else 0
+
+
+----
+
+Time Complexity Analysis
+The code iterates through each character in the input expression once. The operations within the loop, like stack push, pop, character comparison, and operator checks, are constant-time operations. Therefore, the overall time complexity is O(n), where n is the length of the input expression.
+Space Complexity Analysis
+The primary data structure used is a stack. In the worst case, the stack might need to store all characters in the expression, especially if there are nested parentheses or long sequences of operators. Therefore, the space complexity is also O(n), where n is the length of the input expression.

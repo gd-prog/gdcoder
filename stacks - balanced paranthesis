@@ -1,0 +1,82 @@
+Balanced Paranthesis
+
+Problem Description
+Given an expression string A, examine whether the pairs and the orders of “{“,”}”, ”(“,”)”, ”[“,”]” are correct in A.
+Refer to the examples for more clarity.
+
+
+Problem Constraints
+1 <= |A| <= 100
+
+
+Input Format
+The first and the only argument of input contains the string A having the parenthesis sequence.
+
+
+Output Format
+Return 0 if the parenthesis sequence is not balanced.
+Return 1 if the parenthesis sequence is balanced.
+
+
+Example Input
+Input 1:
+ A = {([])}
+Input 2:
+ A = (){
+Input 3:
+ A = ()[] 
+
+
+Example Output
+Output 1:
+ 1 
+Output 2:
+ 0 
+Output 3:
+ 1 
+
+
+
+
+
+public class Solution {
+    public int solve(String A) {
+        int n = A.length();  // Get the length of the input string
+        Stack<Character> st = new Stack<>();  // Create a stack to store opening parentheses
+        for (int i = 0; i < n; i++) {
+            char ch = A.charAt(i);  // Get the current character
+            if (ch == '(' || ch == '[' || ch == '{') {  // If it's an opening parenthesis
+                st.push(ch);  // Push it onto the stack
+            } else {  // If it's a closing parenthesis
+                if (st.isEmpty()) {  // Check if the stack is empty
+                    return 0;  // If empty, the expression is unbalanced
+                }
+                char top = st.pop();  // Pop the top element from the stack
+                if (!isValid(ch, top)) {  // Check if the popped element and current character form a valid pair
+                    return 0;  // If not, the expression is unbalanced
+                }
+            }
+        }
+        if (st.isEmpty()) {  // Check if the stack is empty after processing all characters
+            return 1;  // If empty, the expression is balanced
+        }
+        return 0;  // If the stack is not empty, the expression is unbalanced
+    }
+    private boolean isValid(char ch, char top) {
+        if ((top == '(' && ch == ')') ||
+                (top == '{' && ch == '}') ||
+                (top == '[' && ch == ']')) {
+            return true;  // The popped element and current character form a valid pair
+        }
+        return false;  // The popped element and current character do not form a valid pair
+    }
+}
+
+
+----
+
+Time Complexity Analysis
+The code iterates through each character in the input string once. The operations within the loop, like stack push, pop, and character comparison, are constant-time operations. Therefore, the overall time complexity is O(n), where n is the length of the input string.
+ 
+Space Complexity Analysis
+The primary data structure used is a stack. In the worst case, the stack might need to store all opening parentheses if the expression is balanced. The size of the stack is directly proportional to the length of the input string. Therefore, the space complexity is also O(n).

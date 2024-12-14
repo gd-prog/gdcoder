@@ -1,0 +1,239 @@
+
+Given a stack of integers A, sort it using another stack.
+Return the array of integers after sorting the stack using another stack.
+
+Java
+public class Solution {
+
+    /**
+     * Sorts the elements in a stack using a temporary stack (descending order).
+     *
+     * @param A The input array representing the elements in the stack.
+     * @return A new array containing the elements in sorted order (descending).
+     */
+    public int[] solve(int[] A) {
+        Stack<Integer> stack = new Stack<>(); // Create a stack to hold the input elements
+
+        // Push all elements from the input array onto the stack
+        for (int num : A) {
+            stack.push(num);
+        }
+
+        return sortStack(stack);
+    }
+
+    /**
+     * Sorts the elements in a stack using a temporary stack (descending order).
+     *
+     * @param A The input stack to be sorted.
+     * @return A new array containing the sorted elements (descending).
+     */
+    private static int[] sortStack(Stack<Integer> A) {
+        Stack<Integer> temp = new Stack<>(); // Create a temporary stack for sorting
+
+        // Main sorting loop: iterate through the original stack
+        while (!A.isEmpty()) {
+            int tempVal = A.pop(); // Pop element from the original stack
+
+            // Maintain descending order in the temporary stack
+            while (!temp.isEmpty() && tempVal < temp.peek()) {
+                // If the popped element is smaller than the top of temp stack,
+                // push elements from temp back to the original stack to make space
+                A.push(temp.pop());
+            }
+
+            // Push the popped element onto the temporary stack (sorted position)
+            temp.push(tempVal);
+        }
+
+        int[] sortedArray = new int[temp.size()]; // Allocate space for the sorted array
+        int i = sortedArray.length - 1; // Index for the sorted array (filling from the end)
+
+        // Pop elements from the temporary stack (now sorted) and fill the result array
+        while (!temp.isEmpty()) {
+            sortedArray[i--] = temp.pop();
+        }
+
+        return sortedArray;
+    }
+}
+
+
+
+
+Python
+from collections import deque
+
+class Utility:
+    """
+    This class contains utility functions for stack operations.
+    """
+
+    def sort_stack(self, A):
+        """
+        This function sorts the elements in a stack using a temporary stack (descending order).
+
+        Args:
+            A: The input list representing the elements in the stack.
+
+        Returns:
+            A list containing the elements in sorted order (descending).
+        """
+
+        stack = deque(A)  # Convert input list to a deque for efficient stack operations
+
+        # Use another deque as a temporary stack for sorting
+        temp = deque()
+
+        while stack:
+            tempVal = stack.pop()
+            # Maintain a descending order in the temp stack
+            while temp and tempVal < temp[-1]:
+                stack.append(temp.pop())
+            temp.append(tempVal)
+
+        sorted_array = [None] * len(temp)  # Pre-allocate space for efficiency
+
+        # Pop elements from the temp stack (which is now sorted) and fill the result array
+        for i in range(len(temp) - 1, -1, -1):
+            sorted_array[i] = temp.pop()
+
+        return sorted_array
+
+# Example usage
+# array = [3, 1, 4, 1, 5]
+# print(Utility().sort_stack(array))  # Output: [5, 4, 3, 1, 1]
+
+
+Dry run
+
+Input Array (A): [3, 1, 4, 1, 5]
+
+Step 1: Push elements onto the stack (original order)
+
+          Original Stack (A)
+          --------
+         |     5 | (Top)
+         |     1 |
+         |     4 |
+         |     1 |
+         |     3 | (Bottom)
+Step 2: Sorting Loop
+
+Iteration 1:
+Pop tempVal = 3 from the original stack.
+Temporary stack (temp) is empty, so 3 is pushed directly onto temp.
+          Original Stack (A)
+          --------
+         |     5 | (Top)
+         |     1 |
+         |     4 |
+         |     1 |
+          --------
+
+          Temporary Stack (temp)
+          --------
+         |     3 | (Top)
+          --------
+Iteration 2:
+Pop tempVal = 1 from the original stack.
+Temporary stack has 3 on top. Since 1 is smaller, push 3 back to the original stack.
+          Original Stack (A)
+          --------
+         |     5 | (Top)
+         |     1 |
+         |     4 |
+          |     3 |  **Pushed back**
+         |     1 | (Bottom)
+
+          Temporary Stack (temp)
+          --------
+         |     1 | (Top)
+          --------
+Iteration 3:
+Pop tempVal = 4 from the original stack.
+Temporary stack has 1 on top. Since 4 is larger, push 1 onto temp.
+          Original Stack (A)
+          --------
+         |     5 | (Top)
+         |     1 |
+          |     4 |  **Pushed back**
+         |     1 | (Bottom)
+
+          Temporary Stack (temp)
+          --------
+         |     1 |
+         |     4 | (Top)
+          --------
+Iteration 4 (Similar to Iteration 2):
+Pop tempVal = 1 from the original stack.
+Temporary stack has 4 on top. Since 1 is smaller, push 4 back to the original stack.
+          Original Stack (A)
+          --------
+         |     5 | (Top)
+          |     1 |  **Pushed back**
+         |     4 |
+         |     1 | (Bottom)
+
+          Temporary Stack (temp)
+          --------
+         |     1 |
+         |     4 | (Top)
+          --------
+Iteration 5:
+Pop tempVal = 5 from the original stack.
+Temporary stack has 1 and 4 on top. Since 5 is larger, push both 1 and 4 onto temp.
+          Original Stack (A)
+          --------
+         |     5 | (Top)
+          --------
+
+          Temporary Stack (temp)
+          --------
+         |     4 |
+         |     1 |
+         |     5 | (Top)
+          --------
+Step 3: Pop elements from temporary stack (sorted order)
+
+The temporary stack now has elements in descending order (5, 4, 1). Pop them one by one and fill the sortedArray from the end:
+
+          Original Stack (A) (Empty)
+
+          Temporary Stack (temp)
+          --------
+         |     1 |
+         |     4 |
+         |     5 | (Top) - Pop
+          --------
+
+          sortedArray: [_, _, _, _, 5] (filling from the end)
+
+          Temporary Stack (temp)
+          --------
+         |     1 |
+         |     4 | (Top) - Pop
+          --------
+
+          sortedArray: [_, _, _, 4, 5]
+
+          ... (repeat until temp is empty)
+
+          sortedArray: [3, 1, 1, 4, 5]
+Final Output:
+
+The sorted array sortedArray contains the elements in descending order: [3, 1, 1, 4, 5].
+
+Dry run
+Time Complexity: O(n^2)
+
+Inner loop: The inner loop within the sortStack function iterates through elements in the temporary stack (temp) in the worst case for each element (tempVal) popped from the original stack (A). This can happen up to n times (for n elements in the original stack). In the worst case, the inner loop might need to iterate through all elements in temp (also n) to find the correct insertion position for tempVal. Therefore, the inner loop contributes O(n * n) = O(n^2) time complexity.
+
+explanation
+Imagine a scenario where the input array is already sorted in descending order. In this case, for each element popped from the original stack, the inner loop will need to iterate through all elements in the temporary stack (which also has the same elements in descending order) to find the correct insertion position. This worst-case scenario leads to O(n * n) time complexity.
+Space Complexity: O(n)
+
+The code uses two stacks: A (original) and temp (temporary). In the worst case, both stacks can hold up to n elements (all elements from the input array). Therefore, the space complexity is O(n) + O(n) = O(n).
+Summary:
+
+While the space complexity remains manageable (O(n)), the time complexity of O(n^2) might be less efficient for larger input arrays. This is because the nested loop can lead to a significant number of comparisons in the worst case. If sorting a stack is a frequent operation in your application, consider alternative approaches with potentially better time complexity, such as recursion or utilizing multiple temporary stacks to optimize comparisons.

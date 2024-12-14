@@ -1,0 +1,172 @@
+Two Sum BST
+
+Problem Description
+Given a binary search tree A, where each node contains a positive integer, and an integer B, you have to find whether or not there exist two different nodes X and Y such that X.value + Y.value = B.
+Return 1 to denote that two such nodes exist. Return 0, otherwise.
+
+
+Problem Constraints
+1 <= size of tree <= 100000
+1 <= B <= 109
+
+
+Input Format
+First argument is the head of the tree A.
+Second argument is the integer B.
+
+
+Output Format
+Return 1 if such a pair can be found, 0 otherwise.
+
+
+Example Input
+Input 1:
+         10
+         / \
+        9   20
+B = 19
+Input 2:
+ 
+          10
+         / \
+        9   20
+B = 40
+
+
+Example Output
+Output 1:
+ 1
+Output 2:
+ 0
+
+
+Example Explanation
+Explanation 1:
+ 10 + 9 = 19. Hence 1 is returned.
+Explanation 2:
+ No such pair exists.
+
+
+
+/**
+ * Definition for binary tree
+ * class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode(int x) {
+ *      val = x;
+ *      left=null;
+ *      right=null;
+ *     }
+ * }
+ */
+public class Solution {
+    public int t2Sum(TreeNode A, int B) {
+        // Perform in order traversal and collect node values
+        List<Integer>values=new ArrayList<>();
+        inOrderTraverse(A,values);
+        //Use two pointer technique to find if there exists a pair with sum B
+        return IsPairWithSum(values,B)?1:0;
+    }    
+    //Perform in order traversal and store values in sorted List
+    private void inOrderTraverse(TreeNode node,List<Integer> values){
+        if(node==null){
+            return;
+        }
+        inOrderTraverse(node.left,values);
+        values.add(node.val);
+        inOrderTraverse(node.right,values);
+    }
+    // Method to check if there exists a pair of values that sum up to B using two-pointer technique
+    private boolean IsPairWithSum(List<Integer> values, int B){
+        int start =0;
+        int end=values.size()-1;
+        while(start<end){
+            int sum=values.get(start)+values.get(end);
+            if(sum==B){
+                return true; // Found pair                
+            }
+            else if(sum<B){
+                start++; //Move start pointer to increase the sum
+            }
+            else {
+                end--; // Move end pointer to decrease the sum
+            }
+        }
+        return false; // No pair found
+    }
+}
+---
+
+
+# Definition for a binary tree node
+class TreeNode:
+    def __init__(self, val=0, left=None, right=None):
+        self.val = val
+        self.left = left
+        self.right = right
+class Solution:
+    # @param A : root node of tree
+    # @param B : integer
+    # @return an integer
+    def t2Sum(self, A, B):
+        """
+        Checks if there exists a pair of nodes in the BST whose values add up to B.
+        Args:
+            A (TreeNode): The root node of the BST.
+            B (int): The target sum.
+        Returns:
+            int: 1 if a pair exists, 0 otherwise.
+        This function first performs an in-order traversal to collect the node values in a sorted list.
+        Then, it uses a two-pointer technique to efficiently find a pair of values that sum up to B.
+        """
+        values = []
+        self.inOrderTraverse(A, values)
+        return 1 if self.isPairWithSum(values, B) else 0
+    def inOrderTraverse(self, node, values):
+        """
+        Performs an in-order traversal of the BST and stores the node values in a list.
+        Args:
+            node (TreeNode): The current node.
+            values (list): The list to store the node values.
+        """
+        if node is None:
+            return
+        self.inOrderTraverse(node.left, values)
+        values.append(node.val)
+        self.inOrderTraverse(node.right, values)
+    def isPairWithSum(self, values, B):
+        """
+        Checks if there exists a pair of values in the sorted list that sum up to B using the two-pointer technique.
+        Args:
+            values (list): The sorted list of node values.
+            B (int): The target sum.
+        Returns:
+            bool: True if a pair exists, False otherwise.
+        """
+        start = 0
+        end = len(values) - 1
+        while start < end:
+            sum = values[start] + values[end]
+            if sum == B:
+                return True
+            elif sum < B:
+                start += 1
+            else:
+                end -= 1
+        return False
+---
+
+The time and space complexity of the provided code to check if there exists a pair of nodes in a Binary Search Tree (BST) whose values add up to a given target value are:
+Time Complexity:
+	• Overall: O(n log n)
+	• In-order traversal: O(n)
+	• Two-pointer technique: O(n)
+The in-order traversal to collect the node values has a linear time complexity of O(n). The two-pointer technique to find a pair of values that sum up to the target value also has a linear time complexity of O(n). Therefore, the overall time complexity is O(n + n) = O(n log n).
+Space Complexity:
+	• Overall: O(n)
+	• In-order traversal: O(n)
+	• Two-pointer technique: O(1)
+The in-order traversal requires a list to store the node values, which has a space complexity of O(n). The two-pointer technique uses constant space, as it only requires two pointers to iterate through the sorted list. Therefore, the overall space complexity is O(n + 1) = O(n).
+In summary, the time complexity of the code is O(n log n), and the space complexity is O(n). The dominant factor in the time complexity is the in-order traversal, which is necessary to obtain the sorted list of node values.

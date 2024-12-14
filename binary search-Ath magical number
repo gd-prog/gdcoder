@@ -1,0 +1,197 @@
+/*
+
+Ath magical number
+
+Problem Description
+You are given three positive integers, A, B, and C.
+
+Any positive integer is magical if divisible by either B or C.
+
+Return the Ath smallest magical number. Since the answer may be very large, return modulo 109 + 7.
+
+Note: Ensure to prevent integer overflow while calculating.
+
+
+
+Problem Constraints
+1 <= A <= 109
+
+2 <= B, C <= 40000
+
+
+
+Input Format
+The first argument given is an integer A.
+
+The second argument given is an integer B.
+
+The third argument given is an integer C.
+
+
+
+Output Format
+Return the Ath smallest magical number. Since the answer may be very large, return modulo 109 + 7.
+
+
+*/
+
+
+
+Java
+
+public class Solution {
+  /**
+   * Finds the Ath smallest number divisible by both B and C.
+   *
+   * @param A The target number (Ath smallest).
+   * @param B First divisor.
+   * @param C Second divisor.
+   * @return The Ath smallest number divisible by both B and C, modulo 10^9 + 7.
+   * @throws IllegalArgumentException if A, B, or C is non-positive.
+   */
+  public int solve(int A, int B, int C) {
+    if (A <= 0 || B <= 0 || C <= 0) {
+      throw new IllegalArgumentException("Input values (A, B, C) must be positive.");
+    }
+    // Calculate the least common multiple (LCM) of B and C for efficiency
+    long lcm = (long) B * C / gcd(B, C);
+    // Set search bounds:
+    // - Lower bound (low): Start from 2 (smallest possible value divisible by both B and C)
+    // - Upper bound (high): Maximum possible value considering A, B, and C (A * min(B, C))
+    long low = 2;
+    long high = ((long) A * Math.min(B, C));
+    long ans = 0; // Stores the current candidate for the Ath smallest number
+    /**
+     * Binary search loop to find the Ath smallest number divisible by both B and C.
+     */
+    while (low <= high) {
+      long mid = (high - low) / 2 + low; // Midpoint of the search space
+      // Calculate the number of multiples of B, C, and LCM within the current mid value
+      long cntB = mid / B; // Number of multiples of B less than or equal to mid
+      long cntC = mid / C; // Number of multiples of C less than or equal to mid
+      long cntBC = mid / lcm; // Number of multiples of LCM less than or equal to mid (avoid double counting)
+      /**
+       * Check if the current mid value satisfies the condition for the Ath smallest number.
+       * - Condition: The number of multiples of B and C (excluding duplicates counted in LCM)
+       *   must be greater than or equal to A (Ath smallest).
+       */
+      if (cntB + cntC - cntBC >= A) {
+        ans = mid; // Update potential answer
+        high = mid - 1; // Search in the left half (smaller numbers)
+      } else {
+        low = mid + 1; // Search in the right half (larger numbers)
+      }
+    }
+    return (int) (ans % (1000 * 1000 * 1000 + 7)); // Return result modulo 10^9 + 7
+  }
+  /**
+   * Calculates the greatest common divisor (GCD) of two integers using recursion.
+   *
+   * @param x First integer.
+   * @param y Second integer.
+   * @return The GCD of x and y.
+   */
+  public int gcd(int x, int y) {
+    if (x == 0) {
+      return y;
+    }
+    return gcd(y % x, x);
+  }
+}
+
+
+Python
+
+class Solution:
+    def gcd(self, x, y):
+        """
+        Calculates the greatest common divisor (GCD) of two integers using recursion.
+
+        Args:
+            x: First integer.
+            y: Second integer.
+
+        Returns:
+            The GCD of x and y.
+        """
+
+        if x == 0:
+            return y
+        return self.gcd(y % x, x)
+
+    def solve(self, A, B, C):
+        """
+        Finds the Ath smallest number divisible by both B and C.
+
+        Args:
+            A: The target number (Ath smallest).
+            B: First divisor.
+            C: Second divisor.
+
+        Returns:
+            The Ath smallest number divisible by both B and C, modulo 10^9 + 7.
+
+        Raises:
+            ValueError if A, B, or C is non-positive.
+        """
+
+        if A <= 0 or B <= 0 or C <= 0:
+            raise ValueError("Input values (A, B, C) must be positive.")
+
+        # Calculate the least common multiple (LCM) of B and C for efficiency
+        lcm = B * C // self.gcd(B, C)
+
+        # Set search bounds
+        low = 2
+        high = A * min(B, C)
+
+        # Binary search loop
+        while low <= high:
+            mid = (high - low) // 2 + low
+            cntB = mid // B
+            cntC = mid // C
+            cntBC = mid // lcm
+
+            # Check if the current mid value satisfies the condition
+            if cntB + cntC - cntBC >= A:
+                ans = mid
+                high = mid - 1
+            else:
+                low = mid + 1
+
+        return ans % (1000 * 1000 * 1000 + 7)
+
+----
+
+Time Complexity:
+
+gcd function:
+
+Recursively calls itself until x becomes 0.
+In the worst case, the recursion depth can be log(min(x, y)) (assuming x and y are relatively prime).
+Therefore, the time complexity of gcd is O(log(min(x, y))).
+solve function:
+
+Binary search loop iterates log(high - low) times.
+Inside the loop, arithmetic operations and comparisons are performed, taking constant time.
+The call to gcd within the loop contributes O(log(min(B, C))) to the overall time complexity.
+Overall:
+
+The time complexity of solve is dominated by the binary search loop and the call to gcd.
+Therefore, the overall time complexity is O(log(high - low) * log(min(B, C))).
+Since high is bounded by A * min(B, C), the final time complexity can be expressed as O(log(A * min(B, C)) * log(min(B, C))).
+Space Complexity:
+
+gcd function:
+
+The recursive calls to gcd create a stack frame for each level of recursion.
+In the worst case, the stack depth can be log(min(x, y)).
+Therefore, the space complexity of gcd is O(log(min(x, y))).
+solve function:
+
+The solve function uses constant space for its variables.
+Overall:
+
+The space complexity is dominated by the gcd function.
+Therefore, the overall space complexity is O(log(min(B, C))).
+In summary, the time complexity of the code is O(log(A * min(B, C)) * log(min(B, C))) and the space complexity is O(log(min(B, C)))

@@ -1,0 +1,73 @@
+Problem Description
+You are given A which is the head of a linked list. Print the linked list in space separated manner.
+
+Note : The last node value must also be succeeded by a space and after printing the entire list you should print a new line
+
+
+
+Problem Constraints
+1 <= size of linked list <= 105
+
+1 <= value of nodes <= 109
+
+
+
+Input Format
+The first argument A is the head of a linked list.
+
+
+Output Format
+You dont need to return anything
+
+
+
+
+
+Java
+
+/**
+ * Definition for singly-linked list.
+ * public class ListNode {
+ *     int val;
+ *     ListNode next;
+ *     ListNode(int x) { val = x; }
+ * }
+ */
+class Solution {
+    public void solve(ListNode A) {
+        ListNode current = A;
+        while (current != null) {
+            System.out.print(current.val + " ");
+            current = current.next;
+        }
+        System.out.println();
+    }
+}
+
+Python
+# Definition for singly-linked list.
+class ListNode:
+    def __init__(self, x):
+        self.val = x
+        self.next = None
+
+class Solution:
+    def solve(self, A):
+        """
+        Prints the linked list in space-separated manner.
+
+        Args:
+            A: The head of the linked list.
+        """
+
+        current = A
+        while current:
+            print(current.val, end=" ")
+            current = current.next
+        print()  # Print a newline at the end
+
+---
+
+The time complexity of the provided solution in both Python and Java is O(n), where n is the number of nodes in the linked list. This is because the while loop iterates through each node once, performing constant-time operations (printing the value and updating the current pointer).
+
+The space complexity is O(1), as the algorithm only uses a constant amount of additional space to store the current pointer and variables for the loop. It doesn't allocate any additional data structures that scale with the size of the input.

@@ -1,0 +1,67 @@
+Consecutive Numbers Sum
+
+Problem Description
+Given a positive integer A.
+Return the number of ways it can be written as a sum of consecutive positive integers.
+
+
+Problem Constraints
+1 <= A <= 109
+
+
+Input Format
+The first and the only argument of input contains an integer, A.
+
+
+Output Format
+Return an integer, representing the answer as described in the problem statement.
+
+Here's the Java code with more detailed comments explaining each step:
+
+public class Solution {
+    public int solve(int A) {
+        int count = 0;
+        
+        // Iterate over possible lengths of consecutive sequences
+        for (int k = 1; k * (k - 1) / 2 < A; k++) {
+            // Check if A - k * (k - 1) / 2 is divisible by k
+            if ((A - k * (k - 1) / 2) % k == 0) {
+                count++;
+            }
+        }
+        
+        return count;
+    }
+}
+
+---
+
+class Solution:
+    # @param A : integer
+    # @return an integer
+    def solve(self, A):
+        count = 0
+        if A == 1:
+            return 1
+        
+        # Iterate over possible lengths of consecutive sequences
+        for k in range(1, A):
+            if k * (k - 1) / 2 >= A:
+                break
+            # Check if A - k * (k - 1) / 2 is divisible by k
+            if (A - k * (k - 1) / 2) % k == 0:
+                count += 1
+        return count
+
+---
+Time Complexity Analysis
+Outer loop: Iterates from 1 to A. In the worst case, the loop will break when k is approximately sqrt(2A). So, the number of iterations is approximately sqrt(2A).
+Inner operations:
+	• k * (k - 1) / 2 >= A: Constant time operations.
+	• (A - k * (k - 1) / 2) % k == 0: Constant time operations.
+Therefore, the overall time complexity is O(sqrt(A)).
+Space Complexity Analysis
+The code uses a few integer variables (count, k, A) that occupy constant space. There's no data structure that grows with the input size.
+Hence, the space complexity is O(1).
+In conclusion, the time complexity of the code is O(sqrt(A)) and the space complexity is O(1).
+This means that the algorithm's running time grows with the square root of the input A, making it relatively efficient for large values of A. The space usage remains constant regardless of the input size.

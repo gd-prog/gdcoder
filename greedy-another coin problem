@@ -1,0 +1,77 @@
+/*
+Problem Description
+The monetary system in DarkLand is really simple and systematic. The locals-only use coins. The coins come in different values. The values used are:
+
+ 1, 5, 25, 125, 625, 3125, 15625, ...
+Formally, for each K >= 0 there are coins worth 5K.
+
+Given an integer A denoting the cost of an item, find and return the smallest number of coins necessary to pay exactly the cost of the item (assuming you have a sufficient supply of coins of each of the types you will need).
+
+
+
+Problem Constraints
+1 <= A <= 2×109
+
+
+
+Input Format
+The only argument given is integer A.
+
+
+
+Output Format
+Return the smallest number of coins necessary to pay exactly the cost of the item.
+
+
+*/
+
+
+
+
+Java
+public class Solution {
+    public int solve(int A) {
+        int[] coins = new int[10];
+        coins[0] = 1;
+        for (int i = 1; i < 10; i++) {
+            coins[i] = coins[i - 1] * 5;
+        }
+
+        int count = 0;
+
+        for (int i = coins.length - 1; i >= 0; i--) {
+            while (A >= coins[i]) {
+                A -= coins[i];
+                count++;
+            }
+        }
+
+        return count;
+    }
+}
+
+
+
+Python
+class Solution:
+    # @param A : integer
+    # @return an integer
+    def solve(self, A):
+        coins = [5**K for K in range(10)]  # Pre-calculate coin values up to 5^9
+        count = 0
+
+        for coin in reversed(coins):
+            while A >= coin:
+                A -= coin
+                count += 1
+
+        return count
+
+
+Here's a breakdown of the time complexity analysis:
+
+Pre-calculation of coin values: The loop to pre-calculate the coin values up to 5^9 runs a constant number of times (10 iterations). Therefore, this part has a time complexity of O(1).
+Greedy algorithm: The main loop iterates over the pre-calculated coin values in descending order. In each iteration, the while loop subtracts the coin value from A until A becomes less than the coin value. The number of iterations in the while loop is logarithmic with respect to A, as the coin values double in each iteration. Therefore, the time complexity of the greedy algorithm is O(log A).
+Since the pre-calculation part has a constant time complexity and the greedy algorithm has a time complexity of O(log A), the overall time complexity of the code is O(log A).
+
+The space complexity of the code is O(1) as the space used for storing the pre-calculated coin values is constant and does not depend on the input value A

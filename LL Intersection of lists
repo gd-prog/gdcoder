@@ -1,0 +1,91 @@
+/* Java code
+Write a program to find the node at which the intersection of two singly linked lists, A and B, begins. For example, the following two linked lists:
+
+A:          a1 → a2
+                   ↘
+                     c1 → c2 → c3
+                   ↗
+B:     b1 → b2 → b3
+NOTE:
+
+If the two linked lists have no intersection at all, return null.
+The linked lists must retain their original structure after the function returns.
+You may assume there are no cycles anywhere in the entire linked structure.
+Your code should preferably run in O(n) time and use only O(1) memory.
+The custom input to be given is different than the one explained in the examples. Please be careful.
+
+
+Problem Constraints
+0 <= |A|, |B| <= 106
+
+
+
+Input Format
+The first argument of input contains a pointer to the head of the linked list A.
+
+The second argument of input contains a pointer to the head of the linked list B.
+
+
+
+Output Format
+Return a pointer to the node after which the linked list is intersecting.
+
+
+
+
+*/
+
+
+
+
+/**
+ * Definition for singly-linked list.
+ * class ListNode {
+ *     public int val;
+ *     public ListNode next;
+ *     ListNode(int x) { val = x; next = null; }
+ * }
+ */
+public class Solution {
+	public ListNode getIntersectionNode(ListNode A, ListNode B) {
+     // Handle the edge cases where either A or B is null
+		 if (A == null || B == null) return null;
+     // Initialize two pointers, Pa and Pb, to traverse the lists A and B respectively
+        ListNode Pa = A, Pb = B;
+     // Loop until both pointers reach the intersection node or become null
+        while (Pa != Pb) {
+     // If Pa reaches the end of list A, move it to the head of list B
+     // (effectively traversing the entire list B once)
+            Pa = (Pa == null) ? B : Pa.next;
+     // If Pb reaches the end of list B, move it to the head of list A
+     // (effectively traversing the entire list A once)
+            Pb = (Pb == null) ? A : Pb.next;
+        }
+     // At this point, either both pointers are null (no intersection)
+     // or they point to the same node (the intersection node)
+        return Pa;
+    }
+}
+
+/* Dry run
+Consider two linked lists:
+
+List A: 1 -> 2 -> 3 -> 4 -> 5 -> (intersects at node 3) -> 7 -> 8
+List B: 9 -> 10 -> (intersects at node 3) -> 7 -> 8
+Initially, Pa points to the head of A (node 1) and Pb points to the head of B (node 9).
+Pa iterates through list A until it reaches the end (node 5). Since there's no intersection yet, Pa is moved to the head of B (node 9).
+Pb iterates through list B until it reaches node 3. Here, both Pa (which is now at node 9) and Pb point to the same node (node 3), which is the intersection.
+The loop terminates because Pa and Pb are equal, and the function returns Pa (which points to the intersection node).
+
+*/
+
+/*
+Time Complexity:
+
+In the worst case, both lists need to be traversed completely. This happens when there's no intersection or the intersection is at the end of the shorter list.
+Let m and n be the lengths of lists A and B respectively.
+Time complexity = O(m + n).
+Space Complexity:
+
+The algorithm only uses constant extra space for the two pointers (Pa and Pb).
+Space complexity = O(1). */

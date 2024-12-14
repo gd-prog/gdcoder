@@ -1,0 +1,100 @@
+/* Java code
+You have a string, denoted as A.
+
+To transform the string, you should perform the following operation repeatedly:
+Identify the first occurrence of consecutive identical pairs of characters within the string.
+Remove this pair of identical characters from the string.
+Repeat steps 1 and 2 until there are no more consecutive identical pairs of characters.
+The final result will be the transformed string.
+*/
+
+
+public class Solution {
+
+  /**
+   * Function to remove balanced parentheses from a string
+   * 
+   * @param A: The input string containing parentheses
+   * @return The string with balanced parentheses removed
+   */
+  public String solve(String A) {
+    Stack<Character> stk = new Stack<>(); // Create an empty stack
+
+    // Iterate through each character in the input string
+    for (int i = 0; i < A.length(); i++) {
+      char ch = A.charAt(i);
+
+      // If the stack is not empty and the current character matches the top element (closing parenthesis)
+      if (!stk.isEmpty() && ch == getClosingBracket(stk.peek())) {
+        stk.pop(); // Pop the matching opening parenthesis
+      } else {
+        stk.push(ch); // Push the current character (opening parenthesis) onto the stack
+      }
+    }
+
+    String ans = ""; // Initialize an empty string to store the result
+
+    // Pop remaining characters from the stack (unbalanced parentheses)
+    while (!stk.isEmpty()) {
+      ans = stk.pop() + ans; // Append characters to the result string in reverse order
+    }
+
+    return ans;
+  }
+
+  /**
+   * Helper function to determine the closing bracket for a given opening bracket
+   * 
+   * @param ch: The opening bracket character
+   * @return The corresponding closing bracket character
+   */
+  private char getClosingBracket(char ch) {
+    if (ch == '(') {
+      return ')';
+    } else if (ch == '{') {
+      return '}';
+    } else if (ch == '[') {
+      return ']';
+    } else {
+      throw new IllegalArgumentException("Invalid opening bracket character");
+    }
+  }
+}
+
+/* Dry run
+Input String:  "(()())"
+Iteration | Character (ch) | Stack (stk) | Result (ans)
+----------- | -------------- | ------------ | --------------
+1           | (              | (             | ""
+2           | (              | ((            | ""
+3           | )              | (             | "" (popped)
+4           | )              |               | "" (popped)
+5           | )              |               | "" (popped)
+6           | )              |               | "" (popped)
+Output String: "" (all parentheses are balanced and removed)
+*/
+
+/*Explanation
+The code defines a class Solution with a function solve that takes a string A as input and returns a new string with balanced parentheses removed.
+It creates an empty stack stk to store opening parentheses.
+It iterates through each character ch in the input string A.
+It checks if the stack is not empty and the current character ch is a closing parenthesis that matches the top element (opening parenthesis) on the stack.
+If yes, it pops the opening parenthesis from the stack (removing the balanced pair).
+If not, it pushes the current character (opening parenthesis) onto the stack.
+After iterating through the string, it initializes an empty string ans to store the result.
+It pops the remaining characters (unbalanced parentheses) from the stack and appends them to the ans string in reverse order (since the stack follows LIFO).
+Finally, it returns the ans string containing the string without balanced parentheses.
+*/
+
+/* Time Complexity
+
+The code iterates through the input string once in a loop (for loop) - O(n).
+Inside the loop, it performs constant time operations like pushing and popping elements from the stack - O(1).
+The total time complexity is dominated by the loop iteration, resulting in O(n).
+*/
+
+/* Space Complexity
+The code uses a stack stk to store opening parentheses. In the worst case, the stack might store all characters in the string if there are no closing parentheses.
+Therefore, the space complexity is proportional to the string length in the worst case, which is O(n).
+*/
+

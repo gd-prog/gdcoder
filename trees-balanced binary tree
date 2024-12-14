@@ -1,0 +1,120 @@
+Balanced binary tree
+
+
+Balanced Binary Tree
+
+
+
+Given a root of binary tree A, determine if it is height-balanced.
+A height-balanced binary tree is defined as a binary tree in which the depth of the two subtrees of every node never differ by more than 1.
+
+
+Problem Constraints
+1 <= size of tree <= 100000
+
+
+Input Format
+First and only argument is the root of the tree A.
+
+
+Output Format
+Return 0 / 1 ( 0 for false, 1 for true ) for this problem.
+
+
+Example Input
+Input 1:
+    1
+   / \
+  2   3
+Input 2:
+ 
+       1
+      /
+     2
+    /
+   3
+
+
+Example Output
+Output 1:
+1
+Output 2:
+0
+
+
+
+
+
+
+# Definition for a binary tree node.
+class TreeNode:
+    def __init__(self, val=0, left=None, right=None):
+        self.val = val
+        self.left = left
+        self.right = None
+class Solution:
+    # @param A : root node of tree
+    # @return an integer
+    def isBalanced(self, root: TreeNode) -> int:
+        # Check the result of the helper function
+        if self.isBalancedHelper(root) != -1:
+            return 1  # Tree is balanced
+        return 0  # Tree is not balanced
+    def isBalancedHelper(self, node: TreeNode) -> int:
+        if node is None:
+            return 0  # Height of a null node is 0
+        # Get heights of left and right subtrees
+        leftHeight = self.isBalancedHelper(node.left)
+        rightHeight = self.isBalancedHelper(node.right)
+        # If left or right subtree is not balanced, return -1
+        if leftHeight == -1 or rightHeight == -1:
+            return -1
+        # Check balance condition (difference in heights <= 1)
+        if abs(leftHeight - rightHeight) > 1:
+            return -1  # Not balanced
+        # Return height of the current node (1 + max(leftHeight, rightHeight))
+        return 1 + max(leftHeight, rightHeight)
+
+Python
+
+# Definition for a binary tree node.
+class TreeNode:
+    def __init__(self, val=0, left=None, right=None):
+        self.val = val
+        self.left = left
+        self.right = None
+class Solution:
+    # @param A : root node of tree
+    # @return an integer
+    def isBalanced(self, root: TreeNode) -> int:
+        # Check the result of the helper function
+        if self.isBalancedHelper(root) != -1:
+            return 1  # Tree is balanced
+        return 0  # Tree is not balanced
+    def isBalancedHelper(self, node: TreeNode) -> int:
+        if node is None:
+            return 0  # Height of a null node is 0
+        # Get heights of left and right subtrees
+        leftHeight = self.isBalancedHelper(node.left)
+        rightHeight = self.isBalancedHelper(node.right)
+        # If left or right subtree is not balanced, return -1
+        if leftHeight == -1 or rightHeight == -1:
+            return -1
+        # Check balance condition (difference in heights <= 1)
+        if abs(leftHeight - rightHeight) > 1:
+            return -1  # Not balanced
+        # Return height of the current node (1 + max(leftHeight, rightHeight))
+        return 1 + max(leftHeight, rightHeight)
+
+
+---
+
+Time Complexity:
+	• Recursive Calls: The isBalancedHelper function is called recursively, dividing the problem into smaller subproblems. The depth of the recursion tree is equal to the height of the binary tree. In the worst case (a skewed tree), the height can be N, where N is the number of nodes.
+	• Processing Nodes: Within each recursive call, we process nodes by calculating their heights. This takes constant time O(1) per node.
+Overall, the time complexity is O(N * log N) in the average case (balanced tree) and O(N^2) in the worst case (skewed tree).
+Space Complexity:
+	• Recursion Stack: The recursive calls create a stack of function calls. In the worst case (skewed tree), the depth of the recursion stack can be N, leading to a space complexity of O(N).
+	• Variable Storage: We use constant space to store the heights of left and right subtrees, which is O(1).
+Overall, the space complexity is O(N) in both the average and worst cases.
+In summary, the provided code has a time complexity of O(N * log N) in the average case and O(N^2) in the worst case, and a space complexity of O(N) in both cases.

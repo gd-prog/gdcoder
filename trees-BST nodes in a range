@@ -1,0 +1,153 @@
+BST nodes in a range
+
+Problem Description
+Given a binary search tree of integers. You are given a range B and C.
+Return the count of the number of nodes that lie in the given range.
+
+
+Problem Constraints
+1 <= Number of nodes in binary tree <= 100000
+0 <= B < = C <= 109
+
+
+Input Format
+First argument is a root node of the binary tree, A.
+Second argument is an integer B.
+Third argument is an integer C.
+
+
+Output Format
+Return the count of the number of nodes that lies in the given range.
+
+
+Example Input
+Input 1:
+            15
+          /    \
+        12      20
+        / \    /  \
+       10  14  16  27
+      /
+     8
+B = 12
+     C = 20
+Input 2:
+            8
+           / \
+          6  21
+         / \
+        1   7
+B = 2
+     C = 20
+
+
+Example Output
+Output 1:
+ 5
+Output 2:
+ 3
+
+
+Example Explanation
+Explanation 1:
+ Nodes which are in range [12, 20] are : [12, 14, 15, 20, 16]
+Explanation 2:
+ Nodes which are in range [2, 20] are : [8, 6, 7]
+
+
+
+/**
+ * Definition for binary tree
+ * class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode(int x) {
+ *      val = x;
+ *      left=null;
+ *      right=null;
+ *     }
+ * }
+ */
+public class Solution {
+    public int solve(TreeNode A, int B, int C) {
+        return countNodesInRange(A,B,C);
+    }
+    private int countNodesInRange(TreeNode A,int B, int C){
+        if(A==null){
+            return 0; // Base case empty tree            
+        }
+        int count=0;
+        //if current node value is within range count it and check both subtrees
+        if(A.val>=B && A.val<=C){
+            count=1;
+        }
+        //if current node value is greater than B check the left sub tree
+        if(A.val>B){
+            count+=countNodesInRange(A.left,B,C);
+        }
+        //if current node value is less than C check the right sub tree
+        if(A.val<C){
+            count+=countNodesInRange(A.right,B,C);
+        }
+    return count;
+    }
+}
+
+---
+
+
+# Definition for binary tree
+class TreeNode:
+    def __init__(self, val=0, left=None, right=None):
+        self.val = val
+        self.left = left
+        self.right = right
+class Solution:
+    def solve(self, A, B, C):
+        """
+        Counts the number of nodes in the BST that fall within the given range.
+        Args:
+            A (TreeNode): The root node of the BST.
+            B (int): The lower bound of the range.
+            C (int): The upper bound of the range.
+        Returns:
+            int: The number of nodes within the range.
+        """
+        return self.countNodesInRange(A, B, C)
+    def countNodesInRange(self, A, B, C):
+        """
+        Recursively counts the number of nodes within the given range.
+        Args:
+            A (TreeNode): The current node.
+            B (int): The lower bound of the range.
+            C (int): The upper bound of the range.
+        Returns:
+            int: The number of nodes within the range.
+        """
+        if A is None:
+            return 0  # Base case: empty subtree
+        count = 0
+        if B <= A.val <= C:
+            count = 1  # Count the current node if it's within the range
+        # Recursively count nodes in the left and right subtrees
+        if A.val > B:
+            count += self.countNodesInRange(A.left, B, C)
+        if A.val < C:
+            count += self.countNodesInRange(A.right, B, C)
+        return count
+
+
+----
+The time and space complexity of the provided code to count the number of nodes in a Binary Search Tree (BST) that fall within a given range are:
+Time Complexity:
+	• Best case: O(1), when the root node is outside the range and the tree is empty.
+	• Average case: O(log n), when the tree is balanced and the target range is small.
+	• Worst case: O(n), when the tree is skewed and the entire tree needs to be traversed.
+The time complexity depends on the height of the tree and the location of the nodes within the range. In the best case, the root node is outside the range, and no recursive calls are made. In the average case, the height is logarithmic in the number of nodes, and the recursive calls are limited to the subtrees that contain nodes within the range. In the worst case, the tree is skewed, and the entire tree needs to be traversed to count the nodes within the range.
+Space Complexity:
+	• Best case: O(1), when the root node is outside the range and the tree is empty.
+	• Average case: O(log n), when the tree is balanced and the recursive call stack is shallow.
+	• Worst case: O(n), when the tree is skewed and the recursive call stack is deep.
+The space complexity depends on the depth of the recursion. In the best case, the root node is outside the range, and no recursive calls are made. In the average case, the depth is logarithmic in the number of nodes, leading to a logarithmic space complexity. In the worst case, the tree is skewed, and the depth is equal to the number of nodes, resulting in a linear space complexity.
+In summary, the time and space complexity of the code are both O(log n) in the best and average cases, and O(n) in the worst case. The actual performance depends on the structure of the BST and the location of the nodes within the range.

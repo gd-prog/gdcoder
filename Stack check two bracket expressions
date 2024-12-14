@@ -1,0 +1,271 @@
+/*
+Given two strings A and B. Each string represents an expression consisting of lowercase English alphabets, '+', '-', '(' and ')'.
+
+The task is to compare them and check if they are similar. If they are identical, return 1 else, return 0.
+
+NOTE: It may be assumed that there are at most 26 operands from ‘a’ to ‘z’, and every operand appears only once.
+
+*/
+
+Java
+
+public class Solution {
+
+    // Constant representing the maximum number of characters (a-z)
+    private static final int MAX_CHAR = 26;
+
+    /**
+     * Determines if two string expressions evaluate to the same value.
+     *
+     * @param A The first string expression.
+     * @param B The second string expression.
+     * @return 1 if the expressions evaluate to the same value, 0 otherwise.
+     */
+    public int solve(String A, String B) {
+        if (areSame(A, B)) {
+            return 1;
+        }
+        return 0;
+    }
+
+    /**
+     * Checks if two expressions evaluate to the same value by comparing their character frequencies.
+     *
+     * @param expr1 The first string expression.
+     * @param expr2 The second string expression.
+     * @return true if the expressions evaluate to the same value, false otherwise.
+     */
+    private static boolean areSame(String expr1, String expr2) {
+        int[] v = new int[MAX_CHAR];  // Array to store character frequencies (a-z)
+
+        // Evaluate expression 1 (add) and update character frequencies in v
+        evaluate(expr1, v, true);
+
+        // Evaluate expression 2 (subtract) and update character frequencies in v (effectively negating)
+        evaluate(expr2, v, false);
+
+        // Check if all character frequencies are zero (expressions have the same effect)
+        for (int i = 0; i < MAX_CHAR; i++) {
+            if (v[i] != 0) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Evaluates a string expression and updates the character frequency array.
+     *
+     * @param expr The string expression to evaluate.
+     * @param v The array to store character frequencies (a-z).
+     * @param add Flag indicating whether to add (true) or subtract (false) character frequencies.
+     */
+    private static void evaluate(String expr, int[] v, boolean add) {
+        Stack<Boolean> stk = new Stack<>();
+        stk.push(true); // Initial sign is positive
+        int n = expr.length();
+        int i = 0;
+
+        while (i < n) {
+            char ch = expr.charAt(i);
+
+            // Skip operators (+, -)
+            if (ch == '+' || ch == '-') {
+                i++;
+                continue;
+            }
+
+            // Handle opening parenthesis '('
+            else if (ch == '(') {
+                if (adjSign(expr, i)) {
+                    stk.push(stk.peek());  // Push current sign if positive
+                } else {
+                    stk.push(!stk.peek()); // Push negative of current sign if preceded by '-'
+                }
+            }
+
+            // Handle closing parenthesis ')'
+            else if (ch == ')') {
+                stk.pop(); // Pop the sign from the stack
+            }
+
+            // Handle operand (letter a-z)
+            else {
+                int operandIndex = ch - 'a'; // Calculate index for character frequency (a-z)
+                boolean currentSign = stk.peek();  // Get the current sign (positive or negative)
+                boolean sign = adjSign(expr, i); // Get the sign based on the previous character
+
+                // Update character frequency based on sign and add/subtract flag
+                if (add) {
+                    v[operandIndex] += (currentSign == sign) ? 1 : -1;
+                } else {
+                    v[operandIndex] -= (currentSign == sign) ? 1 : -1;
+                }
+            }
+            i++;
+        }
+    }
+
+    /**
+     * Determines the sign (positive or negative) based on the previous character (if any).
+     *
+     * @param expr The string expression.
+     * @param i The index of the current character in the string.
+     * @return true if the sign is positive, false if negative.
+     */
+    private static boolean adjSign(String expr, int i) {
+        if (i == 0) {
+            return true; // First character is always positive
+        }
+        return expr.charAt(i - 1) != '-'; // Check if the previous character is '-'
+    }
+}
+
+Python
+class Solution:
+    """
+    This class provides a method to determine if two string expressions evaluate to the same value.
+
+    The `solve` method takes two strings, `A` and `B`, as input and returns 1 if they evaluate to the same
+    value, otherwise it returns 0.
+
+    **Assumptions:**
+    - The input strings only contain letters (a-z), addition (+), subtraction (-), and parentheses (()).
+    - The expressions are well-formed (balanced parentheses).
+    """
+
+    MAX_CHAR = 26
+
+    def adjSign(self, s, i):
+        """
+        Determines the sign (positive or negative) based on the previous character (if any) in the string.
+        """
+        if i == 0:
+            return 1  # First character is always positive
+        if s[i - 1] == '-':
+            return 0  # Previous character is '-', so negate
+        return 1  # Previous character is not '-', so positive
+
+    def evaluate(self, s, v, add):
+        """
+        Evaluates a string expression and updates the character frequency count array `v`.
+        """
+        stk = []
+        stk.append(1)  # Initial sign is positive
+        n = len(s)
+        i = 0
+        while i < n:
+            if s[i] in '+-':
+                i += 1
+                continue
+            if s[i] == '(':
+                if self.adjSign(s, i):
+                    stk.append(stk[-1])
+                else:
+                    stk.append(1 - stk[-1])  # Negate sign for opening parenthesis with '-'
+            elif s[i] == ')':
+                stk.pop()
+            else:
+                current_sign = stk[-1] * self.adjSign(s, i)
+                if add == 1:
+                    v[ord(s[i]) - 97] += current_sign
+                else:
+                    v[ord(s[i]) - 97] -= current_sign
+            i += 1
+
+    def solve(self, A, B):
+        """
+        Determines whether two string expressions evaluate to the same value.
+        """
+        v = [0] * self.MAX_CHAR
+        self.evaluate(A, v, 1)
+        self.evaluate(B, v, 0)
+        for i in range(self.MAX_CHAR):
+            if v[i] != 0:
+                return 0
+        return 1
+
+# Example usage
+solution = Solution()
+result = solution.solve("a+a", "a")
+print(result)  # Output: 1
+
+/*
+Time complexity
+
+Best Case: O(n) - This occurs when both expressions are identical and only require a single pass through the evaluate function for each expression.
+Average Case: O(n) - In most cases, the expressions will have a similar structure and require a single pass through evaluate for each.
+Worst Case: O(n^2) - The worst case arises when one expression has many nested parentheses, leading to a deeper stack and more operations in the evaluate function. This can happen if the expressions are very complex with many nested parentheses.
+*/
+
+/*
+Space Complexity: O(n) - The space complexity is dominated by the v array, which stores the character frequencies. This array has a constant size (MAX_CHAR) but requires space proportional to the number of characters in the input (n) in the worst case, where all characters are unique.
+*/
+
+/* Explanation
+The main loop in the evaluate function iterates through the expression string, which has a length of n.
+Inside the loop, constant time operations like pushing/popping from the stack and comparisons are performed.
+The space used by the stack is also proportional to the depth of nesting of parentheses, which can be up to n in the worst case.
+*/
+
+/* Dry run
+Scenario:
+
+Let's consider the expressions A = "a+a" and B = "a".
+
+Steps:
+
+evaluate(A, v, true) (Evaluate A with addition)
+
+v array: Initially all zeros (representing character frequencies)
+Loop through "a+a":
+Skip '+' operator.
+Process 'a':
+Current sign (from stack): positive (initial push)
+Adjacent sign: positive (no previous character)
+Update v[0] (a's index): v[0] += 1 (becomes 1)
+Repeat for the second 'a':
+Current sign: positive (unchanged)
+Adjacent sign: positive (no previous character)
+Update v[0] (a's index): v[0] += 1 (becomes 2)
+Final v array: [2, 0, ..., 0] (frequency of 'a' is 2)
+evaluate(B, v, false) (Evaluate B with subtraction)
+
+v array: [2, 0, ..., 0] (from previous step)
+Loop through "a":
+Process 'a':
+Current sign (from stack): positive (initial push)
+Adjacent sign: positive (no previous character)
+Update v[0] (a's index): v[0] -= 1 (becomes 1)
+Final v array: [1, 0, ..., 0] (frequency of 'a' is 1)
+areSame(A, B) (Compare frequencies)
+
+Check v array: [1, 0, ..., 0] (all values are not zero)
+Return false (expressions have different effects)
+
+Expression A (a+a):
++---+---+---+
+| a | + | a |
++---+---+---+
+
+Expression B (a):
++---+
+| a |
++---+
+
+v array after A:
++---+---+---+
+| 2 | 0 | ... |  (frequency of 'a' is 2)
++---+---+---+
+
+v array after B:
++---+---+---+
+| 1 | 0 | ... |  (frequency of 'a' is 1 - different from A)
++---+---+---+
+
+Final result: Expressions A and B do not evaluate to the same value.
+
+*/
+
+
+

@@ -1,0 +1,69 @@
+/* There are N jobs to be done, but you can do only one job at a time.
+
+Given an array A denoting the start time of the jobs and an array B denoting the finish time of the jobs.
+
+Your aim is to select jobs in such a way so that you can finish the maximum number of jobs.
+
+Return the maximum number of jobs you can finish.
+
+*/
+
+Java
+-----
+public class Solution {
+
+  /**
+   * This method calculates the number of jobs that can be finished before a given finish time.
+   * 
+   * @param A: An array representing the start times of jobs.
+   * @param B: An array representing the finish times of jobs.
+   * @return The number of jobs that can be finished before any job in B finishes.
+   */
+  public int solve(int[] A, int[] B) {
+    int n = A.length; // Get the number of jobs from the input arrays.
+
+    // Create an array of Job objects to store start, finish, and index information.
+    Job[] jobs = new Job[n];
+    for (int i = 0; i < n; i++) {
+      jobs[i] = new Job(A[i], B[i], i); // Initialize each Job object.
+    }
+
+    // Sort jobs by finish time in ascending order. This ensures we prioritize jobs
+    // that finish earlier.
+    Arrays.sort(jobs, (a, b) -> Integer.compare(a.finish, b.finish));
+
+    int count = 0; // Initialize a counter to track completed jobs.
+    int prevFinish = Integer.MIN_VALUE; // Keep track of the previous job's finish time.
+
+    for (Job job : jobs) {
+      // Check if the current job's start time is after the previous job's finish time.
+      // This ensures non-overlapping jobs.
+      if (job.start >= prevFinish) {
+        count++; // Increment counter if the job can be completed without overlapping.
+        prevFinish = job.finish; // Update the previous finish time for the next iteration.
+      }
+    }
+
+    return count; // Return the total number of completed jobs.
+  }
+
+  static class Job {
+    int start, finish, index;
+
+    Job(int start, int finish, int index) {
+      this.start = start;
+      this.finish = finish;
+      this.index = index;
+    }
+  }
+}
+
+---
+
+Time and space complexity
+
+The time complexity of the above code is O(n log n). This is primarily due to the sorting operation using jobs.sort(key=lambda x: x[1]), which has a time complexity of O(n log n) for most sorting algorithms.
+
+The space complexity is O(n). This is because the code creates a new list jobs to store the job information, which has a size proportional to the input size n. The other variables and data structures used have constant space complexity.
+
+Therefore, the overall time complexity is O(n log n) and the space complexity is O(n)

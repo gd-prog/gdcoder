@@ -1,0 +1,175 @@
+Max continuous series of 1s
+
+Problem Description
+Given a binary array A, find the maximum sequence of continuous 1's that can be formed by replacing at-most B zeroes.
+For this problem, return the indices of maximum continuous series of 1s in order.
+If there are multiple possible solutions, return the sequence which has the minimum start index.
+
+
+Problem Constraints
+0 <= B <= 105
+1 <= size(A) <= 105
+0 <= A[i] <= 1
+
+
+Input Format
+First argument is an binary array A.
+Second argument is an integer B.
+
+
+Output Format
+Return an array of integers denoting the indices(0-based) of 1's in the maximum continuous series.
+
+
+Example Input
+Input 1:
+ A = [1, 1, 0, 1, 1, 0, 0, 1, 1, 1]
+ B = 1
+Input 2:
+ A = [1, 0, 0, 0, 1, 0, 1]
+ B = 2
+
+
+Example Output
+Output 1:
+ [0, 1, 2, 3, 4]
+Output 2:
+ [3, 4, 5, 6]
+
+
+
+
+
+
+
+public class Solution {
+    /**
+     * Finds the indices of the maximum sequence of continuous 1s in the binary array
+     * that can be formed by replacing at most B zeroes.
+     * 
+     * @param A Binary array of integers (0s and 1s)
+     * @param B Number of zeroes that can be replaced
+     * @return An array of indices representing the longest sequence of 1s
+     */
+    public int[] maxone(int[] A, int B) {
+        int n = A.length;  // Length of the input array
+        int start = 0;     // Left pointer of the sliding window
+        int zeroCount = 0; // Number of zeroes in the current window
+        int maxLength = 0; // Maximum length of the window with at most B zeroes
+        int maxStart = 0;  // Start index of the window with maximum length
+        int maxEnd = 0;    // End index of the window with maximum length
+        // Iterate with the right pointer of the sliding window
+        for (int end = 0; end < n; end++) {
+            // Include the current element in the window
+            if (A[end] == 0) {
+                zeroCount++; // Increment zero count if a zero is encountered
+            }
+            
+            // Shrink the window from the left if zero count exceeds B
+            while (zeroCount > B) {
+                if (A[start] == 0) {
+                    zeroCount--; // Decrement zero count if a zero is removed
+                }
+                start++; // Move the left pointer to the right
+            }
+            
+            // Check if the current window size is the largest we've seen
+            if (end - start + 1 > maxLength) {
+                maxLength = end - start + 1; // Update maximum length
+                maxStart = start; // Update start index of the longest window
+                maxEnd = end;     // Update end index of the longest window
+            }
+        }
+        // Create the result array containing the indices from maxStart to maxEnd
+        int[] result = new int[maxLength];
+        for (int i = 0; i < maxLength; i++) {
+            result[i] = maxStart + i;
+        }
+        
+        return result;
+    }
+    // Example usage
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        int[] A = {1, 0, 1, 1, 0, 1, 1, 1, 0, 1};
+        int B = 2;
+        int[] result = solution.maxone(A, B);
+        
+        // Print the result
+        for (int index : result) {
+            System.out.print(index + " ");
+        }
+    }
+}
+
+
+
+
+class Solution:
+    # @param A : list of integers
+    # @param B : integer
+    # @return a list of integers
+    def maxone(self, A, B):
+        n = len(A)  # Length of the input list
+        start = 0  # Left pointer of the sliding window
+        zero_count = 0  # Number of zeroes in the current window
+        max_length = 0  # Maximum length of the window with at most B zeroes
+        max_start = 0  # Start index of the window with maximum length
+        max_end = 0  # End index of the window with maximum length
+        
+        # Iterate with the right pointer of the sliding window
+        for end in range(n):
+            # Include the current element in the window
+            if A[end] == 0:
+                zero_count += 1  # Increment zero count if a zero is encountered
+            
+            # Shrink the window from the left if zero count exceeds B
+            while zero_count > B:
+                if A[start] == 0:
+                    zero_count -= 1  # Decrement zero count if a zero is removed
+                start += 1  # Move the left pointer to the right
+            
+            # Check if the current window size is the largest we've seen
+            if end - start + 1 > max_length:
+                max_length = end - start + 1  # Update maximum length
+                max_start = start  # Update start index of the longest window
+                max_end = end  # Update end index of the longest window
+        
+        # Return the list of indices for the longest sequence of 1s
+        return list(range(max_start, max_end + 1))
+
+
+### Time Complexity
+
+The time complexity of the Java code provided is **O(n)**, where  n is the length of the input array `A`. Here’s why:
+
+1. **Single Pass Through Array**:
+   - The `for` loop iterates through the array once, with the `end` pointer moving from the start to the end of the array. This loop runs in  O(n) time.
+
+2. **Sliding Window Adjustment**:
+   - Inside the `for` loop, the `while` loop adjusts the `start` pointer to maintain the condition that the number of zeroes in the window does not exceed `B`. Each element is processed at most twice: once by the `end` pointer and once by the `start` pointer. Thus, the operations inside the `while` loop collectively take  O(n) time in total across all iterations of the `for` loop.
+
+3. **Final Result Array Construction**:
+   - Constructing the `result` array requires iterating from `maxStart` to `maxEnd`, which takes  O(m) time, where  m is the length of the maximum window found. In the worst case,  m could be up to  n , but this operation does not add significant complexity beyond  O(n) .
+
+Overall, the dominant term is  O(n) , making the overall time complexity of the code **O(n)**.
+
+### Space Complexity
+
+The space complexity of the code is **O(n)**. Here’s the breakdown:
+
+1. **Variables**:
+   - The code uses a fixed number of integer variables (`start`, `zeroCount`, `maxLength`, `maxStart`, `maxEnd`), which requires  O(1) space.
+
+2. **Result Array**:
+   - The `result` array is created to store the indices of the longest sequence of continuous 1s. In the worst case, this array can be as large as the input array `A`, which requires  O(n) space.
+
+3. **Input Array**:
+   - The input array `A` is not counted in the space complexity calculation since it is provided as input and not created within the function.
+
+Thus, the space complexity is dominated by the space needed for the `result` array, which is **O(n)**.
+
+### Summary
+
+- **Time Complexity**:  O(n) , where  n is the length of the array. This is because both the `for` and `while` loops together ensure that each element is processed at most twice.
+- **Space Complexity**:  O(n) , due to the space required to store the result array with indices.

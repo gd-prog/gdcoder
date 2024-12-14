@@ -1,0 +1,113 @@
+Postorder Traversal
+
+Problem Description
+Given a binary tree, return the Postorder traversal of its nodes values.
+
+
+Problem Constraints
+1 <= number of nodes <= 105
+
+
+Input Format
+First and only argument is root node of the binary tree, A.
+
+
+Output Format
+Return an integer array denoting the Postorder traversal of the given binary tree.
+
+
+
+
+Example Explanation
+Explanation 1:
+ The Preoder Traversal of the given tree is [3, 2, 1].
+Explanation 2:
+ The Preoder Traversal of the given tree is [6, 3, 2, 1].
+
+
+
+/**
+ * Definition for binary tree
+ * class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode(int x) {
+ *         val = x;
+ *         left=null;
+ *         right=null;
+ *     }
+ * }
+ */
+public class Solution {
+    public int[] postorderTraversal(TreeNode A) {
+        if (A == null) {
+            return new int[0];
+        }
+        Stack<TreeNode> st1 = new Stack<>();
+        Stack<TreeNode> st2 = new Stack<>();
+        List<Integer> result = new ArrayList<>();
+        st1.push(A);
+        while (!st1.isEmpty()) {
+            TreeNode node = st1.pop();
+            st2.push(node); // Push the node onto the second stack
+            if (node.left != null) {
+                st1.push(node.left);
+            }
+            if (node.right != null) {
+                st1.push(node.right);
+            }
+        }
+        while (!st2.isEmpty()) {
+            result.add(st2.pop().val);
+        }
+        // Convert the result list to an array
+        int[] ans = new int[result.size()];
+        for (int i = 0; i < result.size(); i++) {
+            ans[i] = result.get(i);
+        }
+        return ans;
+    }
+}
+
+
+# Definition for a binary tree node
+class TreeNode:
+    def __init__(self, x):
+        self.val = x
+        self.left = None
+        self.right = None
+class Solution:
+    # @param A : root node of tree
+    # @return a list of integers
+    def postorderTraversal(self, A):
+        """
+        Perform postorder traversal of a binary tree using two stacks.
+        
+        :type A: TreeNode
+        :rtype: List[int]
+        """
+        if not A:
+            return []
+        stack1 = []  # Stack for tree traversal
+        stack2 = []  # Stack to reverse the order
+        result = []  # List to store the final result
+        # Initialize the first stack with the root node
+        stack1.append(A)
+        while stack1:
+            node = stack1.pop()
+            stack2.append(node)
+            # Push left and right children to stack1
+            if node.left:
+                stack1.append(node.left)
+            if node.right:
+                stack1.append(node.right)
+        # Pop all nodes from stack2 to get the correct postorder traversal
+        while stack2:
+            result.append(stack2.pop().val)
+        return result
+
+
+The time complexity of the postorderTraversal function is O(n), where n is the number of nodes in the binary tree. This is because each node is visited exactly once during the traversal, and the operations within the loops are constant time.
+The space complexity is also O(n) in the worst case, which occurs when the tree is skewed to the right. In this case, both stacks can potentially store up to n nodes. In the best case, when the tree is balanced, the space complexity is O(log n), as the maximum depth of a balanced binary tree is log n.
+

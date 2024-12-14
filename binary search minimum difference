@@ -1,0 +1,133 @@
+/*
+Minimum difference
+
+Problem Description
+You are given a 2-D matrix C of size A × B.
+You need to build a new 1-D array of size A by taking one element from each row of the 2-D matrix in such a way that the cost of the newly built array is minimized.
+
+The cost of an array is the minimum possible value of the absolute difference between any two adjacent elements of the array.
+
+So if the newly built array is X, the element picked from row 1 will become X[1], element picked from row 2 will become X[2], and so on.
+
+Determine the minimum cost of the newly built array.
+
+
+
+Problem Constraints
+2 <= A <= 1000
+2 <= B <= 1000
+1 <= C[i][j] <= 106
+
+
+
+Input Format
+The first argument is an integer A denoting number of rows in the 2-D array.
+The second argument is an integer B denoting number of columns in the 2-D array.
+The third argument is a 2-D array C of size A x B.
+
+
+
+Output Format
+Return an integer denoting the minimum cost of the newly build array.
+
+
+
+*/
+
+
+
+
+Java code
+----------
+
+public class Solution {
+    public int solve(int A, int B, int[][] C) {
+        int ans = 1000000000; // Initialize answer as a large number
+
+        // Sort each row of the matrix
+        for (int i = 0; i < A; i++) {
+            Arrays.sort(C[i]);
+        }
+
+        // Iterate through each row except the last one
+        for (int i = 0; i < A - 1; i++) {
+            // Iterate through each element in the current row
+            for (int j = 0; j < B; j++) {
+                // Find the index of the next element in the next row just greater than or equal to the current element
+                int lb = lower_bound(C[i + 1], C[i][j]);
+
+                // If lb is within the bounds of the next row, update the answer with the minimum absolute difference
+                if (lb != B) {
+                    ans = Math.min(ans, Math.abs(C[i][j] - C[i + 1][lb]));
+                }
+
+                // If lb is not at the beginning of the next row, update the answer with the minimum absolute difference
+                if (lb != 0) {
+                    ans = Math.min(ans, Math.abs(C[i][j] - C[i + 1][lb - 1]));
+                }
+            }
+        }
+
+        return ans;
+    }
+
+    // Function used to find the index of the element in the array a[] just greater than or equal to val
+    public int lower_bound(int a[], int val) {
+        int low = 0, high = a.length - 1, ans = a.length;
+
+        while (low <= high) {
+            int mid = (high - low) / 2 + low;
+
+            if (a[mid] < val) {
+                low = mid + 1;
+            } else {
+                ans = mid;
+                high = mid - 1;
+            }
+        }
+
+        return ans;
+    }
+}
+
+
+----
+Python code
+import bisect
+
+class Solution:
+    def solve(self, A, B, C):
+        ans = float('inf')
+
+        # Sort each row of the matrix
+        for row in C:
+            row.sort()
+
+        # Iterate through each row except the last one
+        for i in range(A - 1):
+            # Iterate through each element in the current row
+            for j in range(B):
+                # Find the index of the next element in the next row just greater than or equal to the current element
+                lb = bisect.bisect_left(C[i + 1], C[i][j])
+
+                # If lb is within the bounds of the next row, update the answer with the minimum absolute difference
+                if lb != B:
+                    ans = min(ans, abs(C[i][j] - C[i + 1][lb]))
+
+                # If lb is not at the beginning of the next row, update the answer with the minimum absolute difference
+                if lb != 0:
+                    ans = min(ans, abs(C[i][j] - C[i + 1][lb - 1]))
+
+        return ans
+
+----
+
+
+The time complexity of the  code is O(A * B * log B). Here's a breakdown:
+
+Sorting each row: Sorting a row of length B takes O(B log B) time using the built-in sort method. Since there are A rows, this step takes O(A * B log B) time in total.
+Iterating through rows and columns: The outer loop iterates A - 1 times, and the inner loop iterates B times. This gives a total of O(A * B) iterations.
+Binary search: Inside the inner loop, the bisect.bisect_left function performs a binary search, which takes O(log B) time.
+Therefore, the overall time complexity is O(A * B log B).
+
+The space complexity is O(A * B), as we need to store the 2D matrix C in memory.

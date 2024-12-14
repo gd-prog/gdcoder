@@ -1,0 +1,102 @@
+/*
+
+
+
+public class Solution {
+  public RandomListNode copyRandomList(RandomListNode head) {
+    // Handle empty list case
+    if (head == null) {
+      return null;
+    }
+
+    // Step 1: Create copies and insert next to originals
+    RandomListNode current = head;
+    while (current != null) {
+      // Create a copy node with the same label
+      RandomListNode copy = new RandomListNode(current.label);
+
+      // Insert the copy node next to the original node
+      copy.next = current.next;
+      current.next = copy;
+
+      // Move to the next original node (now pointing to the copy)
+      current = copy.next;
+    }
+
+    // Step 2: Assign random pointers for copies
+    current = head;
+    while (current != null) {
+      // If the original node has a random pointer
+      if (current.random != null) {
+        // Assign the copy node's random pointer to the next node of
+        // the original node's random pointer (following the random link)
+        current.next.random = current.random.next;
+      }
+
+      // Move to the next original node (skipping the copy)
+      current = current.next.next;
+    }
+
+    // Step 3: Separate original and copied lists
+    RandomListNode newHead = head.next; // Head of the copied list
+    current = head;
+
+    while (current != null) {
+      // Restore the original node's next pointer (skipping the copy)
+      RandomListNode temp = current.next;
+      current.next = temp.next;
+
+      // Restore the copied node's next pointer (if applicable)
+      if (temp.next != null) {
+        temp.next = temp.next.next;
+      }
+
+      // Move to the next original node
+      current = current.next;
+    }
+
+    return newHead;
+  }
+}
+
+/*
+
+**Step 1: Create Copies and Insert Next to Originals**
+
+| Index | Original Node | Copy Node | Original `next` (Index) | Copy `next` (Index) | Current (Index) |
+|---	|---			|---	 	|---	 				  |---	 				|---|
+| 1 	| 0 (A) 		| 1 (A') 	| 2 (B)  				  | 2 (B) 				| 0 (A) |
+| 2 	| 1 (B) 		| 2 (B') 	| 3 (C)  				  | 3 (C) 				| 1 (A') |
+| 3 	| 2 (C) 		| 3 (C') 	| null   				  | null 				| 2 (B') |
+
+**Step 2: Assign Random Pointers for Copies**
+
+| Index | Original Node | Copy Node | Original `random` (Index) | Copy `random` (Index) | Current (Index) |
+|---    |---            |---        |---                        |---                    |---|
+| 1     | 0 (A)         | 1 (A')    | 1 (B)                     | 2 (B')                | 1 (A') |
+| 2     | 1 (B)         | 2 (B')    | 2 (C)                     | 3 (C')                | 2 (B') |
+| 3     | 2 (C)         | 3 (C')    | null                      | null                  | N/A (reached end) |
+
+**Step 3: Separate Original and Copied Lists**
+
+| Index | Original Node | Copy Node | Original `next` (Restored) (Index) | Copy `next` (Restored) (Index) | Current (Index) |
+|---    |---            |---        |---                                 |---                             |---|
+| 1     | 0 (A)         | 1 (A')    | 2 (B)                              | 2 (B')                         | 1 (A) |
+| 2     | 1 (B)         | 2 (B')    | 3 (C)                              | 3 (C')                         | 2 (B) |
+| 3     | 2 (C)         | 3 (C')    | null                               | null                           | N/A (reached end) |
+
+
+**Explanation:**
+
+- The indices in the tables represent the position of the node in the original list (starting from 0).
+- In Step 1, we create a copy for each node and insert it next to the original. The `next` pointers are updated accordingly.
+- In Step 2, we assign the random pointers for the copied nodes by following the original node's random pointer to its corresponding copy's index.
+- In Step 3, we separate the original and copied lists by restoring their `next` pointers.
+
+Time Complexity (continued):
+The function iterates through the original list three times (once in each step).Since the length of the original list is n, the total time complexity is O(3n), which simplifies to O(n). This means the time it takes to copy the list grows linearly with the number of nodes in the original list.
+Space Complexity:
+
+The function creates new nodes for the copied list. In the worst case, where each node has a random pointer to another node, the space complexity is O(n) since the number of new nodes created is proportional to the number of original nodes.
+However, it's important to note that the space complexity does not depend on the additional pointers (random) in the original list. It only depends on the number of nodes.
+*/
